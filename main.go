@@ -2,12 +2,15 @@ package main
 
 import (
 	"delivery/repositories/filesystem"
-	"fmt"
+	"delivery/repositories/models"
+	"log"
 )
 
 func main() {
 	repo := filesystem.UserFileRepository{}
-	user := repo.GetByEmail("")
-
-	fmt.Println(user)
+	user1 := models.User{Email: "a@a", PasswordHash: "21321", CreatedAt: "123"}
+	err := repo.Insert(&user1)
+	if err != nil {
+		log.Fatal(err)
+	}
 }

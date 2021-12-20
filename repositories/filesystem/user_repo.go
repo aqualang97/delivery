@@ -11,6 +11,7 @@ type UserFileRepository struct {
 }
 
 func (ufr UserFileRepository) Insert(user *models.User) error {
+
 	return nil
 }
 func (ufr UserFileRepository) GetByEmail(_ string) (user *models.User) {
