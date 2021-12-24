@@ -1,6 +1,6 @@
 package repositories
 
-import "delivery/repositories/models"
+import "delivery/internal/models"
 
 type UserRepositoryInterface interface {
 	GetByEmail(email string) models.User

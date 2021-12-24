@@ -1,7 +1,7 @@
 package filesystem
 
 import (
-	"delivery/repositories/models"
+	"delivery/internal/models"
 	"encoding/json"
 	"io"
 	"os"
