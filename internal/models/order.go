@@ -6,4 +6,7 @@ type Order struct {
 	ProductId  string
 	UserId     string
 	Number     int
+	Price      float32
+	Status     string
+	CreatedAt  string
 }

@@ -1,8 +1,9 @@
 package models
 
 type OrderProducts struct {
-	Id      string
-	OrderId string
-	Price   string
-	UserId  string
+	ProductId string
+	OrderId   string
+	Numbers   int
+	Price     string
+	UserId    string
 }
