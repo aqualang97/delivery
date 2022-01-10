@@ -1,12 +1,15 @@
 package repositories
 
-import "delivery/internal/models"
+import (
+	"delivery/internal/models"
+)
 
 type UserRepositoryInterface interface {
 	GetByEmail(email string) models.User
-	Insert(user *models.User) error
+	GetByID(id string) models.User
+	InsertToUsers(user *models.User) (int, error)
 	//	Insert(user *models.User) models.User
-	UpdateByEmail(user *models.User)
+	UpdateById(user *models.User)
 }
 type SuppliersRepositoryInterface interface {
 	GetByName(name string) models.Suppliers
