@@ -1,9 +1,11 @@
 package models
 
+import "time"
+
 type User struct {
-	Id           string
+	Id           int
 	Name         string
 	Email        string
 	PasswordHash string
-	CreatedAt    string
+	CreatedAt    time.Time
 }

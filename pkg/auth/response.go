@@ -10,6 +10,8 @@ type RefreshResponse struct {
 	NewRefreshToken string `json:"refresh_token"`
 }
 
+type RegistrationResponse struct {
+}
 type UserResponse struct {
 	ID    int
 	Email string

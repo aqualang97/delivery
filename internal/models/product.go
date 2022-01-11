@@ -1,12 +1,14 @@
 package models
 
+import "time"
+
 type Products struct {
-	Id          string
-	SupplierId  string
-	Category    string
+	Id          int
+	SupplierId  int
+	Category    int
 	Name        string
 	Price       float32
 	Description string
 	//Discount   int
-	CreatedAt string
+	CreatedAt time.Time
 }

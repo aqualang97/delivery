@@ -1,109 +1,72 @@
-package db
+package database
 
 import (
 	"database/sql"
 	"delivery/internal/models"
-	"fmt"
 	"log"
 )
 
-var id int
-var name, email, login, password string
+var name string
 
 type UserDBRepository struct {
 	conn *sql.DB
+	TX   *sql.Tx
 }
 
 func NewUserRepo(conn *sql.DB) UserDBRepository {
 	return UserDBRepository{conn: conn}
 }
-func (udbr UserDBRepository) GetByEmail(email string) *models.User {
-	// SELECT email, password_hash, created_at FROM users WHERE email = email
-
-	rows, err := udbr.conn.Query("select * from users where email = ?", email)
+func (udbr UserDBRepository) GetUserById(id int) (models.User, error) {
+	var user models.User
+	err := udbr.conn.QueryRow(
+		"SELECT id, email, login FROM users WHERE id = ?",
+		id).Scan(&user.Id, &user.Email, &user.Name, &user.PasswordHash)
 	if err != nil {
-		log.Fatal(err)
+		return user, err
 	}
-	defer func(rows *sql.Rows) {
-		err := rows.Close()
-		if err != nil {
+	return user, nil
 
-		}
-	}(rows)
-
-	for rows.Next() {
-		err := rows.Scan(&id, &login, &email, &password)
-		if err != nil {
-			log.Fatal(err)
-		}
-		fmt.Println(id, login, email)
-	}
-	err = rows.Err()
+}
+func (udbr UserDBRepository) GetUserByEmail(email string) (models.User, error) {
+	var user models.User
+	err := udbr.conn.QueryRow(
+		"SELECT id, login, email, password FROM users",
+		email).Scan(&user.Id, &user.Name, &user.Email, &user.PasswordHash)
 	if err != nil {
-		log.Fatal(err)
+		return user, err
 	}
-	return &models.User{}
+	return user, nil
+}
+func (udbr UserDBRepository) CreateUser(u models.User) (int, error) {
+	var id int
+
+	if udbr.TX != nil {
+		err := udbr.TX.QueryRow("INSERT users(name, email, password_hash) VALUES(?, ?, ?) RETURNING id", u.Name, u.Email, u.PasswordHash).Scan(&id)
+		if err != nil {
+			_ = udbr.TX.Rollback()
+		}
+		err = udbr.TX.Commit()
+		if err != nil {
+			_ = udbr.TX.Rollback()
+		}
+		return id, err
+	}
+	err := udbr.conn.QueryRow(
+		"INSERT users(name, email, password_hash) VALUES(?, ?, ?) RETURNING id",
+		u.Name, u.Email, u.PasswordHash).Scan(&id)
+
+	return id, err
 }
 
-func (udbr UserDBRepository) GetUserById(id int) *models.User {
-	rows, err := udbr.conn.Query("SELECT * FROM users WHERE id = ?", id)
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer func(rows *sql.Rows) {
-		err := rows.Close()
-		if err != nil {
-
-		}
-	}(rows)
-
-	for rows.Next() {
-		err := rows.Scan(&id, &login, &email, &password)
-		if err != nil {
-			log.Fatal(err)
-		}
-		fmt.Println(id, name)
-	}
-	err = rows.Err()
-	if err != nil {
-		log.Fatal(err)
-	}
-	return &models.User{}
-}
-
-func (udbr UserDBRepository) InsertToUsers(user *models.User) (int64, error) {
-	rows, err := udbr.conn.Prepare("INSERT INTO users(login, email, password) VALUES(?,?,?)")
-	if err != nil {
-		log.Fatal(err)
-		return 0, err
-	}
-	res, err := rows.Exec(user.Name, user.Email, user.PasswordHash)
-	if err != nil {
-		log.Fatal(err)
-		return 0, err
-	}
-	lastId, err := res.LastInsertId()
-	if err != nil {
-		log.Fatal(err)
-		return 0, err
-	}
-
-	log.Printf("ID = %d", lastId)
-	return lastId, err
-}
 func (udbr UserDBRepository) UpdateById(user *models.User) int64 {
-	rows, err := udbr.conn.Prepare("UPDATE  users(login, email, password) SET login, email, password VALUES(?,?,?) WHERE id = ?")
+	rows, err := udbr.conn.Prepare(
+		"UPDATE  users(login, email, password) SET login, email, password VALUES(?,?,?) WHERE id = ?")
 	if err != nil {
 		log.Fatal(err)
 	}
 	res, err := rows.Exec(user.Name, user.Email, user.PasswordHash, user.Id)
 	if err != nil {
 		log.Fatal(err)
-	}
-
-	if err != nil {
-		log.Fatal(err)
-
 	}
 	rowCnt, err := res.RowsAffected()
 	if err != nil {

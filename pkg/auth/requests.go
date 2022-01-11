@@ -1,8 +1,8 @@
 package repositories
 
 type LoginRequest struct {
-	Email    string `json:"email"`
-	Password string `json:"password"`
+	Email    string
+	Password string
 }
 type RegistrationRequest struct {
 	Email    string `json:"email"`

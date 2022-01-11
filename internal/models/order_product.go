@@ -1,9 +1,10 @@
 package models
 
 type OrderProducts struct {
-	ProductId string
-	OrderId   string
+	Id        int
+	ProductId int
+	OrderId   int
 	Numbers   int
-	Price     string
-	UserId    string
+	Price     float32
+	//UserId    int
 }
