@@ -1,12 +1,14 @@
 package models
 
+import "time"
+
 type Order struct {
-	Id         string
-	SupplierId string
-	ProductId  string
-	UserId     string
+	Id         int
+	SupplierId int
+	ProductId  int
+	UserId     int
 	Number     int
 	Price      float32
 	Status     string
-	CreatedAt  string
+	CreatedAt  time.Time
 }
