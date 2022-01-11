@@ -1,9 +1,9 @@
 package repositories
 
 import (
+	authModels "delivery/internal/auth/models"
 	"delivery/internal/models"
 	db "delivery/internal/repositories/database"
-	authModels "delivery/pkg/auth/models"
 	"errors"
 	"golang.org/x/crypto/bcrypt"
 )

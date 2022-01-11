@@ -35,12 +35,8 @@ func (o OrderDBRepository) InsertToOrders(mo models.Order) (int, error) {
 }
 
 func (o OrderDBRepository) UpdateOrdersById(mo *models.Order) int64 {
-	rows, err := o.conn.Prepare(
-		"UPDATE  orders SET (user_id, price, status) VALUES(?, ?, ?) WHERE id = ?")
-	if err != nil {
-		log.Fatal(err)
-	}
-	res, err := rows.Exec(mo.UserId, mo.Price, mo.Status)
+	res, err := o.conn.Exec("UPDATE  orders SET (user_id, price, status) VALUES(?, ?, ?) WHERE id = ?",
+		mo.UserId, mo.Price, mo.Status)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -57,10 +53,7 @@ func (o OrderDBRepository) GetOrderByID(id string) (models.Order, error) {
 	err := o.conn.QueryRow(
 		"SELECT user_id, price, status FROM users WHERE id = ?",
 		id).Scan(mo.UserId, mo.Price, mo.Status)
-	if err != nil {
-		return mo, err
-	}
-	return mo, nil
+	return mo, err
 }
 func NewOrderRepo(conn *sql.DB) OrderDBRepository {
 	return OrderDBRepository{conn: conn}

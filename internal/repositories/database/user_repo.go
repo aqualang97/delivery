@@ -21,17 +21,23 @@ func (udbr UserDBRepository) GetUserById(id int) (models.User, error) {
 	err := udbr.conn.QueryRow(
 		"SELECT id, email, login FROM users WHERE id = ?",
 		id).Scan(&user.Id, &user.Email, &user.Name, &user.PasswordHash)
-	if err != nil {
-		return user, err
-	}
-	return user, nil
+	return user, err
 
 }
 func (udbr UserDBRepository) GetUserByEmail(email string) (models.User, error) {
 	var user models.User
-	err := udbr.conn.QueryRow(
-		"SELECT id, login, email, password FROM users",
-		email).Scan(&user.Id, &user.Name, &user.Email, &user.PasswordHash)
+	rows, err := udbr.conn.Query("SELECT id, login, email, password FROM users WHERE id = ?", 1)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer rows.Close()
+	for rows.Next() {
+		err := rows.Scan(&user.Id, &user.Name, &user.Email, &user.PasswordHash)
+		if err != nil {
+			log.Fatal(err)
+		}
+		println(user.Id, user.Name, user.Email, user.PasswordHash)
+	}
 	if err != nil {
 		return user, err
 	}

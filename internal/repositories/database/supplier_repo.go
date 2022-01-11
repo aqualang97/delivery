@@ -16,10 +16,7 @@ func (s SupplierDBRepository) GetSupplierByID(id string) (models.Suppliers, erro
 	err := s.conn.QueryRow(
 		"SELECT name, category_of_supplier, start_of_work, end_of_work FROM suppliers WHERE id = ?",
 		id).Scan(&supp.Name, &supp.CategoryOfSupplier, supp.StartOfWork, supp.EndOfWork)
-	if err != nil {
-		return supp, err
-	}
-	return supp, nil
+	return supp, err
 }
 
 func (s SupplierDBRepository) InsertToSuppliers(ms models.Suppliers) (int, error) {

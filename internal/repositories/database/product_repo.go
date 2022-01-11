@@ -16,10 +16,7 @@ func (p ProductDBRepository) GetProductByID(id string) (models.Products, error) 
 	err := p.conn.QueryRow(
 		"SELECT id, name, price, description FROM products WHERE id = ?",
 		id).Scan(&product.Id, &product.Name, product.Price, product.Description)
-	if err != nil {
-		return product, err
-	}
-	return product, nil
+	return product, err
 }
 
 func (p ProductDBRepository) InsertToProducts(mp *models.Products) (int, error) {

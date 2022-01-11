@@ -13,7 +13,6 @@ type OrderProductDBRepository struct {
 
 func (o OrderProductDBRepository) InsertToOrdersProducts(mo models.OrderProducts) (int, error) {
 	var id int
-
 	if o.TX != nil {
 		err := o.TX.QueryRow(
 			"INSERT orders_products(product_id, order_id, numbers_of_product, purchase_price) VALUES(?, ?, ?, ?) RETURNING id",
@@ -78,10 +77,7 @@ func (o OrderProductDBRepository) GetOrdersProductsByOrderId(order_id string) (m
 	err := o.conn.QueryRow(
 		"SELECT id, product_id, order_id, numbers_of_product, purchase_price FROM orders_products WHERE order_id = ?",
 		order_id).Scan(mo.Id, mo.ProductId, mo.OrderId, mo.Numbers, mo.Price)
-	if err != nil {
-		return mo, err
-	}
-	return mo, nil
+	return mo, err
 }
 func NewOrderProductRepo(conn *sql.DB) OrderProductDBRepository {
 	return OrderProductDBRepository{conn: conn}

@@ -2,10 +2,11 @@ package main
 
 import (
 	"database/sql"
+	"delivery/internal/auth"
+	authRepo "delivery/internal/auth/repositories"
 	db "delivery/internal/repositories/database"
-	auth "delivery/pkg/auth"
-	authRepo "delivery/pkg/auth/repositories"
 	"encoding/json"
+	"fmt"
 	_ "github.com/go-sql-driver/mysql"
 	"golang.org/x/crypto/bcrypt"
 	"log"
@@ -19,6 +20,7 @@ const AccessTokenLifetimeMinutes = 10
 const RefreshTokenLifetimeMinutes = 60
 
 func dbOpen() *sql.DB {
+
 	dbOpen, err := sql.Open(
 		"mysql",
 		"oboznyi:123123@tcp(127.0.0.1:3306)/oboznyi_db",
@@ -30,19 +32,31 @@ func dbOpen() *sql.DB {
 
 	err = dbOpen.Ping()
 	if err != nil {
-		//
+		log.Fatal(err)
 	}
 	var id int
-	println(dbOpen.QueryRow("SELECT * FROM users").Scan(&id))
+	var name string
+	rows, err := dbOpen.Query("SELECT id, login FROM users WHERE id = ?", 1)
+	if err != nil {
+		log.Fatal(err)
+	}
+	for rows.Next() {
+		err := rows.Scan(&id, &name)
+		if err != nil {
+			log.Fatal(err)
+		}
+		fmt.Println(id, name)
 
+	}
 	return dbOpen
 }
 
 func main() {
 	//реализуем флоу логина юзера
 	// юзер дает логин пароль
-	// получаем ответ верный илинет юзер
-	db.NewUserRepo(dbOpen())
+	// получаем ответ верный илинет юзе
+	conn := dbOpen()
+	db.NewUserRepo(conn)
 
 	http.HandleFunc("/login", Login)     //умеем обрабатывать логин с помощью ф-ции логин
 	http.HandleFunc("/profile", Profile) //умеем обрабатывать логин с помощью ф-ции логин
@@ -50,18 +64,18 @@ func main() {
 	http.HandleFunc("/registration", Registration)
 
 	log.Fatal(http.ListenAndServe(":8080", nil)) //слушаем порт 8080 для входящих запросов
+
 }
 
 func Login(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case "POST":
-		req := new(auth.LoginRequest)
+		req := new(repositories.LoginRequest)
 		if err := json.NewDecoder(r.Body).Decode(&req); err != nil { //берем тело запроса декодим и декодим в тело запроса
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
 		}
 
-		println(req)
 		user, err := authRepo.NewUserRepositoryLogin(req.Email, req.Password).GetUserByEmailFromDB(req.Email)
 		if err != nil {
 			http.Error(w, "invalid credentials", http.StatusBadRequest)
@@ -73,20 +87,20 @@ func Login(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		tokenString, err := auth.GenerateToken(user.Id, AccessTokenLifetimeMinutes, AccessSecret)
+		tokenString, err := repositories.GenerateToken(user.Id, AccessTokenLifetimeMinutes, AccessSecret)
 
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
-		refreshString, err := auth.GenerateToken(user.Id, RefreshTokenLifetimeMinutes, RefreshSecret)
+		refreshString, err := repositories.GenerateToken(user.Id, RefreshTokenLifetimeMinutes, RefreshSecret)
 
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
 
-		resp := auth.LoginResponse{
+		resp := repositories.LoginResponse{
 			AccessToken:  tokenString,
 			RefreshToken: refreshString,
 		}
@@ -98,7 +112,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 func Login1(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case "POST":
-		req := new(auth.LoginRequest)
+		req := new(repositories.LoginRequest)
 		if err := json.NewDecoder(r.Body).Decode(&req); err != nil { //берем тело запроса декодим и декодим в тело запроса
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
@@ -115,20 +129,20 @@ func Login1(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		tokenString, err := auth.GenerateToken(user.ID, AccessTokenLifetimeMinutes, AccessSecret)
+		tokenString, err := repositories.GenerateToken(user.ID, AccessTokenLifetimeMinutes, AccessSecret)
 
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
-		refreshString, err := auth.GenerateToken(user.ID, RefreshTokenLifetimeMinutes, RefreshSecret)
+		refreshString, err := repositories.GenerateToken(user.ID, RefreshTokenLifetimeMinutes, RefreshSecret)
 
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
 
-		resp := auth.LoginResponse{
+		resp := repositories.LoginResponse{
 			AccessToken:  tokenString,
 			RefreshToken: refreshString,
 		}
@@ -143,8 +157,8 @@ func Login1(w http.ResponseWriter, r *http.Request) {
 func Profile(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case "GET":
-		tokenString := auth.GetTokenFromBearerString(r.Header.Get("Authorization"))
-		claims, err := auth.ValidateToken(tokenString, AccessSecret)
+		tokenString := repositories.GetTokenFromBearerString(r.Header.Get("Authorization"))
+		claims, err := repositories.ValidateToken(tokenString, AccessSecret)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusUnauthorized)
 			return
@@ -155,7 +169,7 @@ func Profile(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		resp := auth.UserResponse{
+		resp := repositories.UserResponse{
 			ID:    user.ID,
 			Email: user.Email,
 			Name:  user.Name,
@@ -170,7 +184,7 @@ func Profile(w http.ResponseWriter, r *http.Request) {
 func Refresh(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case "POST":
-		req := new(auth.RefreshRequest)
+		req := new(repositories.RefreshRequest)
 		if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
@@ -196,7 +210,7 @@ func Refresh(w http.ResponseWriter, r *http.Request) {
 			}
 		*/
 		refreshTokenString := req.RefreshToken
-		claims, err := auth.ValidateToken(refreshTokenString, RefreshSecret)
+		claims, err := repositories.ValidateToken(refreshTokenString, RefreshSecret)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusUnauthorized)
 			return
@@ -221,19 +235,19 @@ func Refresh(w http.ResponseWriter, r *http.Request) {
 				return
 			}*/
 
-		newAccessTokenString, err := auth.GenerateToken(user.ID, AccessTokenLifetimeMinutes, AccessSecret)
+		newAccessTokenString, err := repositories.GenerateToken(user.ID, AccessTokenLifetimeMinutes, AccessSecret)
 
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
-		newRefreshTokenString, err := auth.GenerateToken(user.ID, RefreshTokenLifetimeMinutes, RefreshSecret)
+		newRefreshTokenString, err := repositories.GenerateToken(user.ID, RefreshTokenLifetimeMinutes, RefreshSecret)
 
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
-		resp := auth.RefreshResponse{
+		resp := repositories.RefreshResponse{
 			NewAccessToken:  newAccessTokenString,
 			NewRefreshToken: newRefreshTokenString,
 		}
@@ -247,7 +261,7 @@ func Registration(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case "POST":
 
-		req := new(auth.RegistrationRequest)
+		req := new(repositories.RegistrationRequest)
 
 		if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 			http.Error(w, err.Error(), http.StatusBadRequest)
