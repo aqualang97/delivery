@@ -1,0 +1,10 @@
+POST http://{{url}}/login
+Content-Type: application/json
+
+{
+  "email":"aqualang9797@gmail.com",
+  "password":"11111111"
+}
+
+###
+

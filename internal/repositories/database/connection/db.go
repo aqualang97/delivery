@@ -11,7 +11,7 @@ type dbInfo struct {
 	dataSourceName string
 }
 
-func (db dbInfo) dbOpen(driverName, dataSourceName string) sql.DB {
+func (db dbInfo) dbOpen(driverName, dataSourceName string) *sql.DB {
 	dbOpen, err := sql.Open(
 		"mysql",
 		"oboznyi:123123@tcp(127.0.0.1:3306)/oboznyi_db",
@@ -25,5 +25,5 @@ func (db dbInfo) dbOpen(driverName, dataSourceName string) sql.DB {
 	if err != nil {
 		//
 	}
-	return *dbOpen
+	return dbOpen
 }

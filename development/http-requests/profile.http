@@ -1,0 +1,4 @@
+GET http://{{url}}/profile
+Accept: application/json
+
+###

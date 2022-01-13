@@ -63,12 +63,13 @@ func (r *UserRepository) GetUserByEmail(email string) (*authModels.User, error) 
 	}
 	return nil, errors.New("user not found")
 }
-func (r *UserRepository) GetUserByEmailFromDB(email string) (models.User, error) {
-	user, err := db.UserDBRepository{}.GetUserByEmail(email)
+func (r *UserRepository) GetUserByEmailFromDB(email string) (*models.User, error) {
+	repository := db.UserDBRepository{}
+	user, err := repository.GetUserByEmail(email)
 	if err != nil {
-		return models.User{}, errors.New("user not found")
+		return nil, errors.New("user not found")
 	}
-	return user, nil
+	return &user, nil
 
 }
 func (r *UserRepository) GetUserByID(id int) (*authModels.User, error) {
