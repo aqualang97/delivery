@@ -145,13 +145,13 @@ func (udbr UserDBRepository) InsertAccessAndRefreshTokens(userToken *models.User
 
 func (udbr UserDBRepository) GetByRefreshToken(refreshToken string) (models.UserToken, error) {
 	var userToken models.UserToken
-	rows, err := udbr.conn.Query("SELECT id, user_id, token, expired FROM users_refresh_tokens WHERE token = ?", refreshToken)
+	rows, err := udbr.conn.Query("SELECT user_id, token, expired FROM users_refresh_tokens WHERE token = ?", refreshToken)
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer rows.Close()
 	for rows.Next() {
-		err := rows.Scan(&userToken.ID, &userToken.UserID, &userToken.RefreshToken, &userToken.Expired)
+		err := rows.Scan(&userToken.UserID, &userToken.RefreshToken, &userToken.Expired)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -164,13 +164,13 @@ func (udbr UserDBRepository) GetByRefreshToken(refreshToken string) (models.User
 func (udbr UserDBRepository) GetByAccessToken(accessToken string) (models.UserToken, error) {
 	var userToken models.UserToken
 	println(accessToken)
-	rows, err := udbr.conn.Query("SELECT id, user_id, token, expired FROM users_access_tokens WHERE token = ?", accessToken)
+	rows, err := udbr.conn.Query("SELECT user_id, token, expired FROM users_access_tokens WHERE token = ?", accessToken)
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer rows.Close()
 	for rows.Next() {
-		err := rows.Scan(&userToken.ID, &userToken.UserID, &userToken.AccessToken, &userToken.Expired)
+		err := rows.Scan(&userToken.UserID, &userToken.AccessToken, &userToken.Expired)
 		if err != nil {
 			log.Fatal(err)
 		}

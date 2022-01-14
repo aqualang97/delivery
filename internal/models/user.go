@@ -11,10 +11,9 @@ type User struct {
 }
 
 type UserToken struct {
-	ID               int
 	UserID           int
-	AccessToken      string
-	RefreshToken     string
+	AccessToken      string `json:"access_token"`
+	RefreshToken     string `json:"refresh_token"`
 	AccessExpiredAt  time.Time
 	RefreshExpiredAt time.Time
 	Expired          string
