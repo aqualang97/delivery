@@ -6,8 +6,10 @@ import (
 	authRepo "delivery/internal/auth/repositories"
 	"delivery/internal/models"
 	db "delivery/internal/repositories/database"
+	//connection "delivery/internal/repositories/database/connection"
 	"time"
 
+	open "delivery/internal/repositories/database/connection"
 	"encoding/json"
 	_ "github.com/go-sql-driver/mysql"
 	"golang.org/x/crypto/bcrypt"
@@ -20,6 +22,12 @@ const RefreshSecret = "refresh_secret"
 
 const AccessTokenLifetimeMinutes = 10
 const RefreshTokenLifetimeMinutes = 60
+
+func dbTXBegin(conn *sql.DB) (*sql.Tx, error) {
+	TX, err := conn.Begin()
+	return TX, err
+
+}
 
 func dbOpen() (*sql.DB, error) {
 
@@ -60,12 +68,17 @@ func main() {
 	//реализуем флоу логина юзера
 	// юзер дает логин пароль
 	// получаем ответ верный илинет юзе
-	conn, err := dbOpen()
+	conn, err := open.OpenMyDB()
 	defer conn.Close()
 	if err != nil {
 		log.Fatal(err)
 	}
-	handlerProvider := HandlerProvider{UserRepository: db.NewUserRepo(conn)}
+
+	TX, err := dbTXBegin(conn)
+	if err != nil {
+		return
+	}
+	handlerProvider := HandlerProvider{UserRepository: db.NewUserRepo(conn, TX)}
 	http.HandleFunc("/login", handlerProvider.Login) //умеем обрабатывать логин с помощью ф-ции логин
 	http.HandleFunc("/profile", handlerProvider.Profile)
 	http.HandleFunc("/refresh", handlerProvider.Refresh)
@@ -376,7 +389,6 @@ func (hp *HandlerProvider) Registration(w http.ResponseWriter, r *http.Request) 
 			log.Fatal(err)
 		}
 		//Если оставляем юзера залогиненым поссле регистрации, то даем ему пару токенов
-
 		//user, err := authRepo.NewUserRepository().GetUserByEmail(req.Email)
 		//if err != nil {
 		//	http.Error(w, "invalid credentials", http.StatusUnauthorized)
