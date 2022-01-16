@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	_ "github.com/go-sql-driver/mysql"
 	"log"
+	"time"
 )
 
 func OpenMyDB() (*sql.DB, error) {
@@ -20,5 +21,10 @@ func OpenMyDB() (*sql.DB, error) {
 	if err != nil {
 		//
 	}
+
+	conn.SetMaxIdleConns(2)
+	conn.SetMaxIdleConns(10)
+	conn.SetConnMaxLifetime(10 * time.Second)
+
 	return conn, err
 }
