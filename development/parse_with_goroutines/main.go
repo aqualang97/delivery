@@ -32,16 +32,12 @@ func main() {
 
 	wg.Add(count)
 	for i := 0; i < count; i++ {
-		println("start")
 		go pool.Start(&wg, func(supp models.Supplier) {
 			productCategoryID, _ := GetProductCategoryID(supp, conn)
-			println(productCategoryID, "productCategoryID")
 			supplierCategoryID, _ := GetSupplierCategoryID(supp, conn)
-			println(supplierCategoryID, "supplierCategoryID")
 			supplierID, _ := CreateSupplier(supp, conn, supplierCategoryID)
 			productID, _ := CreateProduct(supp, conn, productCategoryID)
 			fmt.Println("supplierID", supplierID, "productID", productID)
-			println(supp.Name)
 			time.Sleep(3 * time.Second) //для проверки. сначала 4 горутины, потом 3
 
 		})
@@ -100,7 +96,7 @@ func GetProductCategoryID(supp models.Supplier, conn *sql.DB) (int, error) {
 	var id int
 	var err error
 	for _, product := range supp.Menu {
-		println(product.Type, product.Type, product.Type)
+
 		err := conn.QueryRow("SELECT EXISTS(SELECT * FROM products_categories WHERE name=?)", product.Type).Scan(&exist)
 		if err != nil {
 			log.Println(err)
@@ -122,6 +118,7 @@ func GetProductCategoryID(supp models.Supplier, conn *sql.DB) (int, error) {
 
 			return id, err
 		}
+
 	}
 	log.Println(err)
 	return id, err
@@ -172,13 +169,20 @@ func CreateProduct(supp models.Supplier, conn *sql.DB, categoryProductID int) (i
 	//-------------------------------------
 
 	var err error
+
 	for _, product := range supp.Menu {
+		fmt.Println(len(supp.Menu), product)
+		fmt.Println(len(supp.Menu), product)
+		fmt.Println(len(supp.Menu), product)
+		fmt.Println(len(supp.Menu), product)
+		fmt.Println(len(supp.Menu), product)
 		_, err := conn.Exec(
 			"INSERT products(id, name, price, image)VALUES(?, ?, ?, ?)",
 			product.Id, product.Name, product.Price, product.Image)
+
 		if err != nil {
 
-			log.Println(err)
+			log.Println(err, "da tyt1")
 			return 0, err
 		}
 		//This code is only for the case when one product has one category.
@@ -188,35 +192,43 @@ func CreateProduct(supp models.Supplier, conn *sql.DB, categoryProductID int) (i
 			product.Id, categoryProductID)
 		if err != nil {
 
-			log.Println(err)
+			log.Println(err, "da tyt2")
 			return 0, err
 		}
 
 		ingredients := product.Ingredients
 		for _, ing := range ingredients {
+
+			println(ing)
+			println(ing)
+			println(ing)
 			var exist bool
 			var ingredientID int
 			err := conn.QueryRow("SELECT EXISTS(SELECT * FROM ingredients WHERE name=?)", ing).Scan(&exist)
 			if err != nil {
-				log.Println(err)
+				log.Println(err, "da tyt3")
 				return ingredientID, err
 			}
 			if !exist {
-				_, err := conn.Exec("INSERT ingredients(name) VALUES(?)",
+				_, err := conn.Exec("INSERT ingredients(name) VALUE(?)",
 					ing)
 				if err != nil {
+					log.Println(err, "da tyt4")
+
 					return 0, err
 				}
 			}
-			err = conn.QueryRow("SELECT id FROM ingredients WHERE name=?", supp.Type).Scan(&ingredientID)
+			err = conn.QueryRow("SELECT id FROM ingredients WHERE name=?", ing).Scan(&ingredientID)
 			if err != nil {
+				log.Println(err, "da tyt5")
+
 				return ingredientID, err
 			}
 			_, err = conn.Exec(
 				"INSERT products_ingredients(product_id, ingredient_id)VALUES(?, ?)",
 				product.Id, ingredientID)
 			if err != nil {
-				log.Println(err)
+				log.Println(err, "da tyt6")
 				return 0, err
 			}
 		}
