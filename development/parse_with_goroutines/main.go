@@ -171,18 +171,14 @@ func CreateProduct(supp models.Supplier, conn *sql.DB, categoryProductID int) (i
 	var err error
 
 	for _, product := range supp.Menu {
-		fmt.Println(len(supp.Menu), product)
-		fmt.Println(len(supp.Menu), product)
-		fmt.Println(len(supp.Menu), product)
-		fmt.Println(len(supp.Menu), product)
-		fmt.Println(len(supp.Menu), product)
+
 		_, err := conn.Exec(
 			"INSERT products(id, name, price, image)VALUES(?, ?, ?, ?)",
 			product.Id, product.Name, product.Price, product.Image)
 
 		if err != nil {
 
-			log.Println(err, "da tyt1")
+			log.Println(err)
 			return 0, err
 		}
 		//This code is only for the case when one product has one category.
@@ -192,35 +188,32 @@ func CreateProduct(supp models.Supplier, conn *sql.DB, categoryProductID int) (i
 			product.Id, categoryProductID)
 		if err != nil {
 
-			log.Println(err, "da tyt2")
+			log.Println(err)
 			return 0, err
 		}
 
 		ingredients := product.Ingredients
 		for _, ing := range ingredients {
 
-			println(ing)
-			println(ing)
-			println(ing)
 			var exist bool
 			var ingredientID int
 			err := conn.QueryRow("SELECT EXISTS(SELECT * FROM ingredients WHERE name=?)", ing).Scan(&exist)
 			if err != nil {
-				log.Println(err, "da tyt3")
+				log.Println(err)
 				return ingredientID, err
 			}
 			if !exist {
 				_, err := conn.Exec("INSERT ingredients(name) VALUE(?)",
 					ing)
 				if err != nil {
-					log.Println(err, "da tyt4")
+					log.Println(err)
 
 					return 0, err
 				}
 			}
 			err = conn.QueryRow("SELECT id FROM ingredients WHERE name=?", ing).Scan(&ingredientID)
 			if err != nil {
-				log.Println(err, "da tyt5")
+				log.Println(err)
 
 				return ingredientID, err
 			}
@@ -228,7 +221,7 @@ func CreateProduct(supp models.Supplier, conn *sql.DB, categoryProductID int) (i
 				"INSERT products_ingredients(product_id, ingredient_id)VALUES(?, ?)",
 				product.Id, ingredientID)
 			if err != nil {
-				log.Println(err, "da tyt6")
+				log.Println(err)
 				return 0, err
 			}
 		}
