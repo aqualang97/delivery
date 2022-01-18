@@ -31,6 +31,7 @@ type Menu struct {
 
 func ReadFromJSON(filepath string) (Supplier, error) {
 	var supp Supplier
+
 	openFile, err := os.Open(filepath)
 	if err != nil {
 		return supp, err

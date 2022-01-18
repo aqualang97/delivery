@@ -35,7 +35,9 @@ func main() {
 		println("start")
 		go pool.Start(&wg, func(supp models.Supplier) {
 			productCategoryID, _ := GetProductCategoryID(supp, conn)
+			println(productCategoryID, "productCategoryID")
 			supplierCategoryID, _ := GetSupplierCategoryID(supp, conn)
+			println(supplierCategoryID, "supplierCategoryID")
 			supplierID, _ := CreateSupplier(supp, conn, supplierCategoryID)
 			productID, _ := CreateProduct(supp, conn, productCategoryID)
 			fmt.Println("supplierID", supplierID, "productID", productID)
@@ -96,12 +98,12 @@ func main() {
 func GetProductCategoryID(supp models.Supplier, conn *sql.DB) (int, error) {
 	var exist bool
 	var id int
-	var menu []models.Menu
 	var err error
-	for _, product := range menu {
+	for _, product := range supp.Menu {
+		println(product.Type, product.Type, product.Type)
 		err := conn.QueryRow("SELECT EXISTS(SELECT * FROM products_categories WHERE name=?)", product.Type).Scan(&exist)
 		if err != nil {
-			log.Fatal(err)
+			log.Println(err)
 			return id, err
 		}
 
@@ -109,14 +111,19 @@ func GetProductCategoryID(supp models.Supplier, conn *sql.DB) (int, error) {
 			_, err := conn.Exec("INSERT products_categories(name) VALUES(?)",
 				product.Type)
 			if err != nil {
+				log.Println(err)
+
 				return 0, err
 			}
 		}
 		err = conn.QueryRow("SELECT id FROM products_categories WHERE name=?", product.Type).Scan(&id)
 		if err != nil {
+			log.Println(err)
+
 			return id, err
 		}
 	}
+	log.Println(err)
 	return id, err
 }
 
@@ -125,18 +132,22 @@ func GetSupplierCategoryID(supp models.Supplier, conn *sql.DB) (int, error) {
 	var id int
 	err := conn.QueryRow("SELECT EXISTS(SELECT * FROM suppliers_categories WHERE name=?)", supp.Type).Scan(&exist)
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 		return id, err
 	}
 	if !exist {
 		_, err := conn.Exec("INSERT suppliers_categories(name) VALUES(?)",
 			supp.Type)
 		if err != nil {
+			log.Println(err)
+
 			return 0, err
 		}
 	}
 	err = conn.QueryRow("SELECT id FROM suppliers_categories WHERE name=?", supp.Type).Scan(&id)
 	if err != nil {
+		log.Println(err)
+
 		return id, err
 	}
 	return id, err
@@ -147,6 +158,8 @@ func CreateSupplier(supp models.Supplier, conn *sql.DB, categorySupplierID int) 
 		"INSERT suppliers(id, name, category_of_supplier, start_of_work, end_of_work, image)VALUES(?, ?, ?, ?, ?, ?)",
 		supp.Id, supp.Name, categorySupplierID, supp.WorkingHours.Opening, supp.WorkingHours.Closing, supp.Image)
 	if err != nil {
+		log.Println(err)
+
 		return 0, err
 	}
 	supplierID := supp.Id
@@ -158,13 +171,14 @@ func CreateProduct(supp models.Supplier, conn *sql.DB, categoryProductID int) (i
 	// ВПРОЧЕМ КАК И ВСЁ :)
 	//-------------------------------------
 
-	var menu []models.Menu
 	var err error
-	for _, product := range menu {
+	for _, product := range supp.Menu {
 		_, err := conn.Exec(
 			"INSERT products(id, name, price, image)VALUES(?, ?, ?, ?)",
 			product.Id, product.Name, product.Price, product.Image)
 		if err != nil {
+
+			log.Println(err)
 			return 0, err
 		}
 		//This code is only for the case when one product has one category.
@@ -173,6 +187,8 @@ func CreateProduct(supp models.Supplier, conn *sql.DB, categoryProductID int) (i
 			"INSERT products_category(product_id, category_id)VALUES(?, ?)",
 			product.Id, categoryProductID)
 		if err != nil {
+
+			log.Println(err)
 			return 0, err
 		}
 
@@ -182,7 +198,7 @@ func CreateProduct(supp models.Supplier, conn *sql.DB, categoryProductID int) (i
 			var ingredientID int
 			err := conn.QueryRow("SELECT EXISTS(SELECT * FROM ingredients WHERE name=?)", ing).Scan(&exist)
 			if err != nil {
-				log.Fatal(err)
+				log.Println(err)
 				return ingredientID, err
 			}
 			if !exist {
@@ -200,6 +216,7 @@ func CreateProduct(supp models.Supplier, conn *sql.DB, categoryProductID int) (i
 				"INSERT products_ingredients(product_id, ingredient_id)VALUES(?, ?)",
 				product.Id, ingredientID)
 			if err != nil {
+				log.Println(err)
 				return 0, err
 			}
 		}
