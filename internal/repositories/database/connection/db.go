@@ -15,7 +15,6 @@ func OpenMyDB() (*sql.DB, error) {
 	if err != nil {
 		log.Fatal(err)
 	}
-	defer conn.Close()
 
 	err = conn.Ping()
 	if err != nil {

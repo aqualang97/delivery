@@ -2,16 +2,17 @@ package models
 
 import (
 	"encoding/json"
+	"log"
 	"os"
 )
 
-type SupplierJSON struct {
+type Supplier struct {
 	Id           int          `json:"id"`
 	Name         string       `json:"name"`
 	Type         string       `json:"type"`
 	Image        string       `json:"image"`
 	WorkingHours WorkingHours `json:"workingHours"`
-	Menu         Menu         `json:"menu"`
+	Menu         []Menu       `json:"menu"`
 }
 
 type WorkingHours struct {
@@ -35,6 +36,10 @@ func ReadFromJSON(filepath string) (Supplier, error) {
 		return supp, err
 	}
 	err = json.NewDecoder(openFile).Decode(&supp)
+	if err != nil {
+		log.Println(err)
+		return Supplier{}, err
+	}
 	return supp, err
 
 }
