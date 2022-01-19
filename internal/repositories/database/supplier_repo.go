@@ -24,8 +24,8 @@ func (s SupplierDBRepository) InsertToSuppliers(ms models.Suppliers) (int, error
 
 	if s.TX != nil {
 		err := s.TX.QueryRow(
-			"INSERT suppliers(name, category_of_supplier, start_of_work, end_of_work) VALUES(?, ?, ?, ?) RETURNING id",
-			ms.Name, ms.CategoryOfSupplier, ms.StartOfWork, ms.EndOfWork).Scan(&id)
+			"INSERT suppliers(id, name, category_of_supplier, start_of_work, end_of_work) VALUES(?, ?, ?, ?, ?) RETURNING id",
+			nil, ms.Name, ms.CategoryOfSupplier, ms.StartOfWork, ms.EndOfWork).Scan(&id)
 		if err != nil {
 			_ = s.TX.Rollback()
 		}

@@ -2,13 +2,11 @@ package models
 
 import "time"
 
-type Products struct {
+type Product struct {
 	Id          int
-	SupplierId  int
-	Category    int
 	Name        string
-	Price       float32
+	Category    int
 	Description string
 	//Discount   int
-	CreatedAt time.Time
+	CreatedAt *time.Time
 }

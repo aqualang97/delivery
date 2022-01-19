@@ -7,9 +7,7 @@ import (
 	open "delivery/internal/repositories/database/connection"
 	"fmt"
 	"log"
-	"runtime"
 	"sync"
-	"time"
 )
 
 func main() {
@@ -28,19 +26,20 @@ func main() {
 	pool := worker_pool.NewPool(4)
 	count := pool.Count
 	wg := sync.WaitGroup{}
-	runtime.GOMAXPROCS(1) //чтобы не  обрывалась мейн до завершения горутин
 
-	wg.Add(count)
 	for i := 0; i < count; i++ {
-		go pool.Start(&wg, func(supp models.Supplier) {
-			productCategoryID, _ := GetProductCategoryID(supp, conn)
-			supplierCategoryID, _ := GetSupplierCategoryID(supp, conn)
-			supplierID, _ := CreateSupplier(supp, conn, supplierCategoryID)
-			productID, _ := CreateProduct(supp, conn, productCategoryID)
-			fmt.Println("supplierID", supplierID, "productID", productID)
-			time.Sleep(3 * time.Second) //для проверки. сначала 4 горутины, потом 3
+		go func(i int) {
+			pool.Start(&wg, i, func(supp models.Supplier) {
+				productCategoryID, _ := GetProductCategoryID(supp, conn)
+				supplierCategoryID, _ := GetSupplierCategoryID(supp, conn)
+				supplierID, _ := CreateSupplier(supp, conn, supplierCategoryID)
+				productID, _ := CreateProduct(supp, conn, productCategoryID)
+				fmt.Println("supplierID", supplierID, "productID", productID)
+				//	time.Sleep(3 * time.Second) //для проверки. сначала 4 горутины, потом 3
+				println("go", i)
+			})
+		}(i)
 
-		})
 		wg.Add(1)
 	}
 
@@ -56,6 +55,7 @@ func main() {
 
 	}
 	pool.Stop()
+	wg.Wait()
 
 	//pool.StartSendData = make(chan interface{})
 	//runtime.GOMAXPROCS(1)
@@ -173,14 +173,25 @@ func CreateProduct(supp models.Supplier, conn *sql.DB, categoryProductID int) (i
 	for _, product := range supp.Menu {
 
 		_, err := conn.Exec(
-			"INSERT products(id, name, price, image)VALUES(?, ?, ?, ?)",
-			product.Id, product.Name, product.Price, product.Image)
+			"INSERT products(name, category, external_id)VALUES(?, ?, ?)",
+			product.Name, categoryProductID, product.Id)
 
 		if err != nil {
 
 			log.Println(err)
 			return 0, err
 		}
+
+		_, err = conn.Exec(
+			"INSERT products_suppliers(product_id, supplier_id, price, image)VALUES(?, ?, ?, ?)",
+			product.Id, menuID, product.Price, product.Image)
+
+		if err != nil {
+
+			log.Println(err)
+			return 0, err
+		}
+
 		//This code is only for the case when one product has one category.
 
 		_, err = conn.Exec(

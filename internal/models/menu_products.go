@@ -2,11 +2,11 @@ package models
 
 import "time"
 
-type Order struct {
-	Id        int
-	UserId    int
+type MenuProducts struct {
+	ProductId int
+	MenuID    int
 	Price     float32
-	Status    string
+	Image     string
 	CreatedAt *time.Time
 	UpdatedAt *time.Time
 }

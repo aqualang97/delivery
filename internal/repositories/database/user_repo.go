@@ -132,7 +132,7 @@ func (udbr UserDBRepository) InsertAccessAndRefreshTokens(userToken *models.User
 	println(userToken.RefreshToken, userId)
 
 	return err*/
-	println(userToken.UserID)
+	//println(userToken.UserID)
 	_, err := udbr.conn.Exec("INSERT users_access_tokens(user_id, token, expired_at, expired) VALUES(?, ?, ?, ?)",
 		userToken.UserID, userToken.AccessToken, userToken.AccessExpiredAt, userToken.Expired)
 	if err != nil {

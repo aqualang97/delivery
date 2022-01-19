@@ -5,12 +5,12 @@ import (
 	"sync"
 )
 
-type Worker interface {
-	//Stop()
-	//Do(data interface{}, handlerIndex int) //data modelsParse.SupplierJSON
-}
-
-type Constructor func() Worker
+//type Worker interface {
+//	//Stop()
+//	//Do(data interface{}, handlerIndex int) //data modelsParse.SupplierJSON
+//}
+//
+//type Constructor func() Worker
 
 type WorkerPool struct {
 	Count         int
@@ -34,7 +34,7 @@ func (pool *WorkerPool) Stop() {
 
 }
 
-func (pool *WorkerPool) Start(wg *sync.WaitGroup, parser func(supp models.Supplier)) {
+func (pool *WorkerPool) Start(wg *sync.WaitGroup, i int, parser func(supp models.Supplier)) {
 	//var wg *sync.WaitGroup
 	var supp models.Supplier
 	defer wg.Done()
