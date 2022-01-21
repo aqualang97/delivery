@@ -142,4 +142,24 @@ alter table products
     modify external_id int not null after category;
 
 
+alter table products_suppliers
+    add price float not null;
+
+alter table products_suppliers
+    modify price float not null after external_supplier_id;
+
+drop table menu_products;
+
+drop table menu;
+
+alter table products_suppliers
+    add image text null;
+
+alter table products_suppliers
+    modify image text not null after price;
+
+create unique index products_categories_id_uindex
+    on products_categories (id);
+
+
 

@@ -7,7 +7,7 @@ import (
 )
 
 type Supplier struct {
-	Id           int          `json:"id"`
+	ExternalId   int          `json:"id"`
 	Name         string       `json:"name"`
 	Type         string       `json:"type"`
 	Image        string       `json:"image"`
@@ -21,7 +21,7 @@ type WorkingHours struct {
 }
 
 type Menu struct {
-	Id          int      `json:"id"`
+	ExternalId  int      `json:"id"`
 	Name        string   `json:"name"`
 	Price       float64  `json:"price"`
 	Image       string   `json:"image"`

@@ -33,8 +33,8 @@ func main() {
 				productCategoryID, _ := GetProductCategoryID(supp, conn)
 				supplierCategoryID, _ := GetSupplierCategoryID(supp, conn)
 				supplierID, _ := CreateSupplier(supp, conn, supplierCategoryID)
-				productID, _ := CreateProduct(supp, conn, productCategoryID)
-				fmt.Println("supplierID", supplierID, "productID", productID)
+				productExternalID, _ := CreateProduct(supp, conn, productCategoryID, supplierID)
+				fmt.Println("supplierID", supplierID, "productID", productExternalID)
 				//	time.Sleep(3 * time.Second) //для проверки. сначала 4 горутины, потом 3
 				println("go", i)
 			})
@@ -132,6 +132,7 @@ func GetSupplierCategoryID(supp models.Supplier, conn *sql.DB) (int, error) {
 		log.Println(err)
 		return id, err
 	}
+
 	if !exist {
 		_, err := conn.Exec("INSERT suppliers_categories(name) VALUES(?)",
 			supp.Type)
@@ -141,6 +142,8 @@ func GetSupplierCategoryID(supp models.Supplier, conn *sql.DB) (int, error) {
 			return 0, err
 		}
 	}
+	// Считаем что название категории уникальное
+
 	err = conn.QueryRow("SELECT id FROM suppliers_categories WHERE name=?", supp.Type).Scan(&id)
 	if err != nil {
 		log.Println(err)
@@ -151,18 +154,19 @@ func GetSupplierCategoryID(supp models.Supplier, conn *sql.DB) (int, error) {
 }
 
 func CreateSupplier(supp models.Supplier, conn *sql.DB, categorySupplierID int) (int, error) {
-	_, err := conn.Exec(
-		"INSERT suppliers(id, name, category_of_supplier, start_of_work, end_of_work, image)VALUES(?, ?, ?, ?, ?, ?)",
-		supp.Id, supp.Name, categorySupplierID, supp.WorkingHours.Opening, supp.WorkingHours.Closing, supp.Image)
+	res, err := conn.Exec(
+		"INSERT suppliers(name, category_of_supplier, start_of_work, end_of_work, image, external_id)VALUES(?, ?, ?, ?, ?, ?)",
+		supp.Name, categorySupplierID, supp.WorkingHours.Opening, supp.WorkingHours.Closing, supp.Image, supp.ExternalId)
 	if err != nil {
 		log.Println(err)
 
 		return 0, err
 	}
-	supplierID := supp.Id
-	return supplierID, err
+
+	supplierID, err := res.LastInsertId()
+	return int(supplierID), err
 }
-func CreateProduct(supp models.Supplier, conn *sql.DB, categoryProductID int) (int, error) {
+func CreateProduct(supp models.Supplier, conn *sql.DB, categoryProductID, supplierID int) (int, error) {
 	//-------------------------------------
 	//Переписать через транзакции
 	// ВПРОЧЕМ КАК И ВСЁ :)
@@ -172,9 +176,9 @@ func CreateProduct(supp models.Supplier, conn *sql.DB, categoryProductID int) (i
 
 	for _, product := range supp.Menu {
 
-		_, err := conn.Exec(
+		res, err := conn.Exec(
 			"INSERT products(name, category, external_id)VALUES(?, ?, ?)",
-			product.Name, categoryProductID, product.Id)
+			product.Name, categoryProductID, product.ExternalId)
 
 		if err != nil {
 
@@ -182,9 +186,15 @@ func CreateProduct(supp models.Supplier, conn *sql.DB, categoryProductID int) (i
 			return 0, err
 		}
 
+		productID, err := res.LastInsertId()
+		if err != nil {
+			return int(productID), err
+		}
+		//отсюда переписать под новую бд
+
 		_, err = conn.Exec(
-			"INSERT products_suppliers(product_id, supplier_id, price, image)VALUES(?, ?, ?, ?)",
-			product.Id, menuID, product.Price, product.Image)
+			"INSERT products_suppliers(product_id, supplier_id, external_product_id, external_supplier_id, price, image)VALUES(?, ?, ?, ?, ?, ?)",
+			productID, supplierID, product.ExternalId, supp.ExternalId, product.Price, product.Image)
 
 		if err != nil {
 
@@ -194,28 +204,34 @@ func CreateProduct(supp models.Supplier, conn *sql.DB, categoryProductID int) (i
 
 		//This code is only for the case when one product has one category.
 
-		_, err = conn.Exec(
-			"INSERT products_category(product_id, category_id)VALUES(?, ?)",
-			product.Id, categoryProductID)
-		if err != nil {
-
-			log.Println(err)
-			return 0, err
-		}
+		//_, err = conn.Exec(
+		//	"INSERT products_category(product_id, category_id)VALUES(?, ?)",
+		//	product.Id, categoryProductID)
+		//if err != nil {
+		//
+		//	log.Println(err)
+		//	return 0, err
+		//}
 
 		ingredients := product.Ingredients
 		for _, ing := range ingredients {
 
 			var exist bool
-			var ingredientID int
 			err := conn.QueryRow("SELECT EXISTS(SELECT * FROM ingredients WHERE name=?)", ing).Scan(&exist)
 			if err != nil {
 				log.Println(err)
-				return ingredientID, err
+				return 0, err
 			}
+			var ingredientID int64
 			if !exist {
-				_, err := conn.Exec("INSERT ingredients(name) VALUE(?)",
-					ing)
+				res, err := conn.Exec("INSERT ingredients(name) VALUE(?) ON DUPLICATE KEY UPDATE name=(?)",
+					ing, ing)
+				if err != nil {
+					log.Println(err)
+
+					return 0, err
+				}
+				ingredientID, err = res.LastInsertId()
 				if err != nil {
 					log.Println(err)
 
@@ -226,19 +242,19 @@ func CreateProduct(supp models.Supplier, conn *sql.DB, categoryProductID int) (i
 			if err != nil {
 				log.Println(err)
 
-				return ingredientID, err
+				return int(ingredientID), err
 			}
 			_, err = conn.Exec(
 				"INSERT products_ingredients(product_id, ingredient_id)VALUES(?, ?)",
-				product.Id, ingredientID)
+				productID, ingredientID)
 			if err != nil {
 				log.Println(err)
 				return 0, err
 			}
 		}
 	}
-	supplierID := supp.Id
+	productID := supp.ExternalId
 
-	return supplierID, err
+	return productID, err
 
 }
