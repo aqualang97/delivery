@@ -134,8 +134,8 @@ func GetSupplierCategoryID(supp models.Supplier, conn *sql.DB) (int, error) {
 	}
 
 	if !exist {
-		_, err := conn.Exec("INSERT suppliers_categories(name) VALUES(?)",
-			supp.Type)
+		_, err := conn.Exec("INSERT suppliers_categories(name) VALUES(?) ON DUPLICATE KEY UPDATE name=(?)",
+			supp.Type, supp.Type)
 		if err != nil {
 			log.Println(err)
 
