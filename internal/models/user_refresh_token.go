@@ -3,8 +3,10 @@ package models
 import "time"
 
 type UserRefreshToken struct {
-	UserID           int
-	RefreshToken     string `json:"refresh_token"`
-	RefreshExpiredAt *time.Time
-	Expired          string
+	ID           int
+	UserID       int
+	RefreshToken string `json:"refresh_token"`
+	CreatedAt    *time.Time
+	ExpiredAt    *time.Time
+	Expired      string
 }

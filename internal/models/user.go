@@ -6,10 +6,11 @@ import (
 
 type User struct {
 	ID           int
-	Name         string
+	Login        string
 	Email        string
 	PasswordHash string
 	CreatedAt    *time.Time
+	UpdatedAt    *time.Time
 }
 
 //type UserToken struct {

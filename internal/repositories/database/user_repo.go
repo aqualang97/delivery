@@ -21,7 +21,7 @@ func (udbr UserDBRepository) GetUserById(id int) (models.User, error) {
 	var user models.User
 	err := udbr.conn.QueryRow(
 		"SELECT id, email, login, password FROM users WHERE id = ?",
-		id).Scan(&user.ID, &user.Email, &user.Name, &user.PasswordHash)
+		id).Scan(&user.ID, &user.Email, &user.Login, &user.PasswordHash)
 	return user, err
 
 }
@@ -33,11 +33,11 @@ func (udbr UserDBRepository) GetUserByEmail(email string) (models.User, error) {
 	}
 	defer rows.Close()
 	for rows.Next() {
-		err := rows.Scan(&user.ID, &user.Name, &user.Email, &user.PasswordHash)
+		err := rows.Scan(&user.ID, &user.Login, &user.Email, &user.PasswordHash)
 		if err != nil {
 			log.Fatal(err)
 		}
-		println(user.ID, user.Name, user.Email, user.PasswordHash)
+		println(user.ID, user.Login, user.Email, user.PasswordHash)
 	}
 	if err != nil {
 		return user, err
@@ -52,11 +52,11 @@ func (udbr UserDBRepository) GetUserByLogin(login string) (models.User, error) {
 	}
 	defer rows.Close()
 	for rows.Next() {
-		err := rows.Scan(&user.ID, &user.Name, &user.Email, &user.PasswordHash)
+		err := rows.Scan(&user.ID, &user.Login, &user.Email, &user.PasswordHash)
 		if err != nil {
 			log.Fatal(err)
 		}
-		println(user.ID, user.Name, user.Email, user.PasswordHash)
+		println(user.ID, user.Login, user.Email, user.PasswordHash)
 	}
 	if err != nil {
 		return user, err
@@ -64,10 +64,9 @@ func (udbr UserDBRepository) GetUserByLogin(login string) (models.User, error) {
 	return user, nil
 }
 func (udbr UserDBRepository) CreateUser(user *repositories.RegistrationRequest, passwordHash string) (int, error) {
-	var id int
-	_, err := udbr.conn.Exec("INSERT users(login, email, password) VALUES(?, ?, ?)",
+	res, err := udbr.conn.Exec("INSERT users(login, email, password) VALUES(?, ?, ?)",
 		&user.Name, &user.Email, passwordHash)
-
+	id, err := res.LastInsertId()
 	// НЕ ПОЛУЧАЮТСЯ ТРАНЗАКЦИИ,НАДО ИХ. ВЕРНУТЬ ID НЕ МОГУ. НО ПОКА ТАК:
 
 	/*
@@ -86,16 +85,16 @@ func (udbr UserDBRepository) CreateUser(user *repositories.RegistrationRequest, 
 			"INSERT users(name, email, password_hash) VALUES(?, ?, ?) RETURNING id",
 			u.Name, u.Email, u.PasswordHash).Scan(&id)
 	*/
-	return id, err
+	return int(id), err
 }
 
-func (udbr UserDBRepository) UpdateById(user *models.User) int64 {
+func (udbr UserDBRepository) UpdateUserById(user *models.User) int64 {
 	rows, err := udbr.conn.Prepare(
 		"UPDATE  users(login, email, password) SET login, email, password VALUES(?,?,?) WHERE id = ?")
 	if err != nil {
 		log.Fatal(err)
 	}
-	res, err := rows.Exec(user.Name, user.Email, user.PasswordHash, user.ID)
+	res, err := rows.Exec(user.Login, user.Email, user.PasswordHash, user.ID)
 	if err != nil {
 		log.Fatal(err)
 	}

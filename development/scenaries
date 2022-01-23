@@ -20,3 +20,9 @@ alter table suppliers
     add constraint suppliers_suppliers_categories_id_fk
         foreign key (category_of_supplier) references suppliers_categories (id);
 
+alter table users_contact_data
+    add first_name VARCHAR(50) null after user_id;
+
+alter table users_contact_data
+    add last_name varchar(50) null after first_name;
+
