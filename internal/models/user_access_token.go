@@ -10,3 +10,7 @@ type UserAccessToken struct {
 	ExpiredAt   *time.Time
 	Expired     string
 }
+
+//type RequestAccessToken struct {
+//	AccessToken string `json:"access_token"`
+//}

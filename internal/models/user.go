@@ -13,6 +13,28 @@ type User struct {
 	UpdatedAt    *time.Time
 }
 
+type LoginRequest struct {
+	Email    string
+	Password string
+}
+
+type RegistrationRequest struct {
+	Email    string `json:"email"`
+	Login    string `json:"login"`
+	Password string `json:"password"`
+}
+
+type UserResponse struct {
+	ID    int
+	Email string
+	Name  string
+}
+
+type UserRequestPairTokens struct {
+	AccessToken  string `json:"access_token"`
+	RefreshToken string `json:"refresh_token"`
+}
+
 //type UserToken struct {
 //	UserID           int
 //	AccessToken      string `json:"access_token"`

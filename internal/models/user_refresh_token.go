@@ -10,3 +10,7 @@ type UserRefreshToken struct {
 	ExpiredAt    *time.Time
 	Expired      string
 }
+
+//type RequestRefreshToken struct {
+//	RefreshToken string `json:"refresh_token"`
+//}
