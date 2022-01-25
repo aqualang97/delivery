@@ -7,9 +7,13 @@ import (
 )
 
 func main() {
-	http.HandleFunc("/order", Order)
-	http.HandleFunc("/menu", Menu)
-	http.HandleFunc("/users", Users)
+	mux := http.NewServeMux()
+	mux.HandleFunc("/order", Order)
+	mux.HandleFunc("/menu", Menu)
+	mux.HandleFunc("/users", Users)
+	//http.HandleFunc("/order", Order)
+	//http.HandleFunc("/menu", Menu)
+	//http.HandleFunc("/users", Users)
 
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }
