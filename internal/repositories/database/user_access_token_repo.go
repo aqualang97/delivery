@@ -3,7 +3,9 @@ package database
 import (
 	"database/sql"
 	"delivery/internal/models"
+	"fmt"
 	"log"
+	"time"
 )
 
 type UserAccessTokenRepository struct {
@@ -42,6 +44,8 @@ func (t UserAccessTokenRepository) InsertAccessToken(userToken models.UserAccess
 	//println(userToken.UserID)
 	_, err := t.conn.Exec("INSERT users_access_tokens(user_id, token, expired_at, expired) VALUES(?, ?, ?, ?)",
 		userToken.UserID, userToken.AccessToken, userToken.ExpiredAt, userToken.Expired)
+	fmt.Println(userToken.ExpiredAt)
+
 	if err != nil {
 		return err
 	}
@@ -86,4 +90,24 @@ func (t UserAccessTokenRepository) UpdateOldAndInsertNewAccessToken(oldAccess st
 	}
 
 	return err
+}
+
+func (t UserAccessTokenRepository) ExpiredAccessToken(oldToken string) error {
+	_, err := t.conn.Exec(
+		"UPDATE users_access_tokens SET expired = ? WHERE token = ?", "true", oldToken)
+	if err != nil {
+		log.Fatal(err)
+		return err
+	}
+
+	return err
+
+}
+
+func (t UserAccessTokenRepository) DeleteNaturallyExpiredAccessToken() {
+	_, err := t.conn.Exec("DELETE FROM users_access_tokens WHERE expired_at<=?", time.Now())
+	if err != nil {
+		log.Fatal(err)
+		return
+	}
 }

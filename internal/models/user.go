@@ -6,8 +6,8 @@ import (
 
 type User struct {
 	ID           int
-	Login        string
 	Email        string
+	Login        string
 	PasswordHash string
 	CreatedAt    *time.Time
 	UpdatedAt    *time.Time
@@ -27,7 +27,7 @@ type RegistrationRequest struct {
 type UserResponse struct {
 	ID    int
 	Email string
-	Name  string
+	Login string
 }
 
 type UserRequestPairTokens struct {

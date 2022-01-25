@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"delivery/internal/models"
 	"log"
+	"time"
 )
 
 type UserRefreshTokenRepository struct {
@@ -75,13 +76,35 @@ func (t UserRefreshTokenRepository) UpdateOldAndInsertNewRefreshToken(oldToken s
 	_, err := t.conn.Exec(
 		"UPDATE users_refresh_tokens SET expired = ? WHERE token = ?", "true", oldToken)
 	if err != nil {
+		log.Fatal(err)
+
 		return err
 	}
 	_, err = t.conn.Exec("INSERT users_refresh_tokens(user_id, token, expired_at, expired) VALUES(?, ?, ?, ?)",
 		response.UserID, response.RefreshToken, response.ExpiredAt, response.Expired)
 	if err != nil {
+		log.Fatal(err)
+
 		return err
 	}
 
 	return err
+}
+
+func (t UserRefreshTokenRepository) ExpiredRefreshToken(userID int) error {
+	//часть фичи с только 1 девайс
+	_, err := t.conn.Exec(
+		"UPDATE users_refresh_tokens SET expired = ? WHERE user_id = ?", "true", userID)
+	if err != nil {
+		log.Fatal(err)
+		return err
+	}
+	return err
+}
+func (t UserRefreshTokenRepository) DeleteNaturallyExpiredRefreshToken() {
+	_, err := t.conn.Exec("DELETE FROM users_refresh_tokens WHERE expired_at<=?", time.Now())
+	if err != nil {
+		log.Fatal(err)
+		return
+	}
 }

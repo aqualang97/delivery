@@ -1,64 +1,56 @@
 package database
 
-//
-//import (
-//	"database/sql"
-//	"delivery/internal/models"
-//	"log"
-//)
-//
-//type ProductDBRepository struct {
-//	conn *sql.DB
-//	TX   *sql.Tx
-//}
-//
-//func (p ProductDBRepository) GetProductByID(id string) (models.Products, error) {
-//	var product models.Products
-//	err := p.conn.QueryRow(
-//		"SELECT id, name, price, description FROM products WHERE id = ?",
-//		id).Scan(&product.Id, &product.Name, product.Price, product.Description)
-//	return product, err
-//}
-//
-//func (p ProductDBRepository) InsertToProducts(mp *models.Products) (int, error) {
-//	var id int
-//
-//	if p.TX != nil {
-//		err := p.TX.QueryRow("INSERT products(name, price, description) VALUES(?, ?, ?) RETURNING id",
-//			mp.Name, mp.Price, mp.Description).Scan(&id)
-//		if err != nil {
-//			_ = p.TX.Rollback()
-//		}
-//		err = p.TX.Commit()
-//		if err != nil {
-//			_ = p.TX.Rollback()
-//		}
-//		return id, err
-//	}
-//	err := p.conn.QueryRow(
-//		"INSERT products(name, price, description) VALUES(?, ?, ?) RETURNING id",
-//		mp.Name, mp.Price, mp.Description).Scan(&id)
-//
-//	return id, err
-//}
-//
-//func (p ProductDBRepository) UpdateProductById(mp *models.Products) int64 {
-//	rows, err := p.conn.Prepare("UPDATE  products SET name , price, description VALUES(?,?,?) WHERE id = ?")
-//	if err != nil {
-//		log.Fatal(err)
-//	}
-//	res, err := rows.Exec(mp.Name, mp.Price, mp.Description, mp.Id)
-//	if err != nil {
-//		log.Fatal(err)
-//	}
-//	rowCnt, err := res.RowsAffected()
-//	if err != nil {
-//		log.Fatal(err)
-//	}
-//	log.Printf("Rows affected = %d", rowCnt)
-//	return rowCnt
-//}
-//
-//func NewProductRepo(conn *sql.DB) ProductDBRepository {
-//	return ProductDBRepository{conn: conn}
-//}
+import (
+	"database/sql"
+	"delivery/internal/models"
+	"log"
+)
+
+type ProductDBRepository struct {
+	conn *sql.DB
+	TX   *sql.Tx
+}
+
+func (p ProductDBRepository) GetProductByID(id int) (models.Product, error) {
+	var product models.Product
+	err := p.conn.QueryRow(
+		"SELECT id, name, category, external_id FROM products WHERE id = ?",
+		id).Scan(&product.Id, &product.Name, &product.Category, &product.ExternalID)
+	if err != nil {
+		log.Println(err)
+	}
+	return product, err
+}
+
+func (p ProductDBRepository) InsertToProducts(mp models.Product) (int, error) {
+	res, err := p.conn.Exec(
+		"INSERT products(name, price, external_id) VALUES(?, ?, ?)",
+		mp.Name, mp.Category, mp.ExternalID)
+	if err != nil {
+		log.Println(err)
+		return 0, err
+	}
+	id, err := res.LastInsertId()
+	if err != nil {
+		log.Println(err)
+	}
+	return int(id), err
+}
+
+func (p ProductDBRepository) UpdateProductById(mp models.Product) {
+	// ?
+	// Пока не представляю что можно тут обновлять
+	//
+	return
+}
+
+func (p ProductDBRepository) DeleteProductByExternalID(name string, externalID int) error {
+	_, err := p.conn.Exec("DELETE FROM products WHERE name=? AND external_id=?", name, externalID)
+	if err != nil {
+		log.Println(err)
+	}
+	return err
+}
+func NewProductRepo(conn *sql.DB, TX *sql.Tx) *ProductDBRepository {
+	return &ProductDBRepository{conn: conn, TX: TX}
+}

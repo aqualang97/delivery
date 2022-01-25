@@ -18,12 +18,13 @@ type SuppliersRepositoryInterface interface {
 	Update(supplier *models.Suppliers) models.Suppliers
 }
 
-type ProductsRepositoryInterface interface {
-	GetByCategory(category string) models.Products
-	Insert(product *models.Products) models.Products
-	Delete(product *models.Products) models.Products
-	UpdatePrise(product *models.Products) models.Products
-}
+//
+//type ProductsRepositoryInterface interface {
+//	GetByCategory(category string) models.Products
+//	Insert(product *models.Products) models.Products
+//	Delete(product *models.Products) models.Products
+//	UpdatePrise(product *models.Products) models.Products
+//}
 
 type Order interface {
 	InsertProduct(order *models.Order) error

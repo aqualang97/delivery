@@ -93,6 +93,7 @@ func (udbr UserDBRepository) UpdateUserById(user *models.User) int64 {
 	if err != nil {
 		log.Fatal(err)
 	}
+
 	res, err := rows.Exec(user.Login, user.Email, user.PasswordHash, user.ID)
 	if err != nil {
 		log.Fatal(err)

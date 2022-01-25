@@ -5,6 +5,8 @@ import (
 	"delivery/internal/auth"
 	"delivery/internal/models"
 	db "delivery/internal/repositories/database"
+	"fmt"
+
 	//connection "delivery/internal/repositories/database/connection"
 	"time"
 
@@ -19,7 +21,7 @@ import (
 const AccessSecret = "access_secret"
 const RefreshSecret = "refresh_secret"
 
-const AccessTokenLifetimeMinutes = 10
+const AccessTokenLifetimeMinutes = 20
 const RefreshTokenLifetimeMinutes = 60
 
 func dbTXBegin(conn *sql.DB) (*sql.Tx, error) {
@@ -84,10 +86,14 @@ func main() {
 		UserAccessTokenRepository:  db.NewAccessTokenRepo(conn, TX),
 		UserRefreshTokenRepository: db.NewRefreshTokenRepo(conn, TX),
 	}
+
+	handlerProvider.UserAccessTokenRepository.DeleteNaturallyExpiredAccessToken()
+	handlerProvider.UserRefreshTokenRepository.DeleteNaturallyExpiredRefreshToken()
 	http.HandleFunc("/login", handlerProvider.Login) //умеем обрабатывать логин с помощью ф-ции логин
 	http.HandleFunc("/profile", handlerProvider.Profile)
 	http.HandleFunc("/refresh", handlerProvider.Refresh)
 	http.HandleFunc("/registration", handlerProvider.Registration)
+	http.HandleFunc("/logout", handlerProvider.Logout)
 
 	log.Fatal(http.ListenAndServe(":8080", nil)) //слушаем порт 8080 для входящих запросов
 
@@ -126,8 +132,10 @@ func (hp *HandlerProvider) Login(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		nowTime := time.Now()
+
 		accessExpiredAt := nowTime.Add(time.Duration(AccessTokenLifetimeMinutes) * time.Minute)
 		refreshExpiredAt := nowTime.Add(time.Duration(RefreshTokenLifetimeMinutes) * time.Minute)
+
 		respAccess := models.UserAccessToken{
 			UserID:      user.ID,
 			AccessToken: accessString,
@@ -140,7 +148,7 @@ func (hp *HandlerProvider) Login(w http.ResponseWriter, r *http.Request) {
 			ExpiredAt:    &refreshExpiredAt,
 			Expired:      "false",
 		}
-
+		fmt.Println(respRefresh.ExpiredAt)
 		//err = hp.UserRepository.InsertAccessAndRefreshTokens(&resp)
 		//err = hp.UserAccessTokenRepository.UpdateOldAndInsertNewAccessToken()
 		err = hp.UserAccessTokenRepository.InsertAccessToken(respAccess)
@@ -153,8 +161,8 @@ func (hp *HandlerProvider) Login(w http.ResponseWriter, r *http.Request) {
 		}
 
 		w.WriteHeader(http.StatusOK)
-		json.NewEncoder(w).Encode(respAccess.AccessToken)
-		json.NewEncoder(w).Encode(respRefresh.RefreshToken)
+		json.NewEncoder(w).Encode(respAccess)
+		json.NewEncoder(w).Encode(respRefresh)
 
 	}
 }
@@ -237,9 +245,10 @@ func (hp *HandlerProvider) Profile(w http.ResponseWriter, r *http.Request) {
 		resp := models.UserResponse{
 			ID:    user.ID,
 			Email: user.Email,
-			Name:  user.Login,
+			Login: user.Login,
 		}
-
+		println(resp.Login)
+		println(user.Login)
 		w.WriteHeader(http.StatusOK)
 		json.NewEncoder(w).Encode(resp)
 	default:
@@ -352,8 +361,8 @@ func (hp *HandlerProvider) Refresh(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		w.WriteHeader(http.StatusOK)
-		json.NewEncoder(w).Encode(respAccess.AccessToken)
-		json.NewEncoder(w).Encode(respRefresh.RefreshToken)
+		json.NewEncoder(w).Encode(respAccess)
+		json.NewEncoder(w).Encode(respRefresh)
 	default:
 		http.Error(w, "Only POST method is allowed", http.StatusMethodNotAllowed)
 	}
@@ -415,12 +424,14 @@ func (hp *HandlerProvider) Registration(w http.ResponseWriter, r *http.Request) 
 			return
 		}
 		respAccess := models.UserAccessToken{
+			ID:          user.ID,
 			UserID:      user.ID,
 			AccessToken: accessString,
 			ExpiredAt:   &accessExpiredAt,
 			Expired:     "false",
 		}
 		respRefresh := models.UserRefreshToken{
+			ID:           user.ID,
 			UserID:       user.ID,
 			RefreshToken: refreshString,
 			ExpiredAt:    &refreshExpiredAt,
@@ -451,6 +462,37 @@ func (hp *HandlerProvider) Registration(w http.ResponseWriter, r *http.Request) 
 		w.WriteHeader(http.StatusOK)
 		json.NewEncoder(w).Encode(respAccess)
 		json.NewEncoder(w).Encode(respRefresh)
+	default:
+		http.Error(w, "Only POST method is allowed", http.StatusMethodNotAllowed)
+	}
+}
+func (hp *HandlerProvider) Logout(w http.ResponseWriter, r *http.Request) {
+	switch r.Method {
+	case "GET":
+		tokenString := repositories.GetTokenFromBearerString(r.Header.Get("Authorization"))
+		claims, err := repositories.ValidateToken(tokenString, AccessSecret)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusUnauthorized)
+			return
+		}
+		accessToken, err := hp.UserAccessTokenRepository.GetByAccessToken(tokenString)
+		if err != nil {
+			http.Error(w, "invalid token", http.StatusUnauthorized)
+			return
+		}
+
+		if accessToken.Expired != "false" {
+			http.Error(w, "invalid token", http.StatusUnauthorized)
+			return
+		}
+
+		user, err := hp.UserRepository.GetUserById(claims.ID)
+		println("userid= ", user.ID)
+		_ = hp.UserRefreshTokenRepository.ExpiredRefreshToken(user.ID)
+		_ = hp.UserAccessTokenRepository.ExpiredAccessToken(tokenString)
+
+		w.WriteHeader(http.StatusOK)
+		json.NewEncoder(w).Encode("Successful Logout")
 	default:
 		http.Error(w, "Only POST method is allowed", http.StatusMethodNotAllowed)
 	}
