@@ -36,7 +36,6 @@ func (udbr UserDBRepository) GetUserByEmail(email string) (models.User, error) {
 		if err != nil {
 			log.Fatal(err)
 		}
-		println(user.ID, user.Login, user.Email, user.PasswordHash)
 	}
 	if err != nil {
 		return user, err
@@ -55,7 +54,6 @@ func (udbr UserDBRepository) GetUserByLogin(login string) (models.User, error) {
 		if err != nil {
 			log.Fatal(err)
 		}
-		println(user.ID, user.Login, user.Email, user.PasswordHash)
 	}
 	if err != nil {
 		return user, err
@@ -87,21 +85,13 @@ func (udbr UserDBRepository) CreateUser(user *models.RegistrationRequest, passwo
 	return int(id), err
 }
 
-func (udbr UserDBRepository) UpdateUserById(user *models.User) int64 {
-	rows, err := udbr.conn.Prepare(
-		"UPDATE  users(login, email, password) SET login, email, password VALUES(?,?,?) WHERE id = ?")
+func (udbr UserDBRepository) UpdateUserById(user *models.User) error {
+	_, err := udbr.conn.Exec("UPDATE  users(login, email, password) SET login, email, password VALUES(?,?,?) WHERE id = ?",
+		user.Login, user.Email, user.PasswordHash, user.ID)
 	if err != nil {
 		log.Fatal(err)
-	}
+		return err
 
-	res, err := rows.Exec(user.Login, user.Email, user.PasswordHash, user.ID)
-	if err != nil {
-		log.Fatal(err)
 	}
-	rowCnt, err := res.RowsAffected()
-	if err != nil {
-		log.Fatal(err)
-	}
-	log.Printf("Rows affected = %d", rowCnt)
-	return rowCnt
+	return err
 }

@@ -38,10 +38,9 @@ func (t UserAccessTokenRepository) InsertAccessToken(userToken models.UserAccess
 	err := udbr.conn.QueryRow(
 		"INSERT users_access_tokens(user_id, token, expired_at, expired) VALUES(?, ?, ?, ?) RETURNING user_id",
 		2, "123", "1123", "true").Scan(&userId)
-	println(userToken.RefreshToken, userId)
 
 	return err*/
-	//println(userToken.UserID)
+
 	_, err := t.conn.Exec("INSERT users_access_tokens(user_id, token, expired_at, expired) VALUES(?, ?, ?, ?)",
 		userToken.UserID, userToken.AccessToken, userToken.ExpiredAt, userToken.Expired)
 	fmt.Println(userToken.ExpiredAt)
@@ -54,7 +53,6 @@ func (t UserAccessTokenRepository) InsertAccessToken(userToken models.UserAccess
 
 func (t UserAccessTokenRepository) GetByAccessToken(accessToken string) (models.UserAccessToken, error) {
 	var userToken models.UserAccessToken
-	println(accessToken)
 	rows, err := t.conn.Query("SELECT user_id, token, expired FROM users_access_tokens WHERE token = ?", accessToken)
 	if err != nil {
 		log.Fatal(err)
@@ -67,7 +65,6 @@ func (t UserAccessTokenRepository) GetByAccessToken(accessToken string) (models.
 		}
 	}
 
-	println(userToken.UserID, userToken.AccessToken)
 	if err != nil {
 		return userToken, err
 	}

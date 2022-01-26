@@ -38,11 +38,10 @@ func (t UserRefreshTokenRepository) InsertRefreshToken(userToken models.UserRefr
 	err := udbr.conn.QueryRow(
 		"INSERT users_access_tokens(user_id, token, expired_at, expired) VALUES(?, ?, ?, ?) RETURNING user_id",
 		2, "123", "1123", "true").Scan(&userId)
-	println(userToken.RefreshToken, userId)
+
 
 	return err*/
-	//println(userToken.UserID)
-	println(userToken.RefreshToken)
+
 	_, err := t.conn.Exec("INSERT users_refresh_tokens(user_id, token, expired_at, expired) VALUES(?, ?, ?, ?)",
 		userToken.UserID, userToken.RefreshToken, userToken.ExpiredAt, userToken.Expired)
 	if err != nil {
