@@ -81,7 +81,7 @@ func main() {
 	http.Handle("/profile", m.RequireAuthentication(http.HandlerFunc(handlerProvider.Profile)))
 	http.HandleFunc("/refresh", handlerProvider.Refresh)
 	http.HandleFunc("/registration", handlerProvider.Registration)
-	http.HandleFunc("/logout", handlerProvider.Logout)
+	http.Handle("/logout", m.RequireAuthentication(http.HandlerFunc(handlerProvider.Logout)))
 
 	log.Fatal(http.ListenAndServe(":8080", nil)) //слушаем порт 8080 для входящих запросов
 
