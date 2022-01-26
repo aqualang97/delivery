@@ -1,7 +1,9 @@
 package worker_pool
 
 import (
+	"database/sql"
 	"delivery/development/parse_with_goroutines/models"
+	"delivery/development/parse_with_goroutines/models/parser"
 	"sync"
 )
 
@@ -34,14 +36,14 @@ func (pool *WorkerPool) Stop() {
 
 }
 
-func (pool *WorkerPool) Start(wg *sync.WaitGroup, i int, parser func(supp models.Supplier)) {
+func (pool *WorkerPool) Start(wg *sync.WaitGroup, i int, conn *sql.DB) {
 	//var wg *sync.WaitGroup
 	var supp models.Supplier
 	defer wg.Done()
 	for {
 		select {
 		case supp = <-pool.StartSendData:
-			parser(supp)
+			parser.Parser(supp, conn)
 		case <-pool.StopSend:
 			return
 		}

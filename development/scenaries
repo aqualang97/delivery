@@ -1,28 +1,6 @@
-alter table products_suppliers
-    drop foreign key products_suppliers_suppliers_id_fk;
+alter table products_categories
+    modify name VARCHAR(50) not null;
 
-create unique index suppliers_id_uindex
-    on suppliers (id);
-
-alter table suppliers
-    modify id int auto_increment;
-
-create unique index suppliers_id_uindex
-    on suppliers (id);
-
-alter table suppliers
-    modify id int auto_increment;
-
-alter table suppliers
-    drop foreign key suppliers_list_of_suppliers_id_fk;
-
-alter table suppliers
-    add constraint suppliers_suppliers_categories_id_fk
-        foreign key (category_of_supplier) references suppliers_categories (id);
-
-alter table users_contact_data
-    add first_name VARCHAR(50) null after user_id;
-
-alter table users_contact_data
-    add last_name varchar(50) null after first_name;
+create unique index products_categories_name_uindex
+    on products_categories (name);
 

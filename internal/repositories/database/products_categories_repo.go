@@ -25,8 +25,8 @@ func (p ProductsCategoriesRepo) CreateCategory(category models.ProductsCategorie
 	}
 
 	if !exist {
-		res, err := p.conn.Exec("INSERT products_categories(name) VALUES(?)",
-			category.Name)
+		res, err := p.conn.Exec("INSERT products_categories(name) VALUES(?)ON DUPLICATE KEY UPDATE name=(?)",
+			category.Name, category.Name)
 		if err != nil {
 			log.Println(err)
 			return 0, err
