@@ -15,10 +15,10 @@ func NewProductsIngredientsRepo(conn *sql.DB, TX *sql.Tx) *ProductsIngredientsRe
 	return &ProductsIngredientsRepository{conn: conn, TX: TX}
 }
 
-func (i ProductsIngredientsRepository) InsertProductIngredient(pi models.ProductsIngredients) error {
+func (i ProductsIngredientsRepository) InsertProductIngredient(productID, ingredientID int) error {
 	_, err := i.conn.Exec(
 		"INSERT products_ingredients(product_id, ingredient_id)VALUES(?, ?)",
-		pi.ProductId, pi.IngredientID)
+		productID, ingredientID)
 	if err != nil {
 		log.Println(err)
 	}

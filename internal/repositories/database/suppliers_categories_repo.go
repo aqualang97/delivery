@@ -32,3 +32,14 @@ func (s SuppliersCategoriesRepository) CreateCategory(categories models.Supplier
 	}
 	return err
 }
+
+func (s SuppliersCategoriesRepository) GetSupplierCategoryID(name string) (int, error) {
+	var id int
+	err := s.conn.QueryRow(
+		"SELECT id FROM suppliers_categories WHERE name = ?",
+		name).Scan(&id)
+	if err != nil {
+		log.Println(err)
+	}
+	return id, err
+}

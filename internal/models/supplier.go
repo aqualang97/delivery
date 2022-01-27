@@ -3,6 +3,7 @@ package models
 import "time"
 
 type Supplier struct {
+	ID                 int
 	Name               string `json:"name"`
 	CategoryOfSupplier int    `json:"type"`
 
@@ -25,6 +26,7 @@ type SupplierForParse struct {
 	ExternalID   int          `json:"id"`
 	CreatedAt    *time.Time
 	UpdatedAt    *time.Time
+	Menu         []Position `json:"menu"`
 }
 type WorkingHours struct {
 	Opening string `json:"opening"`

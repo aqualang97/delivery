@@ -22,10 +22,10 @@ func (p ProductDBRepository) GetProductByID(id int) (models.Product, error) {
 	return product, err
 }
 
-func (p ProductDBRepository) InsertToProducts(mp models.Product) (int, error) {
+func (p ProductDBRepository) InsertToProducts(mp models.Position, productCategoryID int) (int, error) {
 	res, err := p.conn.Exec(
-		"INSERT products(name, price, external_id) VALUES(?, ?, ?)",
-		mp.Name, mp.Category, mp.ExternalID)
+		"INSERT products(name, category, external_id) VALUES(?, ?, ?)",
+		mp.Name, productCategoryID, mp.ExternalID)
 	if err != nil {
 		log.Println(err)
 		return 0, err

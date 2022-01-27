@@ -23,17 +23,19 @@ func (p ProductsCategoriesRepo) CreateCategory(category models.ProductsCategorie
 		log.Println(err)
 		return 0, err
 	}
-
 	if !exist {
-		res, err := p.conn.Exec("INSERT products_categories(name) VALUES(?)ON DUPLICATE KEY UPDATE name=(?)",
+		_, err := p.conn.Exec("INSERT products_categories(name) VALUES(?)ON DUPLICATE KEY UPDATE name=(?)",
 			category.Name, category.Name)
 		if err != nil {
 			log.Println(err)
 			return 0, err
 		}
-		id, err = res.LastInsertId()
+		//id, err = res.LastInsertId()
 	}
-
+	err = p.conn.QueryRow("SELECT id FROM products_categories WHERE name=?", category.Name).Scan(&id)
+	if err != nil {
+		log.Println(err)
+	}
 	return int(id), err
 }
 

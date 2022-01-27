@@ -9,7 +9,7 @@ import (
 	"net/http"
 )
 
-func main() {
+func amain() {
 	resp, err := http.Get("http://foodapi.true-tech.php.nixdev.co/suppliers")
 	if err != nil {
 		log.Println(err)
@@ -22,6 +22,8 @@ func main() {
 	if err != nil {
 		log.Println(err)
 	}
-	fmt.Println(supp.Suppliers)
+	for _, s := range supp.Suppliers {
+		fmt.Println(s)
+	}
 
 }

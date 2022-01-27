@@ -2,7 +2,9 @@ package parser
 
 import (
 	"database/sql"
-	"delivery/development/parse_with_goroutines/models"
+	tempModels "delivery/development/parse_with_goroutines/models"
+	"delivery/internal/models"
+	db "delivery/internal/repositories/database"
 	"fmt"
 	"log"
 )
@@ -16,7 +18,18 @@ import (
 //	return &ConnParse{conn: conn, TX: TX}
 //}
 
-func Parser(supp models.Supplier, conn *sql.DB) {
+type ConnDBParse struct {
+	IngredientRepo          *db.IngredientRepository
+	ProductRepo             *db.ProductDBRepository
+	ProductsCategoriesRepo  *db.ProductsCategoriesRepo
+	ProductsIngredientsRepo *db.ProductsIngredientsRepository
+	ProductsSuppliersRepo   *db.ProductsSuppliersRepository
+	SupplierRepo            *db.SupplierDBRepository
+	SuppliersCategoriesRepo *db.SuppliersCategoriesRepository
+}
+
+func Parser(supp tempModels.Supplier, conn *sql.DB) {
+
 	productCategoryID, _ := GetProductCategoryID(supp, conn)
 	supplierCategoryID, _ := GetSupplierCategoryID(supp, conn)
 	supplierID, _ := CreateSupplier(supp, conn, supplierCategoryID)
@@ -24,8 +37,57 @@ func Parser(supp models.Supplier, conn *sql.DB) {
 	fmt.Println("supplierID", supplierID, "productID", productExternalID)
 
 }
+func ParseFromAPI(supp models.SupplierForParse, goNum int, conn *sql.DB, TX *sql.Tx) {
+	connection := ConnDBParse{
+		IngredientRepo:          db.NewIngredientRepo(conn, TX),
+		ProductRepo:             db.NewProductRepo(conn, TX),
+		ProductsCategoriesRepo:  db.NewProductsCategoriesRepo(conn, TX),
+		ProductsIngredientsRepo: db.NewProductsIngredientsRepo(conn, TX),
+		ProductsSuppliersRepo:   db.NewProductsSuppliersRepo(conn, TX),
+		SupplierRepo:            db.NewSupplierRepo(conn, TX),
+		SuppliersCategoriesRepo: db.NewSuppliersCategoriesRepo(conn, TX),
+	}
+	suppCat := models.SuppliersCategories{
+		Name: supp.CategoryOfSupplier,
+	}
 
-func GetProductCategoryID(supp models.Supplier, conn *sql.DB) (int, error) {
+	_ = connection.SuppliersCategoriesRepo.CreateCategory(suppCat)
+	suppCatID, _ := connection.SuppliersCategoriesRepo.GetSupplierCategoryID(supp.CategoryOfSupplier)
+	suppId, _ := connection.SupplierRepo.CreateSupplier(supp, suppCatID)
+	menu := supp.Menu
+	for _, product := range menu {
+		prodCat := models.ProductsCategories{
+			Name: product.Type,
+		}
+
+		productCategoryID, _ := connection.ProductsCategoriesRepo.CreateCategory(prodCat)
+
+		productID, _ := connection.ProductRepo.InsertToProducts(product, productCategoryID)
+		prodSupModel := models.ProductsSuppliers{
+			ProductID:          productID,
+			SupplierID:         suppId,
+			ExternalProductID:  product.ExternalID,
+			ExternalSupplierID: supp.ExternalID,
+			Price:              product.Price,
+			Image:              product.Image,
+		}
+		_ = connection.ProductsSuppliersRepo.InsertProductSupplier(prodSupModel)
+		ingredients := product.Ingredients
+		for _, ing := range ingredients {
+			exist := connection.IngredientRepo.IsExistIngredient(ing)
+			if !exist {
+				_ = connection.IngredientRepo.InsertIngredient(ing)
+			}
+			ingId, _ := connection.IngredientRepo.GetIngredientIDByName(ing)
+			_ = connection.ProductsIngredientsRepo.InsertProductIngredient(productID, ingId)
+		}
+	}
+
+	println("goNum", goNum)
+
+}
+
+func GetProductCategoryID(supp tempModels.Supplier, conn *sql.DB) (int, error) {
 	var exist bool
 	var id int
 	var err error
@@ -58,7 +120,7 @@ func GetProductCategoryID(supp models.Supplier, conn *sql.DB) (int, error) {
 	return id, err
 }
 
-func GetSupplierCategoryID(supp models.Supplier, conn *sql.DB) (int, error) {
+func GetSupplierCategoryID(supp tempModels.Supplier, conn *sql.DB) (int, error) {
 	var exist bool
 	var id int
 	err := conn.QueryRow("SELECT EXISTS(SELECT * FROM suppliers_categories WHERE name=?)", supp.Type).Scan(&exist)
@@ -87,7 +149,7 @@ func GetSupplierCategoryID(supp models.Supplier, conn *sql.DB) (int, error) {
 	return id, err
 }
 
-func CreateSupplier(supp models.Supplier, conn *sql.DB, categorySupplierID int) (int, error) {
+func CreateSupplier(supp tempModels.Supplier, conn *sql.DB, categorySupplierID int) (int, error) {
 	res, err := conn.Exec(
 		"INSERT suppliers(name, category_of_supplier, start_of_work, end_of_work, image, external_id)VALUES(?, ?, ?, ?, ?, ?)",
 		supp.Name, categorySupplierID, supp.WorkingHours.Opening, supp.WorkingHours.Closing, supp.Image, supp.ExternalId)
@@ -100,7 +162,7 @@ func CreateSupplier(supp models.Supplier, conn *sql.DB, categorySupplierID int) 
 	supplierID, err := res.LastInsertId()
 	return int(supplierID), err
 }
-func CreateProduct(supp models.Supplier, conn *sql.DB, categoryProductID, supplierID int) (int, error) {
+func CreateProduct(supp tempModels.Supplier, conn *sql.DB, categoryProductID, supplierID int) (int, error) {
 	//-------------------------------------
 	//Переписать через транзакции
 	// ВПРОЧЕМ КАК И ВСЁ :)

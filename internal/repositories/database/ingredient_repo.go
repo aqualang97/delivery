@@ -29,7 +29,6 @@ func (i IngredientRepository) InsertIngredient(ingredient string) error {
 		ingredient, ingredient)
 	if err != nil {
 		log.Println(err)
-		return err
 	}
 	return err
 	//ingredientID, err = res.LastInsertId()
@@ -63,6 +62,14 @@ func (i IngredientRepository) GetIngredientByName(name string) (models.Ingredien
 		}
 	}
 	return ingredient, err
+}
+func (i IngredientRepository) GetIngredientIDByName(name string) (int, error) {
+	var id int
+	err := i.conn.QueryRow("SELECT id FROM ingredients WHERE name=?", name).Scan(&id)
+	if err != nil {
+		log.Fatal(err)
+	}
+	return id, err
 }
 
 func (i IngredientRepository) GetIngredientByID(id string) (models.Ingredients, error) {

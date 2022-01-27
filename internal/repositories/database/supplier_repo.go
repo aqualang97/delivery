@@ -15,7 +15,8 @@ func NewSupplierRepo(conn *sql.DB, TX *sql.Tx) *SupplierDBRepository {
 	return &SupplierDBRepository{conn: conn, TX: TX}
 }
 
-func (s SupplierDBRepository) CreateSupplier(supp models.Supplier, categorySupplierID int) (int, error) {
+//models.Supplier изменил на SupplierForParse Для парсинга
+func (s SupplierDBRepository) CreateSupplier(supp models.SupplierForParse, categorySupplierID int) (int, error) {
 	res, err := s.conn.Exec(
 		"INSERT suppliers(name, category_of_supplier, start_of_work, end_of_work, image, external_id)VALUES(?, ?, ?, ?, ?, ?)",
 		supp.Name, categorySupplierID, supp.WorkingHours.Opening, supp.WorkingHours.Closing, supp.Image, supp.ExternalID)
@@ -26,6 +27,9 @@ func (s SupplierDBRepository) CreateSupplier(supp models.Supplier, categorySuppl
 	}
 
 	supplierID, err := res.LastInsertId()
+	if err != nil {
+		log.Println(err)
+	}
 	return int(supplierID), err
 }
 
@@ -33,7 +37,7 @@ func (s SupplierDBRepository) GetSupplierByID(id int) (models.Supplier, error) {
 	var supp models.Supplier
 	err := s.conn.QueryRow(
 		"SELECT id, name, category_of_supplier, start_of_work, end_of_work, image, external_id FROM suppliers WHERE id = ?",
-		id).Scan(&supp.Id, &supp.Name, &supp.CategoryOfSupplier, &supp.WorkingHours.Opening, &supp.WorkingHours.Closing, &supp.Image, &supp.ExternalID)
+		id).Scan(&supp.ID, &supp.Name, &supp.CategoryOfSupplier, &supp.WorkingHours.Opening, &supp.WorkingHours.Closing, &supp.Image, &supp.ExternalID)
 	return supp, err
 }
 
@@ -49,7 +53,7 @@ func (s SupplierDBRepository) GetSupplierByName(name string) ([]models.Supplier,
 		return listSupp, err
 	}
 	for rows.Next() {
-		err = rows.Scan(&supp.Id, &supp.Name, &supp.CategoryOfSupplier, &supp.WorkingHours.Opening, &supp.WorkingHours.Closing, &supp.Image, &supp.ExternalID)
+		err = rows.Scan(&supp.ID, &supp.Name, &supp.CategoryOfSupplier, &supp.WorkingHours.Opening, &supp.WorkingHours.Closing, &supp.Image, &supp.ExternalID)
 		if err != nil {
 			log.Println(err)
 			return listSupp, err
@@ -92,7 +96,7 @@ func (s SupplierDBRepository) GetSupplierByName(name string) ([]models.Supplier,
 
 func (s SupplierDBRepository) UpdateWorkingHoursByID(ms models.Supplier) error {
 	_, err := s.conn.Exec("UPDATE  suppliers SET start_of_work, end_of_work) VALUES(?, ?) WHERE id = ?",
-		ms.WorkingHours.Opening, ms.WorkingHours.Closing, ms.Id)
+		ms.WorkingHours.Opening, ms.WorkingHours.Closing, ms.ID)
 	if err != nil {
 		log.Println(err)
 	}
