@@ -87,6 +87,21 @@ func ParseFromAPI(supp models.SupplierForParse, goNum int, conn *sql.DB, TX *sql
 
 }
 
+func ParseProdSuppByDB(extSuppID int, conn *sql.DB, TX *sql.Tx) []int {
+	connection := ConnDBParse{
+		ProductsSuppliersRepo: db.NewProductsSuppliersRepo(conn, TX),
+	}
+	listProdId, _ := connection.ProductsSuppliersRepo.GetAllExternalProductIDByExternalSupplierID(extSuppID)
+	return listProdId
+}
+func ParsePriceToDB(price float64, extProdID, extSuppID int, conn *sql.DB, TX *sql.Tx) error {
+	connection := ConnDBParse{
+		ProductsSuppliersRepo: db.NewProductsSuppliersRepo(conn, TX),
+	}
+	err := connection.ProductsSuppliersRepo.UpdatePriceByExternalData(price, extProdID, extSuppID)
+	return err
+}
+
 func GetProductCategoryID(supp tempModels.Supplier, conn *sql.DB) (int, error) {
 	var exist bool
 	var id int

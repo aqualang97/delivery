@@ -1,28 +1,43 @@
 package request
 
 import (
+	"context"
 	"delivery/internal/models"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
+	"time"
 )
 
 type FoodAPIReq struct {
 }
 
-func GetSuppliers(url string) *models.AllSuppliers {
+const url = "http://foodapi.true-tech.php.nixdev.co"
+const endpointSupp = "/suppliers"
+const endpointMenu = "/menu"
 
-	//resp, err := http.Get(url)
-
-	resp, err := http.NewRequest("Get", url, nil)
+func ReqWithCont(url string) *http.Response {
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+	defer cancel()
+	req, err := http.NewRequestWithContext(ctx, "GET", url, nil)
 	if err != nil {
 		log.Println(err)
 		return nil
 	}
-	defer resp.Body.Close()
 
+	client := http.DefaultClient
+	resp, err := client.Do(req)
+	return resp
+}
+
+func GetSuppliers() *models.AllSuppliers {
+
+	//resp, err := http.Get(url)
+	//инициализайия контекста с таймаутом
+	resp := ReqWithCont(url + endpointSupp)
+	defer resp.Body.Close()
 	var supp *models.AllSuppliers
 	body, err := ioutil.ReadAll(resp.Body)
 	err = json.Unmarshal(body, &supp)
@@ -36,12 +51,9 @@ func GetSuppliers(url string) *models.AllSuppliers {
 	//}
 }
 
-func GetMenuWithSuppID(url, endpointMenu, endpointSupp string, i int) *models.AllMenu {
-	resp, err := http.Get(fmt.Sprintf("%s%s/%d%s", url, endpointSupp, i, endpointMenu))
-	if err != nil {
-		log.Println(err)
-		return nil
-	}
+func GetMenuWithSuppID(shopID int) *models.AllMenu {
+
+	resp := ReqWithCont(fmt.Sprintf("%s%s/%d%s", url, endpointSupp, shopID, endpointMenu))
 	defer resp.Body.Close()
 	var menu *models.AllMenu
 	body, err := ioutil.ReadAll(resp.Body)
@@ -51,4 +63,16 @@ func GetMenuWithSuppID(url, endpointMenu, endpointSupp string, i int) *models.Al
 	}
 	println("menu yes")
 	return menu
+}
+
+func GetProductFromAPI(suppID, productID int) *models.Position {
+	//it's externalID
+	resp := ReqWithCont(fmt.Sprintf("%s%s/%d%s/%d", url, endpointSupp, suppID, endpointMenu, productID))
+	var product *models.Position
+	body, err := ioutil.ReadAll(resp.Body)
+	err = json.Unmarshal(body, &product)
+	if err != nil {
+		log.Println(err)
+	}
+	return product
 }

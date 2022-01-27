@@ -25,9 +25,9 @@ func (p ProductsSuppliersRepository) InsertProductSupplier(ps models.ProductsSup
 	return err
 }
 
-func (p ProductsSuppliersRepository) UpdatePriceByExternalData(ps models.ProductsSuppliers) error {
-	_, err := p.conn.Exec("UPDATE  products_suppliers SET (price) VALUES(?) WHERE external_product_id=? AND external_supplier_id=?",
-		ps.Price, ps.ExternalProductID, ps.ExternalSupplierID)
+func (p ProductsSuppliersRepository) UpdatePriceByExternalData(price float64, extProdID, extSuppID int) error {
+	_, err := p.conn.Exec("UPDATE products_suppliers SET price=? WHERE external_product_id=? AND external_supplier_id=?",
+		price, extProdID, extSuppID)
 	if err != nil {
 		log.Println(err)
 	}
@@ -41,4 +41,25 @@ func (p ProductsSuppliersRepository) DeleteProductBySupplier(ps models.ProductsS
 		log.Println(err)
 	}
 	return err
+}
+
+func (p ProductsSuppliersRepository) GetAllExternalProductIDByExternalSupplierID(extSuppID int) ([]int, error) {
+	var extProdId int
+	var listOfProdId []int
+	rows, err := p.conn.Query(
+		"SELECT external_product_id FROM products_suppliers WHERE external_supplier_id = ?",
+		extSuppID)
+	if err != nil {
+		log.Println(err)
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		err = rows.Scan(&extProdId)
+		if err != nil {
+			log.Println(err)
+		}
+		listOfProdId = append(listOfProdId, extProdId)
+	}
+	return listOfProdId, err
 }

@@ -2,16 +2,14 @@ package main
 
 import (
 	"database/sql"
+	"delivery/development/parse_with_goroutines/models/parser"
 	"delivery/development/parse_with_goroutines/parse-from-foodapi/request"
 	"delivery/development/parse_with_goroutines/parse-from-foodapi/worker_pool"
 	open "delivery/internal/repositories/database/connection"
 	"log"
 	"sync"
+	"time"
 )
-
-const url = "http://foodapi.true-tech.php.nixdev.co"
-const endpointSupp = "/suppliers"
-const endpointMenu = "/menu"
 
 func dbTXBegin(conn *sql.DB) (*sql.Tx, error) {
 	TX, err := conn.Begin()
@@ -43,14 +41,28 @@ func main() {
 
 		wg.Add(1)
 	}
-	allSupp := request.GetSuppliers(url + endpointSupp)
+	allSupp := request.GetSuppliers()
 	for i, s := range allSupp.Suppliers {
 		println("shop", i)
-		menu := request.GetMenuWithSuppID(url, endpointMenu, endpointSupp, i+1)
+		menu := request.GetMenuWithSuppID(i + 1)
 		s.Menu = menu.Menu
 		pool.StartSendData <- s
 	}
+	for {
+		time.Sleep(1 * time.Minute)
+		for suppID, _ := range allSupp.Suppliers {
+			listProdId := parser.ParseProdSuppByDB(suppID+1, conn, TX)
+			for _, prodID := range listProdId {
+				//можно конечно и не делать запрос на GetProductFromAPI,
+				// но раз он есть, можем походить конкретно по продукту
 
+				// либо могу выташить все экстернал айди из бд и пройтись по ним
+				product := request.GetProductFromAPI(suppID+1, prodID)
+				_ = parser.ParsePriceToDB(product.Price, prodID, suppID+1, conn, TX)
+			}
+		}
+
+	}
 	pool.Stop()
 	wg.Wait()
 }
