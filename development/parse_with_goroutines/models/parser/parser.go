@@ -94,11 +94,13 @@ func ParseProdSuppByDB(extSuppID int, conn *sql.DB, TX *sql.Tx) []int {
 	listProdId, _ := connection.ProductsSuppliersRepo.GetAllExternalProductIDByExternalSupplierID(extSuppID)
 	return listProdId
 }
-func ParsePriceToDB(price float64, extProdID, extSuppID int, conn *sql.DB, TX *sql.Tx) error {
+func ParsePriceToDB(price float64, extProdID, extSuppID, goNum int, conn *sql.DB, TX *sql.Tx) error {
 	connection := ConnDBParse{
 		ProductsSuppliersRepo: db.NewProductsSuppliersRepo(conn, TX),
 	}
 	err := connection.ProductsSuppliersRepo.UpdatePriceByExternalData(price, extProdID, extSuppID)
+	println("goNum", goNum, "Prod", extProdID)
+
 	return err
 }
 

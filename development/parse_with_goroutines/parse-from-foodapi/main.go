@@ -5,6 +5,7 @@ import (
 	"delivery/development/parse_with_goroutines/models/parser"
 	"delivery/development/parse_with_goroutines/parse-from-foodapi/request"
 	"delivery/development/parse_with_goroutines/parse-from-foodapi/worker_pool"
+	"delivery/internal/models"
 	open "delivery/internal/repositories/database/connection"
 	"log"
 	"sync"
@@ -38,6 +39,9 @@ func main() {
 			pool.Start(&wg, i, conn, TX)
 
 		}(i)
+		go func(i int) {
+			pool.StartParsePrice(&wg, i, conn, TX)
+		}(i)
 
 		wg.Add(1)
 	}
@@ -53,12 +57,19 @@ func main() {
 		for suppID, _ := range allSupp.Suppliers {
 			listProdId := parser.ParseProdSuppByDB(suppID+1, conn, TX)
 			for _, prodID := range listProdId {
+
 				//можно конечно и не делать запрос на GetProductFromAPI,
 				// но раз он есть, можем походить конкретно по продукту
 
 				// либо могу выташить все экстернал айди из бд и пройтись по ним
-				product := request.GetProductFromAPI(suppID+1, prodID)
-				_ = parser.ParsePriceToDB(product.Price, prodID, suppID+1, conn, TX)
+				position := request.GetProductFromAPI(suppID+1, prodID)
+				//_ = parser.ParsePriceToDB(position.Price, prodID, suppID+1, conn, TX)
+				var prodSupp models.ProductsSuppliers
+				prodSupp.Price = position.Price
+				prodSupp.ExternalProductID = position.ExternalID
+				prodSupp.ExternalSupplierID = suppID
+
+				pool.StartSendProd <- prodSupp
 			}
 		}
 

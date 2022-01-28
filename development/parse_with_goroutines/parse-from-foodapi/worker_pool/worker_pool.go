@@ -28,8 +28,8 @@ func NewPool(count int) *WorkerPool {
 		Count:         count,
 		StartSendData: make(chan models.SupplierForParse), // modelsParse.SupplierJSON
 		StopSend:      make(chan bool),
-		//StartSendProd: make(chan models.ProductsSuppliers),
-		//StopSendProd:  make(chan bool),
+		StartSendProd: make(chan models.ProductsSuppliers),
+		StopSendProd:  make(chan bool),
 		//New:           new,
 	}
 }
@@ -39,11 +39,11 @@ func (pool *WorkerPool) Stop() {
 	}
 }
 
-//func (pool *WorkerPool) StopParsePrice() {
-//	for i := 0; i < pool.Count; i++ {
-//		pool.StopSend <- false
-//	}
-//}
+func (pool *WorkerPool) StopParsePrice() {
+	for i := 0; i < pool.Count; i++ {
+		pool.StopSend <- false
+	}
+}
 
 func (pool *WorkerPool) Start(wg *sync.WaitGroup, goNum int, conn *sql.DB, TX *sql.Tx) {
 	//var wg *sync.WaitGroup
@@ -56,7 +56,6 @@ func (pool *WorkerPool) Start(wg *sync.WaitGroup, goNum int, conn *sql.DB, TX *s
 		case <-pool.StopSend:
 			return
 		}
-
 	}
 	//for i := 0; i < pool.Count; i++ {
 	//	workerPool := pool.New()
@@ -84,19 +83,17 @@ func (pool *WorkerPool) Start(wg *sync.WaitGroup, goNum int, conn *sql.DB, TX *s
 	//}
 	//wg.Wait()
 }
+func (pool *WorkerPool) StartParsePrice(wg *sync.WaitGroup, goNum int, conn *sql.DB, TX *sql.Tx) {
+	var prod models.ProductsSuppliers
+	defer wg.Done()
+	for {
+		select {
+		case prod = <-pool.StartSendProd:
+			_ = parser.ParsePriceToDB(prod.Price, prod.ExternalProductID, prod.ExternalSupplierID+1, goNum, conn, TX)
 
-//
-//func (pool *WorkerPool) StartParsePrice(wg *sync.WaitGroup, goNum int, conn *sql.DB, TX *sql.Tx) {
-//	//var wg *sync.WaitGroup
-//	var prod models.ProductsSuppliers
-//	defer wg.Done()
-//	for {
-//		select {
-//		case prod = <-pool.StartSendData:
-//			println(prod.Price)
-//		case <-pool.StopSend:
-//			return
-//		}
-//
-//	}
-//}
+		case <-pool.StopSend:
+			return
+		}
+
+	}
+}
