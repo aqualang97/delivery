@@ -53,7 +53,7 @@ func main() {
 		pool.StartSendData <- s
 	}
 	for {
-		time.Sleep(60 * time.Second)
+		time.Sleep(10 * time.Second)
 		for suppID, _ := range allSupp.Suppliers {
 			listProdId := parser.ParseProdSuppByDB(suppID+1, conn, TX)
 			for _, prodID := range listProdId {

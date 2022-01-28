@@ -61,6 +61,7 @@ func main() {
 	// получаем ответ верный илинет юзе
 	conn, err := open.OpenMyDB()
 	defer conn.Close()
+
 	if err != nil {
 		log.Fatal(err)
 	}

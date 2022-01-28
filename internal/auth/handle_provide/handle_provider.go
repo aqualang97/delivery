@@ -29,8 +29,11 @@ func (hp *HandlerProvider) Login(w http.ResponseWriter, r *http.Request) {
 		req := new(models.LoginRequest)
 		if err := json.NewDecoder(r.Body).Decode(&req); err != nil { //берем тело запроса декодим и декодим в тело запроса
 			http.Error(w, err.Error(), http.StatusBadRequest)
+			//	logger.Error("/login, LoginRequest\n", err)
+
 			return
 		}
+
 		user, err := hp.UserRepository.GetUserByEmail(req.Email)
 		if err != nil {
 			http.Error(w, "invalid credentials", http.StatusBadRequest)
@@ -147,6 +150,7 @@ func (hp *HandlerProvider) Profile(w http.ResponseWriter, r *http.Request) {
 			Email: user.Email,
 			Login: user.Login,
 		}
+
 		w.WriteHeader(http.StatusOK)
 		json.NewEncoder(w).Encode(resp)
 	default:
