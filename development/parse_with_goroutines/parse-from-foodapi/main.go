@@ -53,7 +53,7 @@ func main() {
 		pool.StartSendData <- s
 	}
 	for {
-		time.Sleep(1 * time.Minute)
+		time.Sleep(60 * time.Second)
 		for suppID, _ := range allSupp.Suppliers {
 			listProdId := parser.ParseProdSuppByDB(suppID+1, conn, TX)
 			for _, prodID := range listProdId {
@@ -75,5 +75,6 @@ func main() {
 
 	}
 	pool.Stop()
+	pool.StopParsePrice()
 	wg.Wait()
 }

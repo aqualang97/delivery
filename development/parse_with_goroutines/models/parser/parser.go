@@ -71,16 +71,24 @@ func ParseFromAPI(supp models.SupplierForParse, goNum int, conn *sql.DB, TX *sql
 			Price:              product.Price,
 			Image:              product.Image,
 		}
-		_ = connection.ProductsSuppliersRepo.InsertProductSupplier(prodSupModel)
-		ingredients := product.Ingredients
-		for _, ing := range ingredients {
-			exist := connection.IngredientRepo.IsExistIngredient(ing)
-			if !exist {
-				_ = connection.IngredientRepo.InsertIngredient(ing)
+		exist := connection.ProductsSuppliersRepo.IsExistProductSupplier(prodSupModel)
+		if !exist {
+			//
+			_ = connection.ProductsSuppliersRepo.InsertProductSupplier(prodSupModel)
+			//
+			ingredients := product.Ingredients
+			for _, ing := range ingredients {
+				exist := connection.IngredientRepo.IsExistIngredient(ing)
+				if !exist {
+					_ = connection.IngredientRepo.InsertIngredient(ing)
+				}
+				ingId, _ := connection.IngredientRepo.GetIngredientIDByName(ing)
+				//
+				_ = connection.ProductsIngredientsRepo.InsertProductIngredient(productID, ingId)
+				//
 			}
-			ingId, _ := connection.IngredientRepo.GetIngredientIDByName(ing)
-			_ = connection.ProductsIngredientsRepo.InsertProductIngredient(productID, ingId)
 		}
+
 	}
 
 	println("goNum", goNum)

@@ -14,7 +14,15 @@ type ProductsSuppliersRepository struct {
 func NewProductsSuppliersRepo(conn *sql.DB, TX *sql.Tx) *ProductsSuppliersRepository {
 	return &ProductsSuppliersRepository{conn: conn, TX: TX}
 }
-
+func (p ProductsSuppliersRepository) IsExistProductSupplier(ps models.ProductsSuppliers) bool {
+	var exist bool
+	err := p.conn.QueryRow("SELECT EXISTS(SELECT * FROM products_suppliers WHERE external_product_id=? AND external_supplier_id=?)",
+		ps.ExternalProductID, ps.ExternalSupplierID).Scan(&exist)
+	if err != nil {
+		log.Println(err)
+	}
+	return exist
+}
 func (p ProductsSuppliersRepository) InsertProductSupplier(ps models.ProductsSuppliers) error {
 	_, err := p.conn.Exec(
 		"INSERT products_suppliers(product_id, supplier_id, external_product_id, external_supplier_id, price, image)VALUES(?, ?, ?, ?, ?, ?)",
