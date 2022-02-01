@@ -43,7 +43,7 @@ func main() {
 			pool.StartParsePrice(&wg, i, conn, TX)
 		}(i)
 
-		wg.Add(1)
+		wg.Add(2)
 	}
 	allSupp := request.GetSuppliers()
 	for i, s := range allSupp.Suppliers {

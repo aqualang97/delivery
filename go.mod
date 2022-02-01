@@ -1,6 +1,7 @@
 module delivery
 
-go 1.13
+go 1.17
+
 
 require (
 	github.com/aqualang97/logger/v4 v4.0.2
