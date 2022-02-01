@@ -3,6 +3,8 @@ package repositories
 import (
 	"errors"
 	"github.com/golang-jwt/jwt"
+	"golang.org/x/crypto/bcrypt"
+	"log"
 	"strings"
 	"time"
 )
@@ -25,6 +27,21 @@ func GenerateToken(userID, lifeTimeMinutes int, secret string) (string, error) {
 	return token.SignedString([]byte(secret))
 }
 
+func GetHashOfToken(tokenString string) (string, error) {
+	hashToken, err := bcrypt.GenerateFromPassword([]byte(tokenString), bcrypt.DefaultCost)
+	if err != nil {
+		log.Println()
+	}
+	return string(hashToken), err
+}
+
+func CompareHashTokenDBAndRequest(hashTokenDB, tokenReq string) bool {
+	if err := bcrypt.CompareHashAndPassword([]byte(hashTokenDB), []byte(tokenReq)); err != nil {
+		log.Println(err)
+		return false
+	}
+	return true
+}
 func GetTokenFromBearerString(bearerString string) string {
 	if bearerString == "" {
 		return ""

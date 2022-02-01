@@ -2,6 +2,7 @@ package main
 
 import (
 	"database/sql"
+	"delivery/configs"
 	"delivery/internal/middlware"
 	db "delivery/internal/repositories/database"
 	//connection "delivery/internal/repositories/database/connection"
@@ -12,47 +13,17 @@ import (
 	"net/http"
 )
 
-const AccessSecret = "access_secret"
-const RefreshSecret = "refresh_secret"
-
-const AccessTokenLifetimeMinutes = 20
-const RefreshTokenLifetimeMinutes = 60
+//
+//const AccessSecret = "access_secret"
+//const RefreshSecret = "refresh_secret"
+//
+//const AccessTokenLifetimeMinutes = 20
+//const RefreshTokenLifetimeMinutes = 60
 
 func dbTXBegin(conn *sql.DB) (*sql.Tx, error) {
 	TX, err := conn.Begin()
 	return TX, err
 
-}
-
-func dbOpen() (*sql.DB, error) {
-
-	dbConn, err := sql.Open(
-		"mysql",
-		"oboznyi:123123@tcp(127.0.0.1:3306)/oboznyi_db",
-	)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	err = dbConn.Ping()
-	if err != nil {
-		log.Fatal(err)
-	}
-	//var id int
-	//var name string
-	//rows, err := db.Query("SELECT id, login FROM users WHERE id = ?", 1)
-	//if err != nil {
-	//	log.Fatal(err)
-	//}
-	//for rows.Next() {
-	//	err := rows.Scan(&id, &name)
-	//	if err != nil {
-	//		log.Fatal(err)
-	//	}
-	//	fmt.Println(id, name)
-	//
-	//}
-	return dbConn, err
 }
 
 func main() {
@@ -61,7 +32,6 @@ func main() {
 	// получаем ответ верный илинет юзе
 	conn, err := open.OpenMyDB()
 	defer conn.Close()
-
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -74,6 +44,7 @@ func main() {
 		UserRepository:             db.NewUserRepo(conn, TX),
 		UserAccessTokenRepository:  db.NewAccessTokenRepo(conn, TX),
 		UserRefreshTokenRepository: db.NewRefreshTokenRepo(conn, TX),
+		Config:                     config.NewConfig(),
 	}
 	m := middlware.NewMiddleware(handlerProvider)
 	handlerProvider.UserAccessTokenRepository.DeleteNaturallyExpiredAccessToken()

@@ -51,6 +51,26 @@ func (t UserAccessTokenRepository) InsertAccessToken(userToken models.UserAccess
 	return err
 }
 
+func (t UserAccessTokenRepository) IsExistAccess(userID int) (bool, error) {
+	var exist bool
+	err := t.conn.QueryRow("SELECT EXISTS(SELECT * FROM users_access_tokens WHERE user_id=? AND expired=?)", userID, "false").Scan(&exist)
+	if err != nil {
+		log.Println(err)
+		return false, err
+	}
+	return exist, err
+}
+
+func (t UserAccessTokenRepository) GetAccessTokenByUserID(userID int) (string, error) {
+	var tokenHash string
+	err := t.conn.QueryRow("SELECT token FROM users_access_tokens WHERE user_id=? AND expired=?", userID, "false").Scan(&tokenHash)
+	if err != nil {
+		log.Println(err)
+		return "", err
+	}
+	return tokenHash, err
+}
+
 func (t UserAccessTokenRepository) GetByAccessToken(accessToken string) (models.UserAccessToken, error) {
 	var userToken models.UserAccessToken
 	rows, err := t.conn.Query("SELECT user_id, token, expired FROM users_access_tokens WHERE token = ?", accessToken)
@@ -71,11 +91,11 @@ func (t UserAccessTokenRepository) GetByAccessToken(accessToken string) (models.
 	return userToken, nil
 }
 
-func (t UserAccessTokenRepository) UpdateOldAndInsertNewAccessToken(oldAccess string,
+func (t UserAccessTokenRepository) UpdateOldAndInsertNewAccessToken(userID int,
 	response models.UserAccessToken) error {
 
 	_, err := t.conn.Exec(
-		"UPDATE users_access_tokens SET expired = ? WHERE token = ?", "true", oldAccess)
+		"UPDATE users_access_tokens SET expired = ? WHERE user_id = ?", "true", userID)
 	if err != nil {
 		return err
 	}
@@ -89,14 +109,27 @@ func (t UserAccessTokenRepository) UpdateOldAndInsertNewAccessToken(oldAccess st
 	return err
 }
 
-func (t UserAccessTokenRepository) ExpiredAccessToken(oldToken string) error {
+//func (t UserAccessTokenRepository)ExpiredAccessWithOneActiveDevice(userID int) error {
+//	_, err := t.conn.Exec(
+//		"UPDATE users_access_tokens SET expired = ? WHERE userID = ?", "true", userID)
+//	if err != nil {
+//		log.Fatal(err)
+//	}
+//	return err
+//}
+
+func (t UserAccessTokenRepository) ExpiredAccessToken(userID int) error {
+	//_, err := t.conn.Exec(
+	//	"UPDATE users_access_tokens SET expired = ? WHERE token = ?", "true", oldToken)
+	//if err != nil {
+	//	log.Fatal(err)
+	//	return err
+	//}
 	_, err := t.conn.Exec(
-		"UPDATE users_access_tokens SET expired = ? WHERE token = ?", "true", oldToken)
+		"UPDATE users_access_tokens SET expired = ? WHERE user_id = ?", "true", userID)
 	if err != nil {
 		log.Fatal(err)
-		return err
 	}
-
 	return err
 
 }

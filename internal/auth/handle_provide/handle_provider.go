@@ -1,26 +1,24 @@
 package handle_provide
 
 import (
+	config "delivery/configs"
 	repositories "delivery/internal/auth"
 	"delivery/internal/models"
 	db "delivery/internal/repositories/database"
 	"encoding/json"
+	"fmt"
 	"golang.org/x/crypto/bcrypt"
 	"log"
 	"net/http"
+
 	"time"
 )
-
-const AccessSecret = "access_secret"
-const RefreshSecret = "refresh_secret"
-
-const AccessTokenLifetimeMinutes = 20
-const RefreshTokenLifetimeMinutes = 60
 
 type HandlerProvider struct {
 	UserRepository             *db.UserDBRepository
 	UserAccessTokenRepository  *db.UserAccessTokenRepository
 	UserRefreshTokenRepository *db.UserRefreshTokenRepository
+	Config                     *config.Config
 }
 
 func (hp *HandlerProvider) Login(w http.ResponseWriter, r *http.Request) {
@@ -43,33 +41,40 @@ func (hp *HandlerProvider) Login(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, "invalid credentials", http.StatusUnauthorized)
 			return
 		}
+		_ = hp.UserAccessTokenRepository.ExpiredAccessToken(user.ID)
+		_ = hp.UserRefreshTokenRepository.ExpiredRefreshToken(user.ID)
 
-		accessString, err := repositories.GenerateToken(user.ID, AccessTokenLifetimeMinutes, AccessSecret)
-
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-		refreshString, err := repositories.GenerateToken(user.ID, RefreshTokenLifetimeMinutes, RefreshSecret)
+		//fmt.Println(hp.Config.AccessLifetimeMinutes)
+		cfg := hp.Config
+		accessString, err := repositories.GenerateToken(user.ID, cfg.AccessLifetimeMinutes, cfg.AccessSecret)
 
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
+		accessHash, _ := repositories.GetHashOfToken(accessString)
+		refreshString, err := repositories.GenerateToken(user.ID, cfg.RefreshLifetimeMinutes, cfg.RefreshSecret)
+
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		refreshHash, _ := repositories.GetHashOfToken(refreshString)
+
 		nowTime := time.Now()
 
-		accessExpiredAt := nowTime.Add(time.Duration(AccessTokenLifetimeMinutes) * time.Minute)
-		refreshExpiredAt := nowTime.Add(time.Duration(RefreshTokenLifetimeMinutes) * time.Minute)
+		accessExpiredAt := nowTime.Add(time.Duration(cfg.AccessLifetimeMinutes) * time.Minute)
+		refreshExpiredAt := nowTime.Add(time.Duration(cfg.RefreshLifetimeMinutes) * time.Minute)
 
 		respAccess := models.UserAccessToken{
 			UserID:      user.ID,
-			AccessToken: accessString,
+			AccessToken: accessHash,
 			ExpiredAt:   &accessExpiredAt,
 			Expired:     "false",
 		}
 		respRefresh := models.UserRefreshToken{
 			UserID:       user.ID,
-			RefreshToken: refreshString,
+			RefreshToken: refreshHash,
 			ExpiredAt:    &refreshExpiredAt,
 			Expired:      "false",
 		}
@@ -83,8 +88,8 @@ func (hp *HandlerProvider) Login(w http.ResponseWriter, r *http.Request) {
 		}
 
 		w.WriteHeader(http.StatusOK)
-		json.NewEncoder(w).Encode(respAccess)
-		json.NewEncoder(w).Encode(respRefresh)
+		json.NewEncoder(w).Encode(accessString)
+		json.NewEncoder(w).Encode(refreshString)
 	}
 }
 
@@ -137,8 +142,9 @@ func (hp *HandlerProvider) Profile(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case "GET":
 		tokenString := repositories.GetTokenFromBearerString(r.Header.Get("Authorization"))
+		cfg := hp.Config
 
-		claims, _ := repositories.Claims(tokenString, AccessSecret)
+		claims, _ := repositories.Claims(tokenString, cfg.AccessSecret)
 
 		user, err := hp.UserRepository.GetUserById(claims.ID)
 		if err != nil {
@@ -165,25 +171,40 @@ func (hp *HandlerProvider) Refresh(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
 		}
+		cfg := hp.Config
 
 		refreshTokenString := req.RefreshToken
-		accessTokenString := req.AccessToken
+
+		//accessTokenString := req.AccessToken
 		//claims, err := repositories.ValidateToken(refreshTokenString, RefreshSecret)
-		_, err := repositories.ValidateToken(refreshTokenString, RefreshSecret)
+		_, err := repositories.ValidateToken(refreshTokenString, cfg.RefreshSecret)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusUnauthorized)
 			return
 		}
-		userToken, err := hp.UserRefreshTokenRepository.GetByRefreshToken(refreshTokenString)
-		//userToken.AccessToken = accessTokenString
-
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusUnauthorized)
-		}
-		if userToken.Expired != "false" {
+		claims, _ := repositories.Claims(refreshTokenString, cfg.RefreshSecret)
+		exist, _ := hp.UserRefreshTokenRepository.IsExistRefresh(claims.ID)
+		if !exist {
 			http.Error(w, "invalid token", http.StatusUnauthorized)
 			return
 		}
+
+		tokenHash, _ := hp.UserRefreshTokenRepository.GetRefreshTokenByUserID(claims.ID)
+		equal := repositories.CompareHashTokenDBAndRequest(tokenHash, refreshTokenString)
+		if !equal {
+			http.Error(w, "invalid token", http.StatusUnauthorized)
+			return
+		}
+		//userToken, err := hp.UserRefreshTokenRepository.GetByRefreshToken(refreshTokenString)
+		//userToken.AccessToken = accessTokenString
+
+		//if err != nil {
+		//	http.Error(w, err.Error(), http.StatusUnauthorized)
+		//}
+		//if userToken.Expired != "false" {
+		//	http.Error(w, "invalid token", http.StatusUnauthorized)
+		//	return
+		//}
 
 		//user, err := authRepo.NewUserRepository().GetUserByID(claims.ID)
 		//if err != nil {
@@ -204,47 +225,48 @@ func (hp *HandlerProvider) Refresh(w http.ResponseWriter, r *http.Request) {
 				return
 			}*/
 
-		newAccessTokenString, err := repositories.GenerateToken(userToken.UserID, AccessTokenLifetimeMinutes, AccessSecret)
+		newAccessTokenString, err := repositories.GenerateToken(claims.ID, cfg.AccessLifetimeMinutes, cfg.AccessSecret)
 
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
-		newRefreshTokenString, err := repositories.GenerateToken(userToken.UserID, RefreshTokenLifetimeMinutes, RefreshSecret)
-
+		newRefreshTokenString, err := repositories.GenerateToken(claims.ID, cfg.RefreshLifetimeMinutes, cfg.RefreshSecret)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
+		accessHash, _ := repositories.GetHashOfToken(newAccessTokenString)
+		refreshHash, _ := repositories.GetHashOfToken(newRefreshTokenString)
 
 		nowTime := time.Now()
-		accessExpiredAt := nowTime.Add(time.Duration(AccessTokenLifetimeMinutes) * time.Minute)
-		refreshExpiredAt := nowTime.Add(time.Duration(RefreshTokenLifetimeMinutes) * time.Minute)
+		accessExpiredAt := nowTime.Add(time.Duration(cfg.AccessLifetimeMinutes) * time.Minute)
+		refreshExpiredAt := nowTime.Add(time.Duration(cfg.RefreshLifetimeMinutes) * time.Minute)
 
 		respAccess := models.UserAccessToken{
-			AccessToken: newAccessTokenString,
-			UserID:      userToken.UserID,
+			AccessToken: accessHash,
+			UserID:      claims.ID,
 			ExpiredAt:   &accessExpiredAt,
 			Expired:     "false",
 		}
 
 		respRefresh := models.UserRefreshToken{
-			RefreshToken: newRefreshTokenString,
-			UserID:       userToken.UserID,
+			RefreshToken: refreshHash,
+			UserID:       claims.ID,
 			ExpiredAt:    &refreshExpiredAt,
 			Expired:      "false",
 		}
 
-		err = hp.UserAccessTokenRepository.UpdateOldAndInsertNewAccessToken(accessTokenString, respAccess)
-		err = hp.UserRefreshTokenRepository.UpdateOldAndInsertNewRefreshToken(refreshTokenString, respRefresh)
+		err = hp.UserAccessTokenRepository.UpdateOldAndInsertNewAccessToken(claims.ID, respAccess)
+		err = hp.UserRefreshTokenRepository.UpdateOldAndInsertNewRefreshToken(claims.ID, respRefresh)
 
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
 		w.WriteHeader(http.StatusOK)
-		json.NewEncoder(w).Encode(respAccess)
-		json.NewEncoder(w).Encode(respRefresh)
+		json.NewEncoder(w).Encode(newAccessTokenString)
+		json.NewEncoder(w).Encode(newRefreshTokenString)
 	default:
 		http.Error(w, "Only POST method is allowed", http.StatusMethodNotAllowed)
 	}
@@ -254,7 +276,6 @@ func (hp *HandlerProvider) Registration(w http.ResponseWriter, r *http.Request) 
 	case "POST":
 
 		req := new(models.RegistrationRequest)
-
 		if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
@@ -287,34 +308,37 @@ func (hp *HandlerProvider) Registration(w http.ResponseWriter, r *http.Request) 
 			return
 		}
 		user, err = hp.UserRepository.GetUserByEmail(req.Email)
-
-		accessString, err := repositories.GenerateToken(user.ID, AccessTokenLifetimeMinutes, AccessSecret)
+		cfg := hp.Config
+		accessString, err := repositories.GenerateToken(user.ID, cfg.AccessLifetimeMinutes, cfg.AccessSecret)
 
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
+
 		nowTime := time.Now()
-		accessExpiredAt := nowTime.Add(time.Duration(AccessTokenLifetimeMinutes) * time.Minute)
-		refreshExpiredAt := nowTime.Add(time.Duration(RefreshTokenLifetimeMinutes) * time.Minute)
+		accessExpiredAt := nowTime.Add(time.Duration(cfg.AccessLifetimeMinutes) * time.Minute)
+		refreshExpiredAt := nowTime.Add(time.Duration(cfg.RefreshLifetimeMinutes) * time.Minute)
 
-		refreshString, err := repositories.GenerateToken(user.ID, RefreshTokenLifetimeMinutes, RefreshSecret)
+		refreshString, err := repositories.GenerateToken(user.ID, cfg.RefreshLifetimeMinutes, cfg.RefreshSecret)
 
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
+		accessHash, _ := repositories.GetHashOfToken(accessString)
+		refreshHash, _ := repositories.GetHashOfToken(refreshString)
 		respAccess := models.UserAccessToken{
 			ID:          user.ID,
 			UserID:      user.ID,
-			AccessToken: accessString,
+			AccessToken: accessHash,
 			ExpiredAt:   &accessExpiredAt,
 			Expired:     "false",
 		}
 		respRefresh := models.UserRefreshToken{
 			ID:           user.ID,
 			UserID:       user.ID,
-			RefreshToken: refreshString,
+			RefreshToken: refreshHash,
 			ExpiredAt:    &refreshExpiredAt,
 			Expired:      "false",
 		}
@@ -335,6 +359,8 @@ func (hp *HandlerProvider) Registration(w http.ResponseWriter, r *http.Request) 
 		w.WriteHeader(http.StatusOK)
 		json.NewEncoder(w).Encode(respAccess)
 		json.NewEncoder(w).Encode(respRefresh)
+		json.NewEncoder(w).Encode(accessString)
+		json.NewEncoder(w).Encode(refreshString)
 	default:
 		http.Error(w, "Only POST method is allowed", http.StatusMethodNotAllowed)
 	}
@@ -343,11 +369,12 @@ func (hp *HandlerProvider) Logout(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case "GET":
 		tokenString := repositories.GetTokenFromBearerString(r.Header.Get("Authorization"))
-
-		claims, _ := repositories.Claims(tokenString, AccessSecret)
+		cfg := hp.Config
+		claims, _ := repositories.Claims(tokenString, cfg.AccessSecret)
 		//user, err := hp.UserRepository.GetUserById(claims.ID)
 		_ = hp.UserRefreshTokenRepository.ExpiredRefreshToken(claims.ID)
-		_ = hp.UserAccessTokenRepository.ExpiredAccessToken(tokenString)
+		_ = hp.UserAccessTokenRepository.ExpiredAccessToken(claims.ID)
+		fmt.Println("logout", claims.ID)
 
 		w.WriteHeader(http.StatusOK)
 		json.NewEncoder(w).Encode("Successful Logout")

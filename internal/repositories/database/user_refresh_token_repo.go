@@ -50,6 +50,26 @@ func (t UserRefreshTokenRepository) InsertRefreshToken(userToken models.UserRefr
 	return err
 }
 
+func (t UserRefreshTokenRepository) IsExistRefresh(userID int) (bool, error) {
+	var exist bool
+	err := t.conn.QueryRow("SELECT EXISTS(SELECT * FROM users_refresh_tokens WHERE user_id=? AND expired=?)", userID, "false").Scan(&exist)
+	if err != nil {
+		log.Println(err)
+		return false, err
+	}
+	return exist, err
+}
+
+func (t UserRefreshTokenRepository) GetRefreshTokenByUserID(userID int) (string, error) {
+	var tokenHash string
+	err := t.conn.QueryRow("SELECT token FROM users_refresh_tokens WHERE user_id=? AND expired=?", userID, "false").Scan(&tokenHash)
+	if err != nil {
+		log.Println(err)
+		return "", err
+	}
+	return tokenHash, err
+}
+
 func (t UserRefreshTokenRepository) GetByRefreshToken(refreshToken string) (models.UserRefreshToken, error) {
 	var userToken models.UserRefreshToken
 	rows, err := t.conn.Query("SELECT user_id, token, expired FROM users_refresh_tokens WHERE token = ?", refreshToken)
@@ -69,11 +89,11 @@ func (t UserRefreshTokenRepository) GetByRefreshToken(refreshToken string) (mode
 	return userToken, nil
 }
 
-func (t UserRefreshTokenRepository) UpdateOldAndInsertNewRefreshToken(oldToken string,
+func (t UserRefreshTokenRepository) UpdateOldAndInsertNewRefreshToken(userID int,
 	response models.UserRefreshToken) error {
 
 	_, err := t.conn.Exec(
-		"UPDATE users_refresh_tokens SET expired = ? WHERE token = ?", "true", oldToken)
+		"UPDATE users_refresh_tokens SET expired = ? WHERE user_id = ?", "true", userID)
 	if err != nil {
 		log.Fatal(err)
 
