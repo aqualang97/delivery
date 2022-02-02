@@ -1,6 +1,7 @@
 package config
 
 import (
+	"github.com/aqualang97/logger/v4"
 	"github.com/joho/godotenv"
 	"log"
 	"os"
@@ -13,9 +14,10 @@ type Config struct {
 	RefreshSecret          string
 	AccessLifetimeMinutes  int
 	RefreshLifetimeMinutes int
+	Logger                 logger.Logger
 }
 
-func NewConfig() *Config {
+func NewConfig(l logger.Logger) *Config {
 	err := godotenv.Load()
 	if err != nil {
 		log.Println("Error loading .env file")
@@ -28,5 +30,6 @@ func NewConfig() *Config {
 		RefreshSecret:          os.Getenv("REFRESH_SECRET"),
 		AccessLifetimeMinutes:  accessLifetimeMinutes,
 		RefreshLifetimeMinutes: refreshLifetimeMinutes,
+		Logger:                 l,
 	}
 }

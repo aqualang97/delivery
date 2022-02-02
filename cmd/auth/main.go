@@ -5,6 +5,8 @@ import (
 	"delivery/configs"
 	"delivery/internal/middlware"
 	db "delivery/internal/repositories/database"
+	myLog "delivery/logs"
+
 	//connection "delivery/internal/repositories/database/connection"
 	handProv "delivery/internal/auth/handle_provide"
 	open "delivery/internal/repositories/database/connection"
@@ -12,13 +14,6 @@ import (
 	"log"
 	"net/http"
 )
-
-//
-//const AccessSecret = "access_secret"
-//const RefreshSecret = "refresh_secret"
-//
-//const AccessTokenLifetimeMinutes = 20
-//const RefreshTokenLifetimeMinutes = 60
 
 func dbTXBegin(conn *sql.DB) (*sql.Tx, error) {
 	TX, err := conn.Begin()
@@ -35,7 +30,7 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-
+	l := myLog.LogInit()
 	TX, err := dbTXBegin(conn)
 	if err != nil {
 		return
@@ -44,7 +39,7 @@ func main() {
 		UserRepository:             db.NewUserRepo(conn, TX),
 		UserAccessTokenRepository:  db.NewAccessTokenRepo(conn, TX),
 		UserRefreshTokenRepository: db.NewRefreshTokenRepo(conn, TX),
-		Config:                     config.NewConfig(),
+		Config:                     config.NewConfig(l),
 	}
 	m := middlware.NewMiddleware(handlerProvider)
 	handlerProvider.UserAccessTokenRepository.DeleteNaturallyExpiredAccessToken()
