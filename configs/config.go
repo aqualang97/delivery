@@ -15,6 +15,8 @@ type Config struct {
 	AccessLifetimeMinutes  int
 	RefreshLifetimeMinutes int
 	Logger                 logger.Logger
+	Driver                 string
+	DataSourceName         string
 }
 
 func NewConfig(l logger.Logger) *Config {
@@ -31,5 +33,7 @@ func NewConfig(l logger.Logger) *Config {
 		AccessLifetimeMinutes:  accessLifetimeMinutes,
 		RefreshLifetimeMinutes: refreshLifetimeMinutes,
 		Logger:                 l,
+		Driver:                 os.Getenv("DRIVER"),
+		DataSourceName:         os.Getenv("DATA_SOURCE_NAME"),
 	}
 }
