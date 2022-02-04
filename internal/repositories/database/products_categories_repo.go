@@ -55,3 +55,25 @@ func (p ProductsCategoriesRepo) GetCategoryByID(id int) (*models.ProductsCategor
 	}
 	return mo, err
 }
+
+func (p ProductsCategoriesRepo) GetAllCategories() ([]models.ProductsCategories, error) {
+	var mo models.ProductsCategories
+	var listSupp []models.ProductsCategories
+
+	rows, err := p.conn.Query(
+		"SELECT id, name FROM products_categories")
+	if err != nil {
+		log.Println(err)
+		return listSupp, err
+	}
+
+	for rows.Next() {
+		err = rows.Scan(&mo.ID, &mo.Name)
+		if err != nil {
+			log.Println(err)
+			return listSupp, err
+		}
+		listSupp = append(listSupp, mo)
+	}
+	return listSupp, err
+}

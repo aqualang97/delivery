@@ -32,13 +32,13 @@ func ReqWithCont(url string) *http.Response {
 	return resp
 }
 
-func GetSuppliers() *models.AllSuppliers {
+func GetSuppliers() *models.AllSuppliersForParse {
 
 	//resp, err := http.Get(url)
 	//инициализайия контекста с таймаутом
 	resp := ReqWithCont(url + endpointSupp)
 	defer resp.Body.Close()
-	var supp *models.AllSuppliers
+	var supp *models.AllSuppliersForParse
 	body, err := ioutil.ReadAll(resp.Body)
 	err = json.Unmarshal(body, &supp)
 	if err != nil {

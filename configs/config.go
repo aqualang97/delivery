@@ -1,6 +1,8 @@
 package config
 
 import (
+	_ "github.com/go-sql-driver/mysql"
+
 	"github.com/aqualang97/logger/v4"
 	"github.com/joho/godotenv"
 	"log"
@@ -14,12 +16,12 @@ type Config struct {
 	RefreshSecret          string
 	AccessLifetimeMinutes  int
 	RefreshLifetimeMinutes int
-	Logger                 logger.Logger
+	Logger                 *logger.Logger
 	Driver                 string
 	DataSourceName         string
 }
 
-func NewConfig(l logger.Logger) *Config {
+func NewConfig(l *logger.Logger) *Config {
 	err := godotenv.Load()
 	if err != nil {
 		log.Println("Error loading .env file")

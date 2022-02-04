@@ -16,6 +16,7 @@ func NewSupplierRepo(conn *sql.DB, TX *sql.Tx) *SupplierDBRepository {
 }
 
 //models.Supplier изменил на SupplierForParse Для парсинга
+
 func (s SupplierDBRepository) CreateSupplier(supp models.SupplierForParse, categorySupplierID int) (int, error) {
 	res, err := s.conn.Exec(
 		"INSERT suppliers(name, category_of_supplier, start_of_work, end_of_work, image, external_id)VALUES(?, ?, ?, ?, ?, ?)",
@@ -52,6 +53,27 @@ func (s SupplierDBRepository) GetSupplierByName(name string) ([]models.Supplier,
 		log.Println(err)
 		return listSupp, err
 	}
+	for rows.Next() {
+		err = rows.Scan(&supp.ID, &supp.Name, &supp.CategoryOfSupplier, &supp.WorkingHours.Opening, &supp.WorkingHours.Closing, &supp.Image, &supp.ExternalID)
+		if err != nil {
+			log.Println(err)
+			return listSupp, err
+		}
+		listSupp = append(listSupp, supp)
+	}
+	return listSupp, err
+}
+
+func (s SupplierDBRepository) GetAllSuppliers() ([]models.Supplier, error) {
+	var supp models.Supplier
+	var listSupp []models.Supplier
+	rows, err := s.conn.Query(
+		"SELECT id, name, category_of_supplier, start_of_work, end_of_work, image, external_id FROM suppliers")
+	if err != nil {
+		log.Println(err)
+		return listSupp, err
+	}
+
 	for rows.Next() {
 		err = rows.Scan(&supp.ID, &supp.Name, &supp.CategoryOfSupplier, &supp.WorkingHours.Opening, &supp.WorkingHours.Closing, &supp.Image, &supp.ExternalID)
 		if err != nil {

@@ -3,16 +3,18 @@ package database
 import (
 	"database/sql"
 	"delivery/internal/models"
+	"github.com/aqualang97/logger/v4"
 	"log"
 )
 
 type IngredientRepository struct {
-	conn *sql.DB
-	TX   *sql.Tx
+	conn   *sql.DB
+	TX     *sql.Tx
+	logger *logger.Logger
 }
 
-func NewIngredientRepo(conn *sql.DB, TX *sql.Tx) *IngredientRepository {
-	return &IngredientRepository{conn: conn, TX: TX}
+func NewIngredientRepo(conn *sql.DB, TX *sql.Tx, logger *logger.Logger) *IngredientRepository {
+	return &IngredientRepository{conn: conn, TX: TX, logger: logger}
 }
 
 func (i IngredientRepository) IsExistIngredient(ingredient string) bool {
@@ -28,6 +30,7 @@ func (i IngredientRepository) InsertIngredient(ingredient string) error {
 	_, err := i.conn.Exec("INSERT ingredients(name) VALUE(?) ON DUPLICATE KEY UPDATE name=(?)",
 		ingredient, ingredient)
 	if err != nil {
+
 		log.Println(err)
 	}
 	return err

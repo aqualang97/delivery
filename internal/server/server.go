@@ -38,7 +38,7 @@ func (s *Server) Start() error {
 	}
 
 	repProvider := &repositories_provider.RepositoriesProvider{
-		IngredientRepository:          rp.NewIngredientRepo(conn, TX),
+		IngredientRepository:          rp.NewIngredientRepo(conn, TX, s.cfg.Logger),
 		OrderProductRepository:        rp.NewOrderProductRepo(conn, TX),
 		OrderRepository:               rp.NewOrderRepo(conn, TX),
 		ProductRepository:             rp.NewProductRepo(conn, TX),
@@ -55,13 +55,19 @@ func (s *Server) Start() error {
 	handlerProvider.UserAccessTokenRepository.DeleteNaturallyExpiredAccessToken()
 	handlerProvider.UserRefreshTokenRepository.DeleteNaturallyExpiredRefreshToken()
 
-	http.HandleFunc("/login", handlerProvider.Login) //умеем обрабатывать логин с помощью ф-ции логин
+	http.HandleFunc("/login", handlerProvider.Login)
 	http.Handle("/profile", m.RequireAuthentication(http.HandlerFunc(handlerProvider.Profile)))
 	http.HandleFunc("/refresh", handlerProvider.Refresh)
 	http.HandleFunc("/registration", handlerProvider.Registration)
 	http.Handle("/logout", m.RequireAuthentication(http.HandlerFunc(handlerProvider.Logout)))
-	http.HandleFunc("/suppliers", repProvider.Products)
-	log.Fatal(http.ListenAndServe(":8080", nil)) //слушаем порт 8080 для входящих запросов
+
+	http.HandleFunc("/suppliers", repProvider.Suppliers)
+
+	//???
+	//http.HandleFunc(fmt.Sprintf("/suppliers/%i"), repProvider.IndividualSupplier)
+	//???
+	s.cfg.Logger.Info("Start listen...")
+	log.Fatal(http.ListenAndServe(s.cfg.Port, nil)) //слушаем порт 8080 для входящих запросов
 
 	return err
 

@@ -93,51 +93,6 @@ func (hp *HandlerProvider) Login(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-/*func Login1(w http.ResponseWriter, r *http.Request) {
-	switch r.Method {
-	case "POST":
-		req := new(repositories.LoginRequest)
-		if err := json.NewDecoder(r.Body).Decode(&req); err != nil { //берем тело запроса декодим и декодим в тело запроса
-			http.Error(w, err.Error(), http.StatusBadRequest)
-			return
-		}
-
-		user, err := authRepo.NewUserRepository().GetUserByEmail(req.Email)
-		if err != nil {
-			http.Error(w, "invalid ", http.StatusUnauthorized)
-			return
-		}
-
-		if err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(req.Password)); err != nil {
-			http.Error(w, "invalid credentials", http.StatusUnauthorized)
-			return
-		}
-
-		tokenString, err := repositories.GenerateToken(user.ID, AccessTokenLifetimeMinutes, AccessSecret)
-
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-		refreshString, err := repositories.GenerateToken(user.ID, RefreshTokenLifetimeMinutes, RefreshSecret)
-
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-
-		resp := repositories.LoginResponse{
-			AccessToken:  tokenString,
-			RefreshToken: refreshString,
-		}
-		w.WriteHeader(http.StatusOK)
-		json.NewEncoder(w).Encode(resp)
-	default:
-
-		http.Error(w, "Only POST method is allowed", http.StatusMethodNotAllowed)
-	}
-}*/
-
 func (hp *HandlerProvider) Profile(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case "GET":
@@ -195,35 +150,6 @@ func (hp *HandlerProvider) Refresh(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, "invalid token", http.StatusUnauthorized)
 			return
 		}
-		//userToken, err := hp.UserRefreshTokenRepository.GetByRefreshToken(refreshTokenString)
-		//userToken.AccessToken = accessTokenString
-
-		//if err != nil {
-		//	http.Error(w, err.Error(), http.StatusUnauthorized)
-		//}
-		//if userToken.Expired != "false" {
-		//	http.Error(w, "invalid token", http.StatusUnauthorized)
-		//	return
-		//}
-
-		//user, err := authRepo.NewUserRepository().GetUserByID(claims.ID)
-		//if err != nil {
-		//	http.Error(w, "invalid token", http.StatusUnauthorized)
-		//	return
-		//}
-
-		/*
-			err := ValidateTokenToRefresh(accessTokenString, AccessSecret)
-			if err != nil {
-				http.Error(w, err.Error(), http.StatusUnauthorized)
-				return
-			}
-			refreshTokenString := req.AccessToken
-			err = ValidateTokenToRefresh(refreshTokenString, RefreshSecret)
-			if err != nil {
-				http.Error(w, err.Error(), http.StatusUnauthorized)
-				return
-			}*/
 
 		newAccessTokenString, err := services.GenerateToken(claims.ID, cfg.AccessLifetimeMinutes, cfg.AccessSecret)
 
@@ -379,6 +305,6 @@ func (hp *HandlerProvider) Logout(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 		json.NewEncoder(w).Encode("Successful Logout")
 	default:
-		http.Error(w, "Only POST method is allowed", http.StatusMethodNotAllowed)
+		http.Error(w, "Only GET method is allowed", http.StatusMethodNotAllowed)
 	}
 }

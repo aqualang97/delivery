@@ -33,6 +33,10 @@ type WorkingHours struct {
 	Closing string `json:"closing"`
 }
 
-type AllSuppliers struct {
+//type AllSuppliers struct {
+//	Suppliers []Supplier
+//}
+
+type AllSuppliersForParse struct {
 	Suppliers []SupplierForParse `json:"suppliers"`
 }
