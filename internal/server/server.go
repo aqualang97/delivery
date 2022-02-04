@@ -4,9 +4,9 @@ import (
 	"database/sql"
 	config "delivery/configs"
 	handProv "delivery/internal/auth/handle_provide"
-	"delivery/internal/auth/middlware"
 	rp "delivery/internal/repositories/database"
 	"delivery/internal/repositories_provider"
+	"delivery/internal/route"
 	"fmt"
 	"log"
 	"net/http"
@@ -50,24 +50,16 @@ func (s *Server) Start() error {
 		UserContactRepository:         rp.NewUserContactRepo(conn, TX),
 	}
 
-	m := middlware.NewMiddleware(handlerProvider)
+	//m := middlware.NewMiddleware(handlerProvider)
+	mux := http.NewServeMux()
 
 	handlerProvider.UserAccessTokenRepository.DeleteNaturallyExpiredAccessToken()
 	handlerProvider.UserRefreshTokenRepository.DeleteNaturallyExpiredRefreshToken()
 
-	http.HandleFunc("/login", handlerProvider.Login)
-	http.Handle("/profile", m.RequireAuthentication(http.HandlerFunc(handlerProvider.Profile)))
-	http.HandleFunc("/refresh", handlerProvider.Refresh)
-	http.HandleFunc("/registration", handlerProvider.Registration)
-	http.Handle("/logout", m.RequireAuthentication(http.HandlerFunc(handlerProvider.Logout)))
+	route.Router(*handlerProvider, *repProvider, mux)
 
-	http.HandleFunc("/suppliers", repProvider.Suppliers)
-
-	//???
-	//http.HandleFunc(fmt.Sprintf("/suppliers/%i"), repProvider.IndividualSupplier)
-	//???
-	s.cfg.Logger.Info("Start listen...")
-	log.Fatal(http.ListenAndServe(s.cfg.Port, nil)) //слушаем порт 8080 для входящих запросов
+	s.cfg.Logger.InfoConsole("Start listen...")
+	log.Fatal(http.ListenAndServe(s.cfg.Port, mux)) //слушаем порт 8080 для входящих запросов
 
 	return err
 

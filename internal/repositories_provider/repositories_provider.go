@@ -3,7 +3,10 @@ package repositories_provider
 import (
 	r "delivery/internal/repositories/database"
 	"fmt"
+	"log"
 	"net/http"
+	"strconv"
+	"strings"
 )
 
 type RepositoriesProvider struct {
@@ -41,7 +44,21 @@ func (rp RepositoriesProvider) Suppliers(w http.ResponseWriter, r *http.Request)
 func (rp RepositoriesProvider) IndividualSupplier(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case "GET":
-		fmt.Fprint(w, r)
+
+		//supp := rp.SupplierRepository.GetSupplierByID()
+		path := r.URL.Path
+		parts := strings.Split(path, "/suppliers/")
+		if len(parts) != 2 {
+			return
+		}
+		if id, err := strconv.Atoi(parts[1]); err == nil {
+			supp, err := rp.SupplierRepository.GetSupplierByID(id)
+			if err != nil {
+				log.Println(err)
+			}
+			fmt.Fprint(w, supp.Name, supp.Image)
+
+		}
 	default:
 		http.Error(w, "Only GET method is allowed", http.StatusMethodNotAllowed)
 
