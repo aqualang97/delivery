@@ -1,14 +1,16 @@
-package database
+package repositories
 
 import (
 	"database/sql"
 	"delivery/internal/models"
+	"github.com/aqualang97/logger/v4"
 	"log"
 )
 
 type ProductDBRepository struct {
-	conn *sql.DB
-	TX   *sql.Tx
+	conn   *sql.DB
+	TX     *sql.Tx
+	logger *logger.Logger
 }
 
 func (p ProductDBRepository) GetProductByID(id int) (models.Product, error) {
@@ -51,6 +53,6 @@ func (p ProductDBRepository) DeleteProductByExternalID(name string, externalID i
 	}
 	return err
 }
-func NewProductRepo(conn *sql.DB, TX *sql.Tx) *ProductDBRepository {
-	return &ProductDBRepository{conn: conn, TX: TX}
+func NewProductRepo(conn *sql.DB, TX *sql.Tx, logger *logger.Logger) *ProductDBRepository {
+	return &ProductDBRepository{conn: conn, TX: TX, logger: logger}
 }

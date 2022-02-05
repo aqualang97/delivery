@@ -1,18 +1,20 @@
-package database
+package repositories
 
 import (
 	"database/sql"
 	"delivery/internal/models"
+	"github.com/aqualang97/logger/v4"
 	"log"
 )
 
 type ProductsSuppliersRepository struct {
-	conn *sql.DB
-	TX   *sql.Tx
+	conn   *sql.DB
+	TX     *sql.Tx
+	logger *logger.Logger
 }
 
-func NewProductsSuppliersRepo(conn *sql.DB, TX *sql.Tx) *ProductsSuppliersRepository {
-	return &ProductsSuppliersRepository{conn: conn, TX: TX}
+func NewProductsSuppliersRepo(conn *sql.DB, TX *sql.Tx, logger *logger.Logger) *ProductsSuppliersRepository {
+	return &ProductsSuppliersRepository{conn: conn, TX: TX, logger: logger}
 }
 func (p ProductsSuppliersRepository) IsExistProductSupplier(ps models.ProductsSuppliers) bool {
 	var exist bool
@@ -70,4 +72,14 @@ func (p ProductsSuppliersRepository) GetAllExternalProductIDByExternalSupplierID
 		listOfProdId = append(listOfProdId, extProdId)
 	}
 	return listOfProdId, err
+}
+
+func (p ProductsSuppliersRepository) IsExist(prodID, suppID int) bool {
+	var exist bool
+	err := p.conn.QueryRow("SELECT EXISTS(SELECT * FROM products_suppliers WHERE product_id=? AND supplier_id=?)", prodID, suppID).Scan(&exist)
+	if err != nil {
+		log.Println(err)
+		return false
+	}
+	return exist
 }

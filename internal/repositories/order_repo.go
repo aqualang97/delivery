@@ -1,18 +1,20 @@
-package database
+package repositories
 
 import (
 	"database/sql"
 	"delivery/internal/models"
+	"github.com/aqualang97/logger/v4"
 	"log"
 )
 
 type OrderDBRepository struct {
-	conn *sql.DB
-	TX   *sql.Tx
+	conn   *sql.DB
+	TX     *sql.Tx
+	logger *logger.Logger
 }
 
-func NewOrderRepo(conn *sql.DB, TX *sql.Tx) *OrderDBRepository {
-	return &OrderDBRepository{conn: conn, TX: TX}
+func NewOrderRepo(conn *sql.DB, TX *sql.Tx, logger *logger.Logger) *OrderDBRepository {
+	return &OrderDBRepository{conn: conn, TX: TX, logger: logger}
 }
 func (o OrderDBRepository) InsertToOrders(mo models.Order) (int, error) {
 	//if o.TX != nil {

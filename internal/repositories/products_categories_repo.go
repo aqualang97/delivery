@@ -1,18 +1,20 @@
-package database
+package repositories
 
 import (
 	"database/sql"
 	"delivery/internal/models"
+	"github.com/aqualang97/logger/v4"
 	"log"
 )
 
 type ProductsCategoriesRepo struct {
-	conn *sql.DB
-	TX   *sql.Tx
+	conn   *sql.DB
+	TX     *sql.Tx
+	logger *logger.Logger
 }
 
-func NewProductsCategoriesRepo(conn *sql.DB, TX *sql.Tx) *ProductsCategoriesRepo {
-	return &ProductsCategoriesRepo{conn: conn, TX: TX}
+func NewProductsCategoriesRepo(conn *sql.DB, TX *sql.Tx, logger *logger.Logger) *ProductsCategoriesRepo {
+	return &ProductsCategoriesRepo{conn: conn, TX: TX, logger: logger}
 }
 
 func (p ProductsCategoriesRepo) CreateCategory(category models.ProductsCategories) (int, error) {
