@@ -3,7 +3,7 @@ package models
 import "time"
 
 type Product struct {
-	Id         int
+	ID         int
 	Name       string
 	Category   int
 	ExternalID int

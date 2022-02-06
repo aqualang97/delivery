@@ -52,14 +52,14 @@ func (i IngredientRepository) DeleteIngredient(ingredient string) error {
 
 func (i IngredientRepository) GetIngredientByName(name string) (models.Ingredients, error) {
 	var ingredient models.Ingredients
-	res, err := i.conn.Query("SELECT * FROM ingredients WHERE name=(?)", name)
+	res, err := i.conn.Query("SELECT id, name FROM ingredients WHERE name=(?)", name)
 	if err != nil {
 		log.Fatal(err)
 		return ingredient, err
 	}
 	defer res.Close()
 	for res.Next() {
-		err := res.Scan(&ingredient.ID, &ingredient.Name, &ingredient.CreatedAt)
+		err := res.Scan(&ingredient.ID, &ingredient.Name)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -75,16 +75,16 @@ func (i IngredientRepository) GetIngredientIDByName(name string) (int, error) {
 	return id, err
 }
 
-func (i IngredientRepository) GetIngredientByID(id string) (models.Ingredients, error) {
+func (i IngredientRepository) GetIngredientByID(id int) (models.Ingredients, error) {
 	var ingredient models.Ingredients
-	res, err := i.conn.Query("SELECT * FROM ingredients WHERE id=(?)", id)
+	res, err := i.conn.Query("SELECT id, name FROM ingredients WHERE id=(?)", id)
 	if err != nil {
 		log.Fatal(err)
 		return ingredient, err
 	}
 	defer res.Close()
 	for res.Next() {
-		err := res.Scan(&ingredient.ID, &ingredient.Name, &ingredient.CreatedAt)
+		err := res.Scan(&ingredient.ID, &ingredient.Name)
 		if err != nil {
 			log.Fatal(err)
 		}

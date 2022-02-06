@@ -4,8 +4,9 @@ import (
 	"database/sql"
 	tempModels "delivery/development/parse_with_goroutines/models"
 	"delivery/internal/models"
-	db "delivery/internal/repositories/database"
+	db "delivery/internal/repositories"
 	"fmt"
+	"github.com/aqualang97/logger/v4"
 	"log"
 )
 
@@ -26,6 +27,7 @@ type ConnDBParse struct {
 	ProductsSuppliersRepo   *db.ProductsSuppliersRepository
 	SupplierRepo            *db.SupplierDBRepository
 	SuppliersCategoriesRepo *db.SuppliersCategoriesRepository
+	Logger                  *logger.Logger
 }
 
 func Parser(supp tempModels.Supplier, conn *sql.DB) {
@@ -37,15 +39,15 @@ func Parser(supp tempModels.Supplier, conn *sql.DB) {
 	fmt.Println("supplierID", supplierID, "productID", productExternalID)
 
 }
-func ParseFromAPI(supp models.SupplierForParse, goNum int, conn *sql.DB, TX *sql.Tx) {
+func ParseFromAPI(supp models.SupplierForParse, goNum int, conn *sql.DB, TX *sql.Tx, logger *logger.Logger) {
 	connection := ConnDBParse{
-		IngredientRepo:          db.NewIngredientRepo(conn, TX),
-		ProductRepo:             db.NewProductRepo(conn, TX),
-		ProductsCategoriesRepo:  db.NewProductsCategoriesRepo(conn, TX),
-		ProductsIngredientsRepo: db.NewProductsIngredientsRepo(conn, TX),
-		ProductsSuppliersRepo:   db.NewProductsSuppliersRepo(conn, TX),
-		SupplierRepo:            db.NewSupplierRepo(conn, TX),
-		SuppliersCategoriesRepo: db.NewSuppliersCategoriesRepo(conn, TX),
+		IngredientRepo:          db.NewIngredientRepo(conn, TX, logger),
+		ProductRepo:             db.NewProductRepo(conn, TX, logger),
+		ProductsCategoriesRepo:  db.NewProductsCategoriesRepo(conn, TX, logger),
+		ProductsIngredientsRepo: db.NewProductsIngredientsRepo(conn, TX, logger),
+		ProductsSuppliersRepo:   db.NewProductsSuppliersRepo(conn, TX, logger),
+		SupplierRepo:            db.NewSupplierRepo(conn, TX, logger),
+		SuppliersCategoriesRepo: db.NewSuppliersCategoriesRepo(conn, TX, logger),
 	}
 	suppCat := models.SuppliersCategories{
 		Name: supp.CategoryOfSupplier,
@@ -95,16 +97,16 @@ func ParseFromAPI(supp models.SupplierForParse, goNum int, conn *sql.DB, TX *sql
 
 }
 
-func ParseProdSuppByDB(extSuppID int, conn *sql.DB, TX *sql.Tx) []int {
+func ParseProdSuppByDB(extSuppID int, conn *sql.DB, TX *sql.Tx, logger *logger.Logger) []int {
 	connection := ConnDBParse{
-		ProductsSuppliersRepo: db.NewProductsSuppliersRepo(conn, TX),
+		ProductsSuppliersRepo: db.NewProductsSuppliersRepo(conn, TX, logger),
 	}
 	listProdId, _ := connection.ProductsSuppliersRepo.GetAllExternalProductIDByExternalSupplierID(extSuppID)
 	return listProdId
 }
-func ParsePriceToDB(price float64, extProdID, extSuppID, goNum int, conn *sql.DB, TX *sql.Tx) error {
+func ParsePriceToDB(price float64, extProdID, extSuppID, goNum int, conn *sql.DB, TX *sql.Tx, logger *logger.Logger) error {
 	connection := ConnDBParse{
-		ProductsSuppliersRepo: db.NewProductsSuppliersRepo(conn, TX),
+		ProductsSuppliersRepo: db.NewProductsSuppliersRepo(conn, TX, logger),
 	}
 	err := connection.ProductsSuppliersRepo.UpdatePriceByExternalData(price, extProdID, extSuppID)
 	println("goNum", goNum, "Prod", extProdID)

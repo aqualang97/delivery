@@ -17,13 +17,62 @@ func (p ProductDBRepository) GetProductByID(id int) (models.Product, error) {
 	var product models.Product
 	err := p.conn.QueryRow(
 		"SELECT id, name, category, external_id FROM products WHERE id = ?",
-		id).Scan(&product.Id, &product.Name, &product.Category, &product.ExternalID)
+		id).Scan(&product.ID, &product.Name, &product.Category, &product.ExternalID)
 	if err != nil {
 		log.Println(err)
 	}
 	return product, err
 }
+func (p ProductDBRepository) GetListOfProdInCategory(catID int) []models.Product {
+	var product models.Product
+	var listProd []models.Product
 
+	//rows, err := p.conn.Query("SELECT products.id, products.name, products.external_id FROM products INNER JOIN products_categories on products.category =?", catID)
+	rows, err := p.conn.Query("SELECT products.id, products.name, products.external_id FROM products WHERE products.category =?", catID)
+
+	if err != nil {
+		p.logger.Error("GetListOfProdInCategory \n", err)
+	}
+	defer rows.Close()
+	for rows.Next() {
+		err := rows.Scan(&product.ID, &product.Name, &product.ExternalID)
+		if err != nil {
+			log.Println(err)
+			return listProd
+		}
+		listProd = append(listProd, product)
+	}
+
+	return listProd
+}
+func (p ProductDBRepository) GetListOfProdBySupplier(suppID int) []models.Product {
+	var product models.Product
+	var listProd []models.Product
+
+	rows, err := p.conn.Query("SELECT products_suppliers.product_id FROM products_suppliers where supplier_id=?", suppID)
+	if err != nil {
+		p.logger.Error("GetListOfProdBySupplier \n", err)
+	}
+	defer rows.Close()
+	for rows.Next() {
+		err := rows.Scan(&product.ID)
+		if err != nil {
+			log.Println(err)
+			return listProd
+
+		}
+		err = p.conn.QueryRow(
+			"SELECT name, category, external_id FROM products WHERE id = ?",
+			product.ID).Scan(&product.Name, &product.Category, &product.ExternalID)
+		if err != nil {
+			log.Println(err)
+		}
+
+		listProd = append(listProd, product)
+	}
+
+	return listProd
+}
 func (p ProductDBRepository) InsertToProducts(mp models.Position, productCategoryID int) (int, error) {
 	res, err := p.conn.Exec(
 		"INSERT products(name, category, external_id) VALUES(?, ?, ?)",

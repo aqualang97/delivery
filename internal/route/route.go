@@ -15,7 +15,9 @@ func Router(
 	m := middlware.NewMiddleware(&handlerProvider)
 	mux.HandleFunc("/suppliers", repProvider.Suppliers)
 	mux.HandleFunc("/suppliers/", repProvider.SupplierAndProdWithID)
-	//mux.HandleFunc("/suppliers/**/products/", repProvider.IndividualProduct)
+
+	mux.HandleFunc("/categories", repProvider.Categories)
+	mux.HandleFunc("/categories/", repProvider.ListOfProductsInSpecificCategory)
 
 	http.HandleFunc("/login", handlerProvider.Login)
 	http.Handle("/profile", m.RequireAuthentication(http.HandlerFunc(handlerProvider.Profile)))
