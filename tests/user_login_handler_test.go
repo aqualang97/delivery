@@ -7,7 +7,7 @@ import (
 	"net/http/httptest"
 )
 
-type authLoginHandlerTestSuite struct {
+type AuthLoginHandlerTestSuite struct {
 	suite.Suite
 
 	loginHandler *handProv.HandlerProvider

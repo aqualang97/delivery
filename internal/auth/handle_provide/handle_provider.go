@@ -4,7 +4,7 @@ import (
 	config "delivery/configs"
 	"delivery/internal/auth/services"
 	"delivery/internal/models"
-	r "delivery/internal/repositories"
+	i "delivery/internal/repository_innterfaces"
 	"encoding/json"
 	"fmt"
 	"github.com/aqualang97/logger/v4"
@@ -16,9 +16,9 @@ import (
 )
 
 type HandlerProvider struct {
-	UserRepository             *r.UserDBRepository
-	UserAccessTokenRepository  *r.UserAccessTokenRepository
-	UserRefreshTokenRepository *r.UserRefreshTokenRepository
+	UserRepository             i.UserRepositoryInterface
+	UserAccessTokenRepository  i.UserAccessTokenRepositoryInterface
+	UserRefreshTokenRepository i.UserRefreshTokenRepositoryInterface
 	Config                     *config.Config
 	Logger                     *logger.Logger
 }
@@ -88,7 +88,7 @@ func (hp *HandlerProvider) Login(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			log.Fatal(err)
 		}
-
+		println(accessString)
 		w.WriteHeader(http.StatusOK)
 		json.NewEncoder(w).Encode(accessString)
 		json.NewEncoder(w).Encode(refreshString)
