@@ -4,7 +4,7 @@ import (
 	"database/sql"
 	config "delivery/configs"
 	handProv "delivery/internal/auth/handle_provide"
-	rp "delivery/internal/repositories/database"
+	rp "delivery/internal/repositories"
 	"delivery/internal/repositories_provider"
 	"delivery/internal/route"
 	"fmt"
@@ -29,25 +29,27 @@ func (s *Server) Start() error {
 		fmt.Println(err)
 		os.Exit(1)
 	}
-
+	myLogger := s.cfg.Logger
 	handlerProvider := &handProv.HandlerProvider{
-		UserRepository:             rp.NewUserRepo(conn, TX),
-		UserAccessTokenRepository:  rp.NewAccessTokenRepo(conn, TX),
-		UserRefreshTokenRepository: rp.NewRefreshTokenRepo(conn, TX),
+		UserRepository:             rp.NewUserRepo(conn, TX, myLogger),
+		UserAccessTokenRepository:  rp.NewAccessTokenRepo(conn, TX, myLogger),
+		UserRefreshTokenRepository: rp.NewRefreshTokenRepo(conn, TX, myLogger),
 		Config:                     s.cfg,
+		Logger:                     myLogger,
 	}
 
 	repProvider := &repositories_provider.RepositoriesProvider{
-		IngredientRepository:          rp.NewIngredientRepo(conn, TX, s.cfg.Logger),
-		OrderProductRepository:        rp.NewOrderProductRepo(conn, TX),
-		OrderRepository:               rp.NewOrderRepo(conn, TX),
-		ProductRepository:             rp.NewProductRepo(conn, TX),
-		ProductsCategoriesRepository:  rp.NewProductsCategoriesRepo(conn, TX),
-		ProductsIngredientsRepository: rp.NewProductsIngredientsRepo(conn, TX),
-		ProductsSuppliersRepository:   rp.NewProductsSuppliersRepo(conn, TX),
-		SupplierRepository:            rp.NewSupplierRepo(conn, TX),
-		SuppliersCategoriesRepository: rp.NewSuppliersCategoriesRepo(conn, TX),
-		UserContactRepository:         rp.NewUserContactRepo(conn, TX),
+		IngredientRepository:          rp.NewIngredientRepo(conn, TX, myLogger),
+		OrderProductRepository:        rp.NewOrderProductRepo(conn, TX, myLogger),
+		OrderRepository:               rp.NewOrderRepo(conn, TX, myLogger),
+		ProductRepository:             rp.NewProductRepo(conn, TX, myLogger),
+		ProductsCategoriesRepository:  rp.NewProductsCategoriesRepo(conn, TX, myLogger),
+		ProductsIngredientsRepository: rp.NewProductsIngredientsRepo(conn, TX, myLogger),
+		ProductsSuppliersRepository:   rp.NewProductsSuppliersRepo(conn, TX, myLogger),
+		SupplierRepository:            rp.NewSupplierRepo(conn, TX, myLogger),
+		SuppliersCategoriesRepository: rp.NewSuppliersCategoriesRepo(conn, TX, myLogger),
+		UserContactRepository:         rp.NewUserContactRepo(conn, TX, myLogger),
+		Logger:                        myLogger,
 	}
 
 	//m := middlware.NewMiddleware(handlerProvider)

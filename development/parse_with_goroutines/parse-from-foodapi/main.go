@@ -7,6 +7,7 @@ import (
 	"delivery/development/parse_with_goroutines/parse-from-foodapi/worker_pool"
 	"delivery/internal/models"
 	open "delivery/internal/repositories/database/connection"
+	myLog "delivery/logs"
 	"log"
 	"sync"
 	"time"
@@ -33,19 +34,20 @@ func main() {
 	pool := worker_pool.NewPool(4)
 	count := pool.Count
 	wg := sync.WaitGroup{}
-
+	logger := myLog.LogInit()
 	for i := 0; i < count; i++ {
 		go func(i int) {
-			pool.Start(&wg, i, conn, TX)
+			pool.Start(&wg, i, conn, TX, logger)
 
 		}(i)
 		go func(i int) {
-			pool.StartParsePrice(&wg, i, conn, TX)
+			pool.StartParsePrice(&wg, i, conn, TX, logger)
 		}(i)
 
 		wg.Add(2)
 	}
 	allSupp := request.GetSuppliers()
+
 	for i, s := range allSupp.Suppliers {
 		println("shop", i)
 		menu := request.GetMenuWithSuppID(i + 1)
@@ -55,7 +57,7 @@ func main() {
 	for {
 		time.Sleep(10 * time.Second)
 		for suppID, _ := range allSupp.Suppliers {
-			listProdId := parser.ParseProdSuppByDB(suppID+1, conn, TX)
+			listProdId := parser.ParseProdSuppByDB(suppID+1, conn, TX, logger)
 			for _, prodID := range listProdId {
 
 				//можно конечно и не делать запрос на GetProductFromAPI,

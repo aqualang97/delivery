@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"delivery/development/parse_with_goroutines/models/parser"
 	"delivery/internal/models"
+	"github.com/aqualang97/logger/v4"
 	"sync"
 )
 
@@ -45,14 +46,14 @@ func (pool *WorkerPool) StopParsePrice() {
 	}
 }
 
-func (pool *WorkerPool) Start(wg *sync.WaitGroup, goNum int, conn *sql.DB, TX *sql.Tx) {
+func (pool *WorkerPool) Start(wg *sync.WaitGroup, goNum int, conn *sql.DB, TX *sql.Tx, logger *logger.Logger) {
 	//var wg *sync.WaitGroup
 	var supp models.SupplierForParse
 	defer wg.Done()
 	for {
 		select {
 		case supp = <-pool.StartSendData:
-			parser.ParseFromAPI(supp, goNum, conn, TX)
+			parser.ParseFromAPI(supp, goNum, conn, TX, logger)
 		case <-pool.StopSend:
 			return
 		}
@@ -83,13 +84,13 @@ func (pool *WorkerPool) Start(wg *sync.WaitGroup, goNum int, conn *sql.DB, TX *s
 	//}
 	//wg.Wait()
 }
-func (pool *WorkerPool) StartParsePrice(wg *sync.WaitGroup, goNum int, conn *sql.DB, TX *sql.Tx) {
+func (pool *WorkerPool) StartParsePrice(wg *sync.WaitGroup, goNum int, conn *sql.DB, TX *sql.Tx, logger *logger.Logger) {
 	var prod models.ProductsSuppliers
 	defer wg.Done()
 	for {
 		select {
 		case prod = <-pool.StartSendProd:
-			_ = parser.ParsePriceToDB(prod.Price, prod.ExternalProductID, prod.ExternalSupplierID+1, goNum, conn, TX)
+			_ = parser.ParsePriceToDB(prod.Price, prod.ExternalProductID, prod.ExternalSupplierID+1, goNum, conn, TX, logger)
 
 		case <-pool.StopSend:
 			return

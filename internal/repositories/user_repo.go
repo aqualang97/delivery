@@ -1,20 +1,22 @@
-package database
+package repositories
 
 import (
 	"database/sql"
 	"delivery/internal/models"
+	"github.com/aqualang97/logger/v4"
 	"log"
 )
 
 var name string
 
 type UserDBRepository struct {
-	conn *sql.DB
-	TX   *sql.Tx
+	conn   *sql.DB
+	TX     *sql.Tx
+	logger *logger.Logger
 }
 
-func NewUserRepo(conn *sql.DB, TX *sql.Tx) *UserDBRepository {
-	return &UserDBRepository{conn: conn, TX: TX}
+func NewUserRepo(conn *sql.DB, TX *sql.Tx, logger *logger.Logger) *UserDBRepository {
+	return &UserDBRepository{conn: conn, TX: TX, logger: logger}
 }
 func (udbr UserDBRepository) GetUserById(id int) (models.User, error) {
 	var user models.User

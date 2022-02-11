@@ -1,18 +1,20 @@
-package database
+package repositories
 
 import (
 	"database/sql"
 	"delivery/internal/models"
+	"github.com/aqualang97/logger/v4"
 	"log"
 )
 
 type UserContactRepository struct {
-	conn *sql.DB
-	TX   *sql.Tx
+	conn   *sql.DB
+	TX     *sql.Tx
+	logger *logger.Logger
 }
 
-func NewUserContactRepo(conn *sql.DB, TX *sql.Tx) *UserContactRepository {
-	return &UserContactRepository{conn: conn, TX: TX}
+func NewUserContactRepo(conn *sql.DB, TX *sql.Tx, logger *logger.Logger) *UserContactRepository {
+	return &UserContactRepository{conn: conn, TX: TX, logger: logger}
 }
 
 func (c UserContactRepository) CreateUserInfo(data models.UserContactData) error {

@@ -1,19 +1,21 @@
-package database
+package repositories
 
 import (
 	"database/sql"
 	"delivery/internal/models"
+	"github.com/aqualang97/logger/v4"
 	"log"
 	"time"
 )
 
 type UserRefreshTokenRepository struct {
-	conn *sql.DB
-	TX   *sql.Tx
+	conn   *sql.DB
+	TX     *sql.Tx
+	logger *logger.Logger
 }
 
-func NewRefreshTokenRepo(conn *sql.DB, TX *sql.Tx) *UserRefreshTokenRepository {
-	return &UserRefreshTokenRepository{conn: conn, TX: TX}
+func NewRefreshTokenRepo(conn *sql.DB, TX *sql.Tx, logger *logger.Logger) *UserRefreshTokenRepository {
+	return &UserRefreshTokenRepository{conn: conn, TX: TX, logger: logger}
 }
 
 func (t UserRefreshTokenRepository) InsertRefreshToken(userToken models.UserRefreshToken) error {

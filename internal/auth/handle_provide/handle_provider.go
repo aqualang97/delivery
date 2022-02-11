@@ -4,9 +4,10 @@ import (
 	config "delivery/configs"
 	"delivery/internal/auth/services"
 	"delivery/internal/models"
-	r "delivery/internal/repositories/database"
+	r "delivery/internal/repositories"
 	"encoding/json"
 	"fmt"
+	"github.com/aqualang97/logger/v4"
 	"golang.org/x/crypto/bcrypt"
 	"log"
 	"net/http"
@@ -19,6 +20,7 @@ type HandlerProvider struct {
 	UserAccessTokenRepository  *r.UserAccessTokenRepository
 	UserRefreshTokenRepository *r.UserRefreshTokenRepository
 	Config                     *config.Config
+	Logger                     *logger.Logger
 }
 
 func (hp *HandlerProvider) Login(w http.ResponseWriter, r *http.Request) {

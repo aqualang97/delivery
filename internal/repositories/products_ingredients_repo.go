@@ -1,18 +1,20 @@
-package database
+package repositories
 
 import (
 	"database/sql"
 	"delivery/internal/models"
+	"github.com/aqualang97/logger/v4"
 	"log"
 )
 
 type ProductsIngredientsRepository struct {
-	conn *sql.DB
-	TX   *sql.Tx
+	conn   *sql.DB
+	TX     *sql.Tx
+	logger *logger.Logger
 }
 
-func NewProductsIngredientsRepo(conn *sql.DB, TX *sql.Tx) *ProductsIngredientsRepository {
-	return &ProductsIngredientsRepository{conn: conn, TX: TX}
+func NewProductsIngredientsRepo(conn *sql.DB, TX *sql.Tx, logger *logger.Logger) *ProductsIngredientsRepository {
+	return &ProductsIngredientsRepository{conn: conn, TX: TX, logger: logger}
 }
 
 func (i ProductsIngredientsRepository) InsertProductIngredient(productID, ingredientID int) error {

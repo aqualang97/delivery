@@ -1,20 +1,22 @@
-package database
+package repositories
 
 import (
 	"database/sql"
 	"delivery/internal/models"
 	"fmt"
+	"github.com/aqualang97/logger/v4"
 	"log"
 	"time"
 )
 
 type UserAccessTokenRepository struct {
-	conn *sql.DB
-	TX   *sql.Tx
+	conn   *sql.DB
+	TX     *sql.Tx
+	logger *logger.Logger
 }
 
-func NewAccessTokenRepo(conn *sql.DB, TX *sql.Tx) *UserAccessTokenRepository {
-	return &UserAccessTokenRepository{conn: conn, TX: TX}
+func NewAccessTokenRepo(conn *sql.DB, TX *sql.Tx, logger *logger.Logger) *UserAccessTokenRepository {
+	return &UserAccessTokenRepository{conn: conn, TX: TX, logger: logger}
 }
 func (t UserAccessTokenRepository) InsertAccessToken(userToken models.UserAccessToken) error {
 	/*var userId int

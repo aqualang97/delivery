@@ -1,18 +1,20 @@
-package database
+package repositories
 
 import (
 	"database/sql"
 	"delivery/internal/models"
+	"github.com/aqualang97/logger/v4"
 	"log"
 )
 
 type SupplierDBRepository struct {
-	conn *sql.DB
-	TX   *sql.Tx
+	conn   *sql.DB
+	TX     *sql.Tx
+	logger *logger.Logger
 }
 
-func NewSupplierRepo(conn *sql.DB, TX *sql.Tx) *SupplierDBRepository {
-	return &SupplierDBRepository{conn: conn, TX: TX}
+func NewSupplierRepo(conn *sql.DB, TX *sql.Tx, logger *logger.Logger) *SupplierDBRepository {
+	return &SupplierDBRepository{conn: conn, TX: TX, logger: logger}
 }
 
 //models.Supplier изменил на SupplierForParse Для парсинга
