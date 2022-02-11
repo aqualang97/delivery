@@ -4,7 +4,7 @@ import "time"
 
 type SuppliersCategories struct {
 	ID        int
-	name      string
+	Name      string
 	CreatedAt *time.Time
 	UpdatedAt *time.Time
 }

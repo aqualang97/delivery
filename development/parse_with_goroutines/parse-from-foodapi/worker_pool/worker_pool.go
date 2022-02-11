@@ -2,8 +2,8 @@ package worker_pool
 
 import (
 	"database/sql"
-	"delivery/development/parse_with_goroutines/models"
 	"delivery/development/parse_with_goroutines/models/parser"
+	"delivery/internal/models"
 	"sync"
 )
 
@@ -16,16 +16,20 @@ import (
 
 type WorkerPool struct {
 	Count         int
-	StartSendData chan models.Supplier //modelsParse.SupplierJSON
-	StopSend      chan bool            // like flag for switch
+	StartSendData chan models.SupplierForParse //modelsParse.SupplierJSON
+	StopSend      chan bool                    // like flag for switch
+	StartSendProd chan models.ProductsSuppliers
+	StopSendProd  chan bool
 	//New           Constructor
 }
 
 func NewPool(count int) *WorkerPool {
 	return &WorkerPool{
 		Count:         count,
-		StartSendData: make(chan models.Supplier), // modelsParse.SupplierJSON
+		StartSendData: make(chan models.SupplierForParse), // modelsParse.SupplierJSON
 		StopSend:      make(chan bool),
+		StartSendProd: make(chan models.ProductsSuppliers),
+		StopSendProd:  make(chan bool),
 		//New:           new,
 	}
 }
@@ -33,17 +37,22 @@ func (pool *WorkerPool) Stop() {
 	for i := 0; i < pool.Count; i++ {
 		pool.StopSend <- false
 	}
-
 }
 
-func (pool *WorkerPool) Start(wg *sync.WaitGroup, i int, conn *sql.DB) {
+func (pool *WorkerPool) StopParsePrice() {
+	for i := 0; i < pool.Count; i++ {
+		pool.StopSend <- false
+	}
+}
+
+func (pool *WorkerPool) Start(wg *sync.WaitGroup, goNum int, conn *sql.DB, TX *sql.Tx) {
 	//var wg *sync.WaitGroup
-	var supp models.Supplier
+	var supp models.SupplierForParse
 	defer wg.Done()
 	for {
 		select {
 		case supp = <-pool.StartSendData:
-			parser.Parser(supp, conn)
+			parser.ParseFromAPI(supp, goNum, conn, TX)
 		case <-pool.StopSend:
 			return
 		}
@@ -73,4 +82,18 @@ func (pool *WorkerPool) Start(wg *sync.WaitGroup, i int, conn *sql.DB) {
 	//	wg.Add(1)
 	//}
 	//wg.Wait()
+}
+func (pool *WorkerPool) StartParsePrice(wg *sync.WaitGroup, goNum int, conn *sql.DB, TX *sql.Tx) {
+	var prod models.ProductsSuppliers
+	defer wg.Done()
+	for {
+		select {
+		case prod = <-pool.StartSendProd:
+			_ = parser.ParsePriceToDB(prod.Price, prod.ExternalProductID, prod.ExternalSupplierID+1, goNum, conn, TX)
+
+		case <-pool.StopSend:
+			return
+		}
+
+	}
 }

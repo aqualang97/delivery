@@ -1,8 +1,10 @@
-package repositories
+package services
 
 import (
 	"errors"
 	"github.com/golang-jwt/jwt"
+	"golang.org/x/crypto/bcrypt"
+	"log"
 	"strings"
 	"time"
 )
@@ -25,6 +27,21 @@ func GenerateToken(userID, lifeTimeMinutes int, secret string) (string, error) {
 	return token.SignedString([]byte(secret))
 }
 
+func GetHashOfToken(tokenString string) (string, error) {
+	hashToken, err := bcrypt.GenerateFromPassword([]byte(tokenString), bcrypt.DefaultCost)
+	if err != nil {
+		log.Println()
+	}
+	return string(hashToken), err
+}
+
+func CompareHashTokenDBAndRequest(hashTokenDB, tokenReq string) bool {
+	if err := bcrypt.CompareHashAndPassword([]byte(hashTokenDB), []byte(tokenReq)); err != nil {
+		log.Println(err)
+		return false
+	}
+	return true
+}
 func GetTokenFromBearerString(bearerString string) string {
 	if bearerString == "" {
 		return ""
@@ -43,7 +60,26 @@ func GetTokenFromBearerString(bearerString string) string {
 	return token
 }
 
-func ValidateToken(tokenString, secret string) (*JWTCustomClaims, error) {
+//переписал без клеймсов
+func ValidateToken(tokenString, secret string) (bool, error) {
+
+	token, err := jwt.Parse(tokenString,
+		func(token *jwt.Token) (interface{}, error,
+		) {
+			return []byte(secret), nil
+		})
+	if err != nil {
+		return false, err
+	}
+
+	if !token.Valid {
+		return false, errors.New("Invalid token")
+	}
+
+	return true, nil
+}
+
+func Claims(tokenString, secret string) (*JWTCustomClaims, error) {
 	token, err := jwt.ParseWithClaims(tokenString, &JWTCustomClaims{},
 		func(token *jwt.Token) (interface{}, error,
 		) {
@@ -52,9 +88,9 @@ func ValidateToken(tokenString, secret string) (*JWTCustomClaims, error) {
 	if err != nil {
 		return nil, err
 	}
-
+	//без проверки на валидность
 	claims, ok := token.Claims.(*JWTCustomClaims)
-	if !ok || !token.Valid {
+	if !ok {
 		return nil, errors.New("failed to parse token claims")
 	}
 	return claims, nil

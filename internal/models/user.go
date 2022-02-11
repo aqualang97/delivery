@@ -6,10 +6,33 @@ import (
 
 type User struct {
 	ID           int
-	Name         string
 	Email        string
+	Login        string
 	PasswordHash string
 	CreatedAt    *time.Time
+	UpdatedAt    *time.Time
+}
+
+type LoginRequest struct {
+	Email    string
+	Password string
+}
+
+type RegistrationRequest struct {
+	Email    string `json:"email"`
+	Login    string `json:"login"`
+	Password string `json:"password"`
+}
+
+type UserResponse struct {
+	ID    int
+	Email string
+	Login string
+}
+
+type UserRequestPairTokens struct {
+	AccessToken  string `json:"access_token"`
+	RefreshToken string `json:"refresh_token"`
 }
 
 //type UserToken struct {
