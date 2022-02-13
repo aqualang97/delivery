@@ -1,0 +1,3 @@
+alter table orders
+    add status enum ('empty', 'formatting', 'not paid', 'in processing', 'paid', 'completed') not null;
+

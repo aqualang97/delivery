@@ -2,11 +2,9 @@ package models
 
 import "time"
 
-type Order struct {
+type SuppliersCategories struct {
 	ID        int
-	UserID    int
-	Price     float32
-	Status    string
+	Name      string
 	CreatedAt *time.Time
 	UpdatedAt *time.Time
 }
