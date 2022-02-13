@@ -3,7 +3,6 @@ package repositories
 import (
 	"database/sql"
 	"delivery/internal/models"
-	"fmt"
 	"github.com/aqualang97/logger/v4"
 	"log"
 	"time"
@@ -45,7 +44,6 @@ func (t UserAccessTokenRepository) InsertAccessToken(userToken models.UserAccess
 
 	_, err := t.conn.Exec("INSERT users_access_tokens(user_id, token, expired_at, expired) VALUES(?, ?, ?, ?)",
 		userToken.UserID, userToken.AccessToken, userToken.ExpiredAt, userToken.Expired)
-	fmt.Println(userToken.ExpiredAt)
 
 	if err != nil {
 		return err
