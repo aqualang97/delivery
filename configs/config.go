@@ -28,6 +28,7 @@ func NewConfig(l *logger.Logger) *Config {
 	}
 	accessLifetimeMinutes, _ := strconv.Atoi(os.Getenv("ACCESS_LIFE_TIME"))
 	refreshLifetimeMinutes, _ := strconv.Atoi(os.Getenv("REFRESH_LIFE_TIME"))
+
 	return &Config{
 		Port:                   os.Getenv("PORT"),
 		AccessSecret:           os.Getenv("ACCESS_SECRET"),
@@ -38,4 +39,5 @@ func NewConfig(l *logger.Logger) *Config {
 		Driver:                 os.Getenv("DRIVER"),
 		DataSourceName:         os.Getenv("DATA_SOURCE_NAME"),
 	}
+
 }
