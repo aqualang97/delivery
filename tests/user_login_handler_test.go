@@ -1,21 +1,44 @@
 package tests
 
 import (
-	handProv "delivery/internal/auth/handle_provide"
-	"delivery/internal/auth/middlware"
+	config "delivery/configs"
+	"delivery/internal/controllers"
+	myLog "delivery/logs"
 	"github.com/stretchr/testify/suite"
-	"net/http/httptest"
 )
 
-type AuthLoginHandlerTestSuite struct {
+type AuthHandlerTestSuite struct {
 	suite.Suite
-
-	loginHandler *handProv.HandlerProvider
-	testSRV      *httptest.Server
+	cfg            *config.Config
+	authController controllers.AuthController
+	//testSRV        *httptest.Server
 }
-type MiddlewareTestSuite struct {
-	suite.Suite
 
-	middleware middlware.Middleware
-	testSRV    *httptest.Server
+func (suite *AuthHandlerTestSuite) SetupSuite() {
+	cfg := &config.Config{
+		AccessSecret:           "access",
+		RefreshSecret:          "refresh",
+		AccessLifetimeMinutes:  1,
+		RefreshLifetimeMinutes: 1,
+		Logger:                 myLog.LogInit(),
+	}
+
+	suite.cfg = cfg
 }
+
+func (suite *AuthHandlerTestSuite) SetupTest() {
+
+}
+func (suite *AuthHandlerTestSuite) TearDownSuite() {
+
+}
+func (suite *AuthHandlerTestSuite) TearDownTest() {
+
+}
+
+//type MiddlewareTestSuite struct {
+//	suite.Suite
+//
+//	middleware middlware.Middleware
+//	testSRV    *httptest.Server
+//}
