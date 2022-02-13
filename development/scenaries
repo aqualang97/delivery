@@ -1,6 +1,3 @@
-alter table products_categories
-    modify name VARCHAR(50) not null;
-
-create unique index products_categories_name_uindex
-    on products_categories (name);
+alter table orders
+    add status enum ('empty', 'formatting', 'not paid', 'in processing', 'paid', 'completed') not null;
 

@@ -14,12 +14,15 @@ func Router(
 ) {
 	m := middlware.NewMiddleware(&handlerProvider)
 	mux.HandleFunc("/suppliers", repProvider.Suppliers)
-	mux.HandleFunc("/suppliers/", repProvider.IndividualSupplier)
+	mux.HandleFunc("/suppliers/", repProvider.SupplierAndProdWithID)
 
-	http.HandleFunc("/login", handlerProvider.Login)
-	http.Handle("/profile", m.RequireAuthentication(http.HandlerFunc(handlerProvider.Profile)))
-	http.HandleFunc("/refresh", handlerProvider.Refresh)
-	http.HandleFunc("/registration", handlerProvider.Registration)
-	http.Handle("/logout", m.RequireAuthentication(http.HandlerFunc(handlerProvider.Logout)))
+	mux.HandleFunc("/categories", repProvider.Categories)
+	mux.HandleFunc("/categories/", repProvider.ListOfProductsInSpecificCategory)
+	mux.HandleFunc("/all-products", repProvider.ListOfAllProducts)
+	mux.HandleFunc("/login", handlerProvider.Login)
+	mux.Handle("/profile", m.RequireAuthentication(http.HandlerFunc(handlerProvider.Profile)))
+	mux.HandleFunc("/refresh", handlerProvider.Refresh)
+	mux.HandleFunc("/registration", handlerProvider.Registration)
+	mux.Handle("/logout", m.RequireAuthentication(http.HandlerFunc(handlerProvider.Logout)))
 
 }
