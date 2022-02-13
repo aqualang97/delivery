@@ -32,14 +32,14 @@ func (o OrderDBRepository) InsertToOrders(mo models.Order) (int, error) {
 	//}
 	res, err := o.conn.Exec(
 		"INSERT orders(user_id, price, status)VALUES(?, ?, ?) RETURNING id",
-		mo.UserId, mo.Price, mo.Status)
+		mo.UserID, mo.Price, mo.Status)
 	id, _ := res.LastInsertId()
 	return int(id), err
 }
 
 func (o OrderDBRepository) UpdateOrdersByID(mo *models.Order) error {
 	_, err := o.conn.Exec("UPDATE  orders SET (price, status) VALUES( ?, ?) WHERE id = ?",
-		mo.Price, mo.Status, mo.Id)
+		mo.Price, mo.Status)
 	if err != nil {
 		log.Fatal(err)
 		return err
@@ -49,18 +49,26 @@ func (o OrderDBRepository) UpdateOrdersByID(mo *models.Order) error {
 
 func (o OrderDBRepository) UpdateOrdersByUserID(mo *models.Order) error {
 	_, err := o.conn.Exec("UPDATE  orders SET (price, status) VALUES(?, ?) WHERE user_id = ?",
-		mo.Price, mo.Status, mo.UserId)
+		mo.Price, mo.Status, mo.UserID)
 	if err != nil {
 		log.Fatal(err)
 		return err
 	}
 	return err
 }
-func (o OrderDBRepository) GetOrderByID(id string) (models.Order, error) {
+func (o OrderDBRepository) GetOrderByID(id int) (models.Order, error) {
 	var mo models.Order
 	err := o.conn.QueryRow(
 		"SELECT * FROM users WHERE id = ?",
-		id).Scan(&mo.Id, &mo.UserId, &mo.Price, &mo.Status, &mo.CreatedAt, &mo.UpdatedAt)
+		id).Scan(&mo.ID, &mo.UserID, &mo.Price, &mo.Status, &mo.CreatedAt, &mo.UpdatedAt)
+	return mo, err
+}
+
+func (o OrderDBRepository) GetOrderByUserIDNotPaidNotCompleted(userID int) (models.Order, error) {
+	var mo models.Order
+	err := o.conn.QueryRow(
+		"SELECT * FROM users WHERE user_id = ? AND status != 'completed' AND status!='paid'",
+		userID).Scan(&mo.ID, &mo.UserID, &mo.Price, &mo.Status, &mo.CreatedAt, &mo.UpdatedAt)
 	return mo, err
 }
 

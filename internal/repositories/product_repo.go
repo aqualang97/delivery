@@ -73,6 +73,26 @@ func (p ProductDBRepository) GetListOfProdBySupplier(suppID int) []models.Produc
 
 	return listProd
 }
+func (p ProductDBRepository) GetAllProducts() []models.Product {
+	var product models.Product
+	var listProd []models.Product
+
+	rows, err := p.conn.Query("SELECT id, name, category, external_id FROM products")
+	if err != nil {
+		p.logger.Error("GetListOfProdBySupplier \n", err)
+	}
+	defer rows.Close()
+	for rows.Next() {
+		err := rows.Scan(&product.ID, &product.Name, &product.Category, &product.ExternalID)
+		if err != nil {
+			log.Println(err)
+			return listProd
+
+		}
+		listProd = append(listProd, product)
+	}
+	return listProd
+}
 func (p ProductDBRepository) InsertToProducts(mp models.Position, productCategoryID int) (int, error) {
 	res, err := p.conn.Exec(
 		"INSERT products(name, category, external_id) VALUES(?, ?, ?)",
