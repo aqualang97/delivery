@@ -2,6 +2,7 @@ package repositories_provider
 
 import (
 	r "delivery/internal/repositories"
+	"encoding/json"
 	"fmt"
 	"github.com/aqualang97/logger/v4"
 	"log"
@@ -202,6 +203,19 @@ func (rp RepositoriesProvider) ListOfProductsInSpecificCategory(w http.ResponseW
 
 }
 
+func (rp RepositoriesProvider) ListOfAllProducts(w http.ResponseWriter, r *http.Request) {
+	switch r.Method {
+	case "GET":
+		listAllProducts := rp.ProductRepository.GetAllProducts()
+		data, _ := json.Marshal(listAllProducts)
+		w.Header().Add("Access-Control-Allow-Origin", "*")
+		w.Write(data)
+
+	default:
+		http.Error(w, "Only GET method is allowed", http.StatusMethodNotAllowed)
+	}
+}
+
 //
 //func (rp RepositoriesProvider) IndividualProduct(w http.ResponseWriter, r *http.Request) {
 //	switch r.Method {
@@ -230,10 +244,10 @@ func (rp RepositoriesProvider) ListOfProductsInSpecificCategory(w http.ResponseW
 //}
 
 //Ingredients of product
-
-func (rp RepositoriesProvider) IngredientsOfProduct(w http.ResponseWriter, r *http.Request) {
-
-}
+//
+//func (rp RepositoriesProvider) IngredientsOfProduct(w http.ResponseWriter, r *http.Request) {
+//
+//}
 
 func (rp RepositoriesProvider) ErrorHandler(w http.ResponseWriter, r *http.Request, status int) {
 	w.WriteHeader(status)

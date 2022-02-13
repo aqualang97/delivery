@@ -18,7 +18,7 @@ func Router(
 
 	mux.HandleFunc("/categories", repProvider.Categories)
 	mux.HandleFunc("/categories/", repProvider.ListOfProductsInSpecificCategory)
-
+	mux.HandleFunc("/all-products", repProvider.ListOfAllProducts)
 	mux.HandleFunc("/login", handlerProvider.Login)
 	mux.Handle("/profile", m.RequireAuthentication(http.HandlerFunc(handlerProvider.Profile)))
 	mux.HandleFunc("/refresh", handlerProvider.Refresh)
