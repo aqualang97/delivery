@@ -1,8 +1,8 @@
-package repository_innterfaces
+package repository_interfaces
 
 import "delivery/internal/models"
 
-//go:generate mockgen -source=service.go -destination=mocks/user.go
+//go:generate mockgen -source=/home/yurii/delivery/internal/repository_interfaces/user_interfaces.go -destination=mocks/user.go
 
 type UserRepositoryInterface interface {
 	GetUserById(id int) (models.User, error)

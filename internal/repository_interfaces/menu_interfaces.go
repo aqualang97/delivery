@@ -1,6 +1,8 @@
-package repository_innterfaces
+package repository_interfaces
 
 import "delivery/internal/models"
+
+//go:generate mockgen -source=/home/yurii/delivery/internal/repository_interfaces/menu_interfaces.go -destination=mocks/menu.go
 
 type IngredientRepositoryInterface interface {
 	IsExistIngredient(ingredient string) bool
