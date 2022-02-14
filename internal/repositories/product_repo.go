@@ -108,11 +108,11 @@ func (p ProductDBRepository) InsertToProducts(mp models.Position, productCategor
 	return int(id), err
 }
 
-func (p ProductDBRepository) UpdateProductById(mp models.Product) {
-	// ?
+func (p ProductDBRepository) UpdateProductById(mp models.Product) error {
+	var err error // ?
 	// Пока не представляю что можно тут обновлять
 	//
-	return
+	return err
 }
 
 func (p ProductDBRepository) DeleteProductByExternalID(name string, externalID int) error {

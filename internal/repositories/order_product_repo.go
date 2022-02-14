@@ -17,7 +17,7 @@ func NewOrderProductRepo(conn *sql.DB, TX *sql.Tx, logger *logger.Logger) *Order
 	return &OrderProductDBRepository{conn: conn, TX: TX, logger: logger}
 }
 
-func (o OrderProductDBRepository) InsertToOrdersProducts(mo models.OrderProducts) (int64, error) {
+func (o OrderProductDBRepository) InsertToOrdersProducts(mo models.OrderProducts) (int, error) {
 	res, err := o.conn.Exec(
 		"INSERT orders_products(product_id, order_id, numbers_of_product, purchase_price) VALUES(?, ?, ?, ?)",
 		mo.ProductId, mo.OrderId, mo.NumbersOfProduct, mo.PurchasePrice)
@@ -29,7 +29,7 @@ func (o OrderProductDBRepository) InsertToOrdersProducts(mo models.OrderProducts
 	if err != nil {
 		log.Println(err)
 	}
-	return id, err
+	return int(id), err
 }
 
 func (o OrderProductDBRepository) UpdateNumbersByProductAndOrderID(mo models.OrderProducts) error {
@@ -40,7 +40,7 @@ func (o OrderProductDBRepository) UpdateNumbersByProductAndOrderID(mo models.Ord
 	}
 	return err
 }
-func (o OrderDBRepository) GetAllProductsByOrderID(orderID int) ([]models.OrderProducts, error) {
+func (o OrderProductDBRepository) GetAllProductsByOrderID(orderID int) ([]models.OrderProducts, error) {
 	var mo models.OrderProducts
 	var productsInOrder []models.OrderProducts
 
@@ -60,7 +60,7 @@ func (o OrderDBRepository) GetAllProductsByOrderID(orderID int) ([]models.OrderP
 	return productsInOrder, err
 }
 
-func (o OrderDBRepository) DeleteProduct(order models.OrderProducts) error {
+func (o OrderProductDBRepository) DeleteProduct(order models.OrderProducts) error {
 	_, err := o.conn.Exec("DELETE FROM orders_products WHERE product_id=? AND order_id=?", order.ProductId, order.OrderId)
 	if err != nil {
 		log.Println(err)
@@ -68,7 +68,7 @@ func (o OrderDBRepository) DeleteProduct(order models.OrderProducts) error {
 	return err
 }
 
-func (o OrderDBRepository) DeleteAll(order models.OrderProducts) error {
+func (o OrderProductDBRepository) DeleteAll(order models.OrderProducts) error {
 	_, err := o.conn.Exec("DELETE FROM orders_products WHERE order_id=?", order.OrderId)
 	if err != nil {
 		log.Println(err)
