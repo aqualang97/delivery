@@ -4,7 +4,7 @@ import (
 	"database/sql"
 	config "delivery/configs"
 	rp "delivery/internal/repositories"
-	i "delivery/internal/repository_innterfaces"
+	i "delivery/internal/repository_interfaces"
 	"github.com/aqualang97/logger/v4"
 )
 

@@ -18,6 +18,7 @@ type UserDBRepository struct {
 func NewUserRepo(conn *sql.DB, TX *sql.Tx, logger *logger.Logger) *UserDBRepository {
 	return &UserDBRepository{conn: conn, TX: TX, logger: logger}
 }
+
 func (udbr UserDBRepository) GetUserById(id int) (models.User, error) {
 	var user models.User
 	err := udbr.conn.QueryRow(
