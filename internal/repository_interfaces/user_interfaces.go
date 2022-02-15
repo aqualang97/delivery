@@ -1,6 +1,8 @@
-package repository_innterfaces
+package repository_interfaces
 
 import "delivery/internal/models"
+
+//go:generate mockgen -source=/home/yurii/delivery/internal/repository_interfaces/user_interfaces.go -destination=mocks/user.go
 
 type UserRepositoryInterface interface {
 	GetUserById(id int) (models.User, error)
@@ -9,7 +11,6 @@ type UserRepositoryInterface interface {
 	CreateUser(user *models.RegistrationRequest, passwordHash string) (int, error)
 	UpdateUserById(user *models.User) error
 }
-
 type UserAccessTokenRepositoryInterface interface {
 	InsertAccessToken(userToken models.UserAccessToken) error
 	IsExistAccess(userID int) (bool, error)
@@ -30,6 +31,25 @@ type UserRefreshTokenRepositoryInterface interface {
 	DeleteNaturallyExpiredRefreshToken()
 }
 
-func n() {
+type OrderProductRepositoryInterface interface {
+	InsertToOrdersProducts(mo models.OrderProducts) (int, error)
+	UpdateNumbersByProductAndOrderID(mo models.OrderProducts) error
+	GetAllProductsByOrderID(orderID int) ([]models.OrderProducts, error)
+	DeleteProduct(order models.OrderProducts) error
+	DeleteAll(order models.OrderProducts) error
+}
+type OrderRepositoryInterface interface {
+	InsertToOrders(mo models.Order) (int, error)
+	UpdateOrdersByID(mo *models.Order) error
+	UpdateOrdersByUserID(mo *models.Order) error
+	GetOrderByID(id int) (models.Order, error)
+	GetOrderByUserIDNotPaidNotCompleted(userID int) (models.Order, error)
+	DeleteOrderByUserID(userID int) error
+}
 
+type UserContactRepositoryInterface interface {
+	CreateUserInfo(data models.UserContactData) error
+	GetUserInfoByUserID(userID int) ([]models.UserContactData, error)
+	GetUserAddressByUSerID(userID int) (string, error)
+	UpdateAddress(userID int, newAddress string) error
 }
