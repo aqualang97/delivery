@@ -40,29 +40,38 @@
 //
 
 
-const foo = async ()=>{
+const main = async ()=>{
 
     const response = await fetch('http://localhost:8080/all-products', {
         method: 'GET',
 
     });
-    await delay(1000).then(()=>{
-    })
+    await delay(1000)
     const json  = await response.json();
     for (let prod in json){
 
         let p = document.createElement('p');
-        p.setAttribute("id", `products${json[prod].ID}`);
+        let price = document.createElement('p');
 
+        let img = document.createElement('img');
+        p.setAttribute("id", `products${json[prod].ID}`);
+        price.setAttribute("id", `products${json[prod].ID}`);
+        img.src
         console.log(json[prod].Name);
-        p.innerHTML = `Number ${json[prod].ID};     Name:   ${json[prod].Name}`;
+        p.innerHTML = `Number ${json[prod].ID};     Name:   ${json[prod].name}`;
+        img.src = json[prod].image;
+
+        img.style.width = "20%"
         document.body.append(p);
-        await delay(100).then(()=>{
-        })
+        document.body.append(img);
+        price.innerHTML = `Price: ${json[prod].price}`
+        document.body.append(price);
+
+        await delay(100)
     }
 
 }
-foo()
+main()
 
 const delay = (ms) => new Promise(resolve => {
     setTimeout(()=>{
