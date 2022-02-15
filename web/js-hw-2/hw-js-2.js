@@ -40,32 +40,39 @@
 //
 
 
-const foo = async ()=>{
-
+const main = async ()=>{
     const response = await fetch('http://localhost:8080/all-products', {
         method: 'GET',
-
     });
-    await delay(1000).then(()=>{
-    })
     const json  = await response.json();
     for (let prod in json){
-
-        let p = document.createElement('p');
-        p.setAttribute("id", `products${json[prod].ID}`);
-
-        console.log(json[prod].Name);
-        p.innerHTML = `Number ${json[prod].ID};     Name:   ${json[prod].Name}`;
-        document.body.append(p);
-        await delay(100).then(()=>{
-        })
+        makeTag(json, prod)
+        await delay(100)
     }
 
 }
-foo()
+main()
 
 const delay = (ms) => new Promise(resolve => {
     setTimeout(()=>{
         resolve();
     }, ms);
 });
+
+const makeTag = (json, prod)=> {
+    let p = document.createElement('p');
+    let price = document.createElement('p');
+    let img = document.createElement('img');
+
+    p.setAttribute("id", `products${json[prod].ID}`);
+    price.setAttribute("id", `products${json[prod].ID}`);
+    p.innerHTML = `Number ${json[prod].ID};     Name:   ${json[prod].name}`;
+
+    img.src = json[prod].image;
+    img.style.width = "20%"
+
+    document.body.append(p);
+    document.body.append(img);
+    price.innerHTML = `Price: ${json[prod].price}`
+    document.body.append(price);
+}

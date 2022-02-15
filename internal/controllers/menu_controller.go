@@ -194,6 +194,7 @@ func (rp MenuController) ListOfAllProducts(w http.ResponseWriter, r *http.Reques
 	switch r.Method {
 	case "GET":
 		listAllProducts := rp.ProductRepository.GetAllProducts()
+		fmt.Println(listAllProducts)
 		data, _ := json.Marshal(listAllProducts)
 		w.Header().Add("Access-Control-Allow-Origin", "*")
 		w.Write(data)
