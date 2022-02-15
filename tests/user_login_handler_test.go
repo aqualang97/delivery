@@ -24,6 +24,7 @@ func (suite *AuthHandlerTestSuite) SetupSuite() {
 	}
 
 	suite.cfg = cfg
+
 }
 
 func (suite *AuthHandlerTestSuite) SetupTest() {

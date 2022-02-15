@@ -73,22 +73,28 @@ func (p ProductDBRepository) GetListOfProdBySupplier(suppID int) []models.Produc
 
 	return listProd
 }
-func (p ProductDBRepository) GetAllProducts() []models.Product {
-	var product models.Product
-	var listProd []models.Product
-
-	rows, err := p.conn.Query("SELECT id, name, category, external_id FROM products")
+func (p ProductDBRepository) GetAllProducts() []models.Position {
+	var product models.Position
+	var listProd []models.Position
+	//	var ingridient string
+	//	var litIngr []string
+	rows, err := p.conn.Query(
+		"SELECT products.id, products.name, pc.name, products.external_id, ps.price, ps.image AS prod_image FROM products LEFT JOIN products_categories pc ON pc.id = products.category LEFT JOIN products_suppliers ps ON products.external_id = ps.external_product_id LEFT JOIN suppliers s ON products.external_id = s.external_id")
 	if err != nil {
 		p.logger.Error("GetListOfProdBySupplier \n", err)
 	}
 	defer rows.Close()
 	for rows.Next() {
-		err := rows.Scan(&product.ID, &product.Name, &product.Category, &product.ExternalID)
+		err := rows.Scan(&product.ID, &product.Name, &product.Type, &product.ExternalID, &product.Price, &product.Image)
 		if err != nil {
 			log.Println(err)
 			return listProd
 
 		}
+		rowsI, err := p.conn.Query(
+			"SELECT products.id, products.name, pc.name, products.external_id, ps.price, ps.image AS prod_image FROM products LEFT JOIN products_categories pc ON pc.id = products.category LEFT JOIN products_suppliers ps ON products.external_id = ps.external_product_id LEFT JOIN suppliers s ON products.external_id = s.external_id")
+		defer rowsI.Close()
+
 		listProd = append(listProd, product)
 	}
 	return listProd
