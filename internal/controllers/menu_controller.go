@@ -1,10 +1,8 @@
-package repositories_provider
+package controllers
 
 import (
-	r "delivery/internal/repositories"
 	"encoding/json"
 	"fmt"
-	"github.com/aqualang97/logger/v4"
 	"log"
 	"net/http"
 	"sort"
@@ -12,23 +10,10 @@ import (
 	"strings"
 )
 
-type RepositoriesProvider struct {
-	IngredientRepository          *r.IngredientRepository
-	OrderProductRepository        *r.OrderProductDBRepository
-	OrderRepository               *r.OrderDBRepository
-	ProductRepository             *r.ProductDBRepository
-	ProductsCategoriesRepository  *r.ProductsCategoriesRepo
-	ProductsIngredientsRepository *r.ProductsIngredientsRepository
-	ProductsSuppliersRepository   *r.ProductsSuppliersRepository
-	SupplierRepository            *r.SupplierDBRepository
-	SuppliersCategoriesRepository *r.SuppliersCategoriesRepository
-	UserContactRepository         *r.UserContactRepository
-	Logger                        *logger.Logger
-}
+// Different action with suppliers, products, etc.
+// ex: /all-products, /suppliers/id-supp/products/id-prod
 
-//list of all suppliers
-
-func (rp RepositoriesProvider) Suppliers(w http.ResponseWriter, r *http.Request) {
+func (rp MenuController) Suppliers(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case "GET":
 		listOfSupp, _ := rp.SupplierRepository.GetAllSuppliers()
@@ -45,7 +30,7 @@ func (rp RepositoriesProvider) Suppliers(w http.ResponseWriter, r *http.Request)
 
 // specific suppliers
 
-func (rp RepositoriesProvider) IndividualSupplier(w http.ResponseWriter, r *http.Request) {
+func (rp MenuController) IndividualSupplier(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case "GET":
 
@@ -74,7 +59,7 @@ func (rp RepositoriesProvider) IndividualSupplier(w http.ResponseWriter, r *http
 // /suppliers/?/products/?
 // specific product of specific supplier
 
-func (rp RepositoriesProvider) SupplierAndProdWithID(w http.ResponseWriter, r *http.Request) {
+func (rp MenuController) SupplierAndProdWithID(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case "GET":
 		//supp := rp.SupplierRepository.GetSupplierByID()
@@ -88,7 +73,7 @@ func (rp RepositoriesProvider) SupplierAndProdWithID(w http.ResponseWriter, r *h
 					supp, err := rp.SupplierRepository.GetSupplierByID(suppID)
 					if err != nil {
 						log.Println(err)
-						rp.ErrorHandler(w, r, 404)
+						rp.ConfigController.ErrorHandler(w, r, 404)
 					}
 					fmt.Fprint(w, supp.Name, supp.Image)
 				case 4:
@@ -104,34 +89,34 @@ func (rp RepositoriesProvider) SupplierAndProdWithID(w http.ResponseWriter, r *h
 					}
 				case 5:
 					if parts[3] != "products" {
-						rp.ErrorHandler(w, r, 404)
+						rp.ConfigController.ErrorHandler(w, r, 404)
 						return
 					}
 					strProdID := parts[4]
 					if prodID, err := strconv.Atoi(strProdID); err == nil {
 						exist := rp.ProductsSuppliersRepository.IsExist(prodID, suppID)
 						if !exist {
-							rp.ErrorHandler(w, r, 404)
+							rp.ConfigController.ErrorHandler(w, r, 404)
 							return
 						}
 						prod, err := rp.ProductRepository.GetProductByID(prodID)
 						if err != nil {
 							log.Println(err)
-							rp.ErrorHandler(w, r, 404)
+							rp.ConfigController.ErrorHandler(w, r, 404)
 							return
 						}
 						fmt.Fprint(w, prod.Name)
 					}
 				case 6:
 					if parts[3] != "products" || parts[5] != "ingredients" {
-						rp.ErrorHandler(w, r, 404)
+						rp.ConfigController.ErrorHandler(w, r, 404)
 						return
 					}
 					strProdID := parts[4]
 					if prodID, err := strconv.Atoi(strProdID); err == nil {
 						exist := rp.ProductsSuppliersRepository.IsExist(prodID, suppID)
 						if !exist {
-							rp.ErrorHandler(w, r, 404)
+							rp.ConfigController.ErrorHandler(w, r, 404)
 							return
 						}
 						listPrIn, _ := rp.ProductsIngredientsRepository.GetIngredientsByProductID(prodID)
@@ -142,11 +127,11 @@ func (rp RepositoriesProvider) SupplierAndProdWithID(w http.ResponseWriter, r *h
 					}
 				}
 			} else {
-				rp.ErrorHandler(w, r, 404)
+				rp.ConfigController.ErrorHandler(w, r, 404)
 				return
 			}
 		} else {
-			rp.ErrorHandler(w, r, 404)
+			rp.ConfigController.ErrorHandler(w, r, 404)
 			return
 		}
 	default:
@@ -156,17 +141,19 @@ func (rp RepositoriesProvider) SupplierAndProdWithID(w http.ResponseWriter, r *h
 
 //list of categories
 
-func (rp RepositoriesProvider) Categories(w http.ResponseWriter, r *http.Request) {
+func (rp MenuController) Categories(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case "GET":
+		logger := rp.ConfigController.Logger
 		categories, err := rp.ProductsCategoriesRepository.GetAllCategories()
 		sort.Slice(categories, func(i, j int) bool {
 
 			return categories[i].ID < categories[j].ID
 		})
 		if err != nil {
-			rp.Logger.Error("Handler Categories\n", err)
-			rp.ErrorHandler(w, r, 404)
+			logger.Error("Handler Categories\n", err)
+
+			rp.ConfigController.ErrorHandler(w, r, 404)
 		}
 		for _, c := range categories {
 
@@ -182,7 +169,7 @@ func (rp RepositoriesProvider) Categories(w http.ResponseWriter, r *http.Request
 
 //ListOfProductsInSpecificCategory
 // /categories/id
-func (rp RepositoriesProvider) ListOfProductsInSpecificCategory(w http.ResponseWriter, r *http.Request) {
+func (rp MenuController) ListOfProductsInSpecificCategory(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case "GET":
 		path := r.URL.Path
@@ -203,10 +190,11 @@ func (rp RepositoriesProvider) ListOfProductsInSpecificCategory(w http.ResponseW
 
 }
 
-func (rp RepositoriesProvider) ListOfAllProducts(w http.ResponseWriter, r *http.Request) {
+func (rp MenuController) ListOfAllProducts(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case "GET":
 		listAllProducts := rp.ProductRepository.GetAllProducts()
+		fmt.Println(listAllProducts)
 		data, _ := json.Marshal(listAllProducts)
 		w.Header().Add("Access-Control-Allow-Origin", "*")
 		w.Write(data)
@@ -248,10 +236,3 @@ func (rp RepositoriesProvider) ListOfAllProducts(w http.ResponseWriter, r *http.
 //func (rp RepositoriesProvider) IngredientsOfProduct(w http.ResponseWriter, r *http.Request) {
 //
 //}
-
-func (rp RepositoriesProvider) ErrorHandler(w http.ResponseWriter, r *http.Request, status int) {
-	w.WriteHeader(status)
-	if status == http.StatusNotFound {
-		fmt.Fprint(w, "Error\n Page not found")
-	}
-}

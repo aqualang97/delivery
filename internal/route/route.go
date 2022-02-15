@@ -1,28 +1,31 @@
 package route
 
 import (
-	handProv "delivery/internal/auth/handle_provide"
 	"delivery/internal/auth/middlware"
-	"delivery/internal/repositories_provider"
+	"delivery/internal/controllers"
 	"net/http"
 )
 
 func Router(
-	handlerProvider handProv.HandlerProvider,
-	repProvider repositories_provider.RepositoriesProvider,
+	c *controllers.Controllers,
 	mux *http.ServeMux,
 ) {
-	m := middlware.NewMiddleware(&handlerProvider)
-	mux.HandleFunc("/suppliers", repProvider.Suppliers)
-	mux.HandleFunc("/suppliers/", repProvider.SupplierAndProdWithID)
+	m := middlware.NewMiddleware(c)
 
-	mux.HandleFunc("/categories", repProvider.Categories)
-	mux.HandleFunc("/categories/", repProvider.ListOfProductsInSpecificCategory)
-	mux.HandleFunc("/all-products", repProvider.ListOfAllProducts)
-	mux.HandleFunc("/login", handlerProvider.Login)
-	mux.Handle("/profile", m.RequireAuthentication(http.HandlerFunc(handlerProvider.Profile)))
-	mux.HandleFunc("/refresh", handlerProvider.Refresh)
-	mux.HandleFunc("/registration", handlerProvider.Registration)
-	mux.Handle("/logout", m.RequireAuthentication(http.HandlerFunc(handlerProvider.Logout)))
+	//Menu
+	mux.HandleFunc("/suppliers", c.Menu.Suppliers)
+	mux.HandleFunc("/suppliers/", c.Menu.SupplierAndProdWithID)
+	mux.HandleFunc("/categories", c.Menu.Categories)
+	mux.HandleFunc("/categories/", c.Menu.ListOfProductsInSpecificCategory)
+	mux.HandleFunc("/all-products", c.Menu.ListOfAllProducts)
+
+	//Auth
+	mux.HandleFunc("/login", c.Auth.Login)
+	mux.HandleFunc("/registration", c.Auth.Registration)
+	mux.Handle("/logout", m.RequireAuthentication(http.HandlerFunc(c.Auth.Logout)))
+
+	//User
+	mux.Handle("/profile", m.RequireAuthentication(http.HandlerFunc(c.User.Profile)))
+	mux.HandleFunc("/refresh", c.User.Refresh)
 
 }
