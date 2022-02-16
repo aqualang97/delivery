@@ -2,6 +2,8 @@ import Vue from "vue";
 import VueRouter from "vue-router";
 import Home from "../views/Home.vue";
 import example from "../views/example";
+import products from "../views/ProductList"
+import axios from "axios"
 
 Vue.use(VueRouter);
 
@@ -29,6 +31,11 @@ const routes = [
     path: "/example/:id",
     name: "example",
     component: example,
+  },
+  {
+    path: "/all-products",
+    name: "products",
+    component: products,
   },
 
 ];
