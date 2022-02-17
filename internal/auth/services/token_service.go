@@ -1,6 +1,7 @@
 package services
 
 import (
+	config "delivery/configs"
 	"errors"
 	"github.com/golang-jwt/jwt"
 	"golang.org/x/crypto/bcrypt"
@@ -14,6 +15,15 @@ type JWTCustomClaims struct {
 	jwt.StandardClaims
 }
 
+type TokenService struct {
+	cfg *config.Config
+}
+
+func NewTokenService(cfg *config.Config) *TokenService {
+	return &TokenService{
+		cfg: cfg,
+	}
+}
 func GenerateToken(userID, lifeTimeMinutes int, secret string) (string, error) {
 	claims := &JWTCustomClaims{
 		userID,

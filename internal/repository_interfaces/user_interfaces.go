@@ -6,8 +6,8 @@ import "delivery/internal/models"
 
 type UserRepositoryInterface interface {
 	GetUserById(id int) (models.User, error)
-	GetUserByEmail(email string) (models.User, error)
-	GetUserByLogin(login string) (models.User, error)
+	GetUserByEmail(email string) (*models.User, error)
+	GetUserByLogin(login string) (*models.User, error)
 	CreateUser(user *models.RegistrationRequest, passwordHash string) (int, error)
 	UpdateUserById(user *models.User) error
 }

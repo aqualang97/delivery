@@ -21,14 +21,14 @@ type Controllers struct {
 }
 
 type AuthController struct {
-	ConfigController           ConfigController
+	ConfigController           *ConfigController
 	UserRepository             i.UserRepositoryInterface
 	UserAccessTokenRepository  i.UserAccessTokenRepositoryInterface
 	UserRefreshTokenRepository i.UserRefreshTokenRepositoryInterface
 }
 
 type UserController struct {
-	ConfigController           ConfigController
+	ConfigController           *ConfigController
 	UserRepository             i.UserRepositoryInterface
 	UserAccessTokenRepository  i.UserAccessTokenRepositoryInterface
 	UserRefreshTokenRepository i.UserRefreshTokenRepositoryInterface
@@ -38,7 +38,7 @@ type UserController struct {
 }
 
 type MenuController struct {
-	ConfigController              ConfigController
+	ConfigController              *ConfigController
 	IngredientRepository          i.IngredientRepositoryInterface
 	ProductRepository             i.ProductRepositoryInterface
 	ProductsCategoriesRepository  i.ProductsCategoriesRepositoryInterface
@@ -48,17 +48,26 @@ type MenuController struct {
 	SuppliersCategoriesRepository i.SuppliersCategoriesRepositoryInterface
 }
 
+func NewAuthController(config *config.Config, myLogger *logger.Logger, userRepo i.UserRepositoryInterface, userAccess i.UserAccessTokenRepositoryInterface, userRefresh i.UserRefreshTokenRepositoryInterface) *AuthController {
+	return &AuthController{
+		ConfigController:           &ConfigController{Config: config, Logger: myLogger},
+		UserRepository:             userRepo,
+		UserAccessTokenRepository:  userAccess,
+		UserRefreshTokenRepository: userRefresh,
+	}
+}
+
 func NewController(config *config.Config, myLogger *logger.Logger, conn *sql.DB, TX *sql.Tx) *Controllers {
 	return &Controllers{
 		ConfigController: ConfigController{Config: config, Logger: myLogger},
 		Auth: AuthController{
-			ConfigController:           ConfigController{Config: config, Logger: myLogger},
+			ConfigController:           &ConfigController{Config: config, Logger: myLogger},
 			UserRepository:             rp.NewUserRepo(conn, TX, myLogger),
 			UserAccessTokenRepository:  rp.NewAccessTokenRepo(conn, TX, myLogger),
 			UserRefreshTokenRepository: rp.NewRefreshTokenRepo(conn, TX, myLogger),
 		},
 		User: UserController{
-			ConfigController:           ConfigController{Config: config, Logger: myLogger},
+			ConfigController:           &ConfigController{Config: config, Logger: myLogger},
 			UserRepository:             rp.NewUserRepo(conn, TX, myLogger),
 			UserAccessTokenRepository:  rp.NewAccessTokenRepo(conn, TX, myLogger),
 			UserRefreshTokenRepository: rp.NewRefreshTokenRepo(conn, TX, myLogger),
@@ -67,7 +76,7 @@ func NewController(config *config.Config, myLogger *logger.Logger, conn *sql.DB,
 			OrderProductRepository:     rp.NewOrderProductRepo(conn, TX, myLogger),
 		},
 		Menu: MenuController{
-			ConfigController:              ConfigController{Config: config, Logger: myLogger},
+			ConfigController:              &ConfigController{Config: config, Logger: myLogger},
 			IngredientRepository:          rp.NewIngredientRepo(conn, TX, myLogger),
 			ProductRepository:             rp.NewProductRepo(conn, TX, myLogger),
 			ProductsCategoriesRepository:  rp.NewProductsCategoriesRepo(conn, TX, myLogger),
