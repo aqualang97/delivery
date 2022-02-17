@@ -2,8 +2,16 @@
   <div id="app">
     <div id="nav">
       <router-link to="/">Home</router-link> |
+      <router-link to="/homehome">HomeHome</router-link> |
       <router-link to="/about">About</router-link> |
-      <router-link to="/example">example</router-link>
+      <router-link to="/example">example</router-link> |
+      <router-link to="/all-products">products</router-link> |
+      <router-link to="/sign-in">Sign In</router-link> |
+      <router-link to="/sign-up">Sign Up</router-link> |
+      <router-link to="/cart">Cart</router-link> |
+      <router-link to="/categories">Categories</router-link> |
+      <router-link to="/suppliers">Suppliers</router-link>
+
     </div>
     <router-view />
   </div>
