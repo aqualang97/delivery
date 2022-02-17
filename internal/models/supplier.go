@@ -3,7 +3,7 @@ package models
 import "time"
 
 type Supplier struct {
-	ID                 int
+	ID                 int    `json:"ID"`
 	Name               string `json:"name"`
 	CategoryOfSupplier int    `json:"type"`
 
@@ -11,7 +11,7 @@ type Supplier struct {
 	//EndOfWork          *time.Time
 	WorkingHours WorkingHours `json:"workingHours"`
 	Image        string       `json:"image"`
-	ExternalID   int          `json:"id"`
+	ExternalID   int          `json:"externalID"`
 	CreatedAt    *time.Time
 	UpdatedAt    *time.Time
 }
