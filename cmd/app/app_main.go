@@ -32,7 +32,6 @@ func main() {
 	conn.SetMaxIdleConns(2)
 	conn.SetMaxIdleConns(10)
 	conn.SetConnMaxLifetime(10 * time.Second)
-
 	s := server.NewServer(cfg, conn)
 
 	err = s.Start()

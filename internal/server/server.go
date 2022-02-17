@@ -4,7 +4,7 @@ import (
 	"database/sql"
 	config "delivery/configs"
 	"delivery/internal/controllers"
-	"delivery/internal/route"
+	"delivery/internal/router"
 	"fmt"
 	"log"
 	"net/http"
@@ -32,7 +32,7 @@ func (s *Server) Start() error {
 
 	controller := controllers.NewController(s.cfg, myLogger, conn, TX)
 	mux := http.NewServeMux()
-	route.Router(controller, mux)
+	router.Router(controller, mux)
 
 	s.cfg.Logger.InfoConsole("Start listen...")
 	log.Fatal(http.ListenAndServe(s.cfg.Port, mux)) //слушаем порт 8080 для входящих запросов
