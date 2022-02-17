@@ -14,7 +14,7 @@ type Product struct {
 
 type Position struct {
 	ID          int      `json:"ID"`
-	ExternalID  int      `json:"id"`
+	ExternalID  int      `json:"external_id"`
 	Name        string   `json:"name"`
 	Price       float64  `json:"price"`
 	Image       string   `json:"image"`

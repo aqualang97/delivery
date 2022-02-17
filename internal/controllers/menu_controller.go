@@ -12,7 +12,10 @@ import (
 
 // Different action with suppliers, products, etc.
 // ex: /all-products, /suppliers/id-supp/products/id-prod
+func (rp MenuController) Home(w http.ResponseWriter, r *http.Request) {
+	//http.Redirect(w, r, fmt.Sprintf("localhost:8080/home.html"), 301)
 
+}
 func (rp MenuController) Suppliers(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case "GET":

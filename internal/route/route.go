@@ -13,6 +13,8 @@ func Router(
 	m := middlware.NewMiddleware(c)
 
 	//Menu
+	mux.HandleFunc("/", c.Menu.Home)
+
 	mux.HandleFunc("/suppliers", c.Menu.Suppliers)
 	mux.HandleFunc("/suppliers/", c.Menu.SupplierAndProdWithID)
 	mux.HandleFunc("/categories", c.Menu.Categories)
