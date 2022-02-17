@@ -12,16 +12,23 @@ import (
 
 // Different action with suppliers, products, etc.
 // ex: /all-products, /suppliers/id-supp/products/id-prod
+func (rp MenuController) Home(w http.ResponseWriter, r *http.Request) {
+	//http.Redirect(w, r, fmt.Sprintf("localhost:8080/home.html"), 301)
 
+}
 func (rp MenuController) Suppliers(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case "GET":
+		w.Header().Add("Access-Control-Allow-Origin", "*")
+
 		listOfSupp, _ := rp.SupplierRepository.GetAllSuppliers()
-		for _, supp := range listOfSupp {
-			fmt.Fprintf(w, "%d.\t Supplier: %s; Openning: %s, Closing: %s, Logo: %s \n",
-				supp.ID, supp.Name, supp.WorkingHours.Opening, supp.WorkingHours.Closing, supp.Image)
-		}
-		w.WriteHeader(http.StatusOK)
+		//for _, supp := range listOfSupp {
+		//	fmt.Fprintf(w, "%d.\t Supplier: %s; Openning: %s, Closing: %s, Logo: %s \n",
+		//		supp.ID, supp.Name, supp.WorkingHours.Opening, supp.WorkingHours.Closing, supp.Image)
+		//}
+		data, _ := json.Marshal(listOfSupp)
+		w.Write(data)
+
 	default:
 		http.Error(w, "Only GET method is allowed", http.StatusMethodNotAllowed)
 
@@ -37,6 +44,8 @@ func (rp MenuController) IndividualSupplier(w http.ResponseWriter, r *http.Reque
 		//supp := rp.SupplierRepository.GetSupplierByID()
 		path := r.URL.Path
 		parts := strings.Split(path, "/suppliers/")
+		w.Header().Add("Access-Control-Allow-Origin", "*")
+
 		if len(parts) != 2 {
 			return
 		}
@@ -62,6 +71,8 @@ func (rp MenuController) IndividualSupplier(w http.ResponseWriter, r *http.Reque
 func (rp MenuController) SupplierAndProdWithID(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case "GET":
+		w.Header().Add("Access-Control-Allow-Origin", "*")
+
 		//supp := rp.SupplierRepository.GetSupplierByID()
 		path := r.URL.Path
 		parts := strings.Split(path, "/")
@@ -75,7 +86,9 @@ func (rp MenuController) SupplierAndProdWithID(w http.ResponseWriter, r *http.Re
 						log.Println(err)
 						rp.ConfigController.ErrorHandler(w, r, 404)
 					}
-					fmt.Fprint(w, supp.Name, supp.Image)
+					//fmt.Fprint(w, supp.Name, supp.Image)
+					data, _ := json.Marshal(supp)
+					w.Write(data)
 				case 4:
 					// list of products of specific supplier
 					// /suppliers/?/products
@@ -84,9 +97,11 @@ func (rp MenuController) SupplierAndProdWithID(w http.ResponseWriter, r *http.Re
 					}
 					listOfProd := rp.ProductRepository.GetListOfProdBySupplier(suppID)
 
-					for _, p := range listOfProd {
-						fmt.Fprint(w, p.ID, "	", p.Name, p.Category, "\n")
-					}
+					//for _, p := range listOfProd {
+					//	fmt.Fprint(w, p.ID, "	", p.Name, p.Category, "\n")
+					//}
+					data, _ := json.Marshal(listOfProd)
+					w.Write(data)
 				case 5:
 					if parts[3] != "products" {
 						rp.ConfigController.ErrorHandler(w, r, 404)
@@ -105,7 +120,9 @@ func (rp MenuController) SupplierAndProdWithID(w http.ResponseWriter, r *http.Re
 							rp.ConfigController.ErrorHandler(w, r, 404)
 							return
 						}
-						fmt.Fprint(w, prod.Name)
+						data, _ := json.Marshal(prod)
+						w.Write(data)
+						//fmt.Fprint(w, prod.Name)
 					}
 				case 6:
 					if parts[3] != "products" || parts[5] != "ingredients" {
@@ -144,6 +161,8 @@ func (rp MenuController) SupplierAndProdWithID(w http.ResponseWriter, r *http.Re
 func (rp MenuController) Categories(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case "GET":
+		w.Header().Add("Access-Control-Allow-Origin", "*")
+
 		logger := rp.ConfigController.Logger
 		categories, err := rp.ProductsCategoriesRepository.GetAllCategories()
 		sort.Slice(categories, func(i, j int) bool {
@@ -154,12 +173,17 @@ func (rp MenuController) Categories(w http.ResponseWriter, r *http.Request) {
 			logger.Error("Handler Categories\n", err)
 
 			rp.ConfigController.ErrorHandler(w, r, 404)
-		}
-		for _, c := range categories {
-
-			fmt.Fprint(w, c.ID, "	", c.Name, "\n")
 
 		}
+		//for _, c := range categories {
+		//
+		//	fmt.Fprint(w, c.ID, "	", c.Name, "\n")
+		//
+		//}
+
+		data, _ := json.Marshal(categories)
+		fmt.Println(categories)
+		w.Write(data)
 	default:
 		{
 			http.Error(w, "Only GET method is allowed", http.StatusMethodNotAllowed)
@@ -172,6 +196,8 @@ func (rp MenuController) Categories(w http.ResponseWriter, r *http.Request) {
 func (rp MenuController) ListOfProductsInSpecificCategory(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case "GET":
+		w.Header().Add("Access-Control-Allow-Origin", "*")
+
 		path := r.URL.Path
 		parts := strings.Split(path, "/")
 		if len(parts) == 3 {
