@@ -6,6 +6,8 @@ package mock_repository_interfaces
 
 import (
 	models "delivery/internal/models"
+	"fmt"
+
 	reflect "reflect"
 
 	gomock "github.com/golang/mock/gomock"
@@ -39,6 +41,8 @@ func (m *MockUserRepositoryInterface) CreateUser(user *models.RegistrationReques
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "CreateUser", user, passwordHash)
 	ret0, _ := ret[0].(int)
+	fmt.Println(ret0)
+
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }

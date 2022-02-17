@@ -1,14 +1,23 @@
 <template>
   <div class="example">
-    Card: {{ data }} {{ title }} {{valueMax}}
+    Card: {{ data }} {{ title }} {{valueMax }} <br>
     <div :title="'Jump to: ' + $router.getRoutes()[0].name"
-         :class="{example: true, clickable: click}"
+         :class="{example: value<5, clickable: click}"
          :style="{'font-size': '25px'}"
          @click="$router.push({ name: 'Home' })"
+
     >
       {{'кликабельно'}}
     </div>
+    <div  :title="'Jump to: ' + $router.getRoutes()[1].name"
+          :class="{example: value<5, clickabl2: click}"
+          :style="{'font-size': '25px'}"
+          @click="$router.push({ name: 'About' })"
+    >
+      {{ name }} {{ data2 }} {{value}}
 
+    </div>
+    <div> <button @click="n1">button</button></div>
   </div>
 </template>
 
@@ -34,6 +43,22 @@ export default {
       type:Boolean,
     }
   },
+  data(){
+    return{
+      name: "ExampleCard",
+      data2:{a:1,b:2, c:3},
+      clickable:false,
+      value:0
+    }
+  },
+  methods:{
+    n1(){
+      this.$emit(
+          'calc'
+      )
+    }
+  }
+
 };
 </script>
 
@@ -44,5 +69,9 @@ export default {
 .clickable{
   cursor: pointer;
   color: red;
+}
+.clickabl2{
+  cursor: progress;
+  color: #ff00d5;
 }
 </style>
