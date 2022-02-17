@@ -1,4 +1,4 @@
-package route
+package router
 
 import (
 	"delivery/internal/auth/middlware"

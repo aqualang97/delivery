@@ -3,8 +3,8 @@ package models
 import "time"
 
 type ProductsCategories struct {
-	ID        int
-	Name      string
-	CreatedAt *time.Time
-	UpdatedAt *time.Time
+	ID        int        `json:"id"`
+	Name      string     `json:"name"`
+	CreatedAt *time.Time `json:"createdAt"`
+	UpdatedAt *time.Time `json:"updatedAt"`
 }

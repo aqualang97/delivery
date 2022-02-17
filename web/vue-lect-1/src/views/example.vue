@@ -3,6 +3,7 @@
     <div class="example">
       Example1 {{ $route.params.id }}
       <card :title="'Title'" :valueMax="5" :data="{a:1, b:2}" :click="true" @calc="increment"></card>
+
     </div>
     <div>
       {{val}}
