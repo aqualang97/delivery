@@ -5,6 +5,10 @@
       <div class="product">
         <div class="img-name-prod">
           <h3>{{ prodName }}</h3>
+          <div
+          >
+
+          </div>
           <img :src="imgLink" :alt="prodName">
         </div>
 
@@ -25,6 +29,7 @@
 <script>
 export default {
   name: "ProductSpecificSupplier",
+
   props:{
     idProd:Number,
     externalProdId:Number,

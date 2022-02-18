@@ -122,6 +122,7 @@ func (rp MenuController) SupplierAndProdWithID(w http.ResponseWriter, r *http.Re
 						}
 						data, _ := json.Marshal(prod)
 						w.Write(data)
+						fmt.Println(prod)
 						//fmt.Fprint(w, prod.Name)
 					}
 				case 6:

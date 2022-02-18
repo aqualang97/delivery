@@ -5,7 +5,11 @@
       <div class="product">
         <div class="img-name-prod">
           <h3>{{ prodName }}</h3>
-          <img :src="imgLink" :alt="prodName">
+          <div :title="'Jump to product:  ' + prodName + suppId + externalSuppId"
+               @click="$router.push(`/suppliers/${suppId}/products/${idProd}`)"
+          >
+            <img :src="imgLink" :alt="prodName">
+            </div>
         </div>
 
         <div class="name-price-cart">
@@ -25,6 +29,10 @@
 <script>
 export default {
   name: "Product",
+  title:{
+    type: String,
+    required: true,
+  },
   props:{
     idProd:Number,
     externalProdId:Number,
@@ -32,6 +40,11 @@ export default {
     price:Number,
     imgLink:String,
     type:String,
+
+
+
+    suppId:Number,
+    externalSuppId:Number,
 
   },
 
@@ -67,6 +80,7 @@ export default {
   padding-right: 50px;
 }
 .product-light-elem .product img{
+  cursor: pointer;
   max-width: 300px;
   display: block;
   margin-left: auto;

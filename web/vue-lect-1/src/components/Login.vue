@@ -47,12 +47,13 @@ export default {
 </script>
 
 <style scoped>
-header, main, footer{
-  max-width: 1440px;
-}
+/*header, main, footer{*/
+/*  max-width: 1440px;*/
+/*}*/
 
 
 .login-form-container{
+  display: block;
 
   background-color: #FADADD;
 }

@@ -6,7 +6,7 @@
         :id-prod="info.ID"
         :external-prod-id="info.ExternalID"
         :price="123"
-        :img-link="`asd`"
+        :img-link="info.name"
         :type="info.Category"
     >
     </product-spec-supp>
@@ -26,29 +26,21 @@ export default {
   },
 
   mounted() {
-    const  main = async () => {
-      console.log(123)
-      console.log(123)
-      console.log(123)
-      console.log(123)
-      let supp = this.$route.params.supp_id
-      let prod = this.$route.params.prod_id
 
-      const response = await fetch(  `http://localhost:8080/suppliers/${supp}/products/${prod}`
-          , {
-        method: 'GET',
-      });
-      console.log(response)
-
-      const json  = await response.json();
-      for (let prod in json){
-        console.log(json[prod].name);
-
+    if (this.$store.state.productStore.posts.length === 0){
+      const  main = async () => {
+        let supp = this.$route.params.supp_id
+        let prod = this.$route.params.prod_id
+        const response = await fetch(  `http://localhost:8080/suppliers/${supp}/products/${prod}`
+            , {
+              method: 'GET',
+            });
+        this.info = await response.json();
       }
-      this.info=json
-
+      main()
+    }else {
+      this.info = this.$store.state.productStore.posts
     }
-    main()
 
 }
 }
