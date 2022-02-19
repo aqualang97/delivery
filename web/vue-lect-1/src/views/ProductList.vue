@@ -6,13 +6,15 @@
           :key="prod.name"
           :prod-name="prod.name"
           :id-prod="prod.ID"
-          :external-prod-id="prod.externalID"
+          :external-prod-id="prod.id"
           :price="prod.price"
           :img-link="prod.image"
           :type="prod.type"
           :supp-id="prod.supplierId"
           :external-supp-id="prod.externalSuppId"
-      ></product>
+          :ingredients="prod.ingredients"
+      >
+      </product>
     </div>
 <!--    <div v-else >-->
 <!--      <div>-->

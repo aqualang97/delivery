@@ -3,6 +3,7 @@ package repositories
 import (
 	"database/sql"
 	"delivery/internal/models"
+	"fmt"
 	"github.com/aqualang97/logger/v4"
 	"log"
 )
@@ -13,101 +14,202 @@ type ProductDBRepository struct {
 	logger *logger.Logger
 }
 
-func (p ProductDBRepository) GetProductByID(id int) (models.Product, error) {
-	var product models.Product
+func (p ProductDBRepository) GetProductByID(id int) (models.Position, error) {
+	var product models.Position
+	var piProductID int
+	var ingredient string
+	var listIngr []string
 	err := p.conn.QueryRow(
-		"SELECT id, name, category, external_id FROM products WHERE id = ?",
-		id).Scan(&product.ID, &product.Name, &product.Category, &product.ExternalID)
+		"SELECT p.id, p.name, s.id, s.name, p.category, pc.id, p.external_id, pc.name, ps.price, ps.image FROM products AS p LEFT JOIN products_categories pc on pc.id = p.category left join products_suppliers ps on p.id = ps.product_id left join suppliers s on ps.supplier_id = s.id  WHERE p.id=? and p.external_id=ps.external_product_id",
+		id).Scan(&product.ID, &product.Name, &product.SupplierId, &product.SupplierName, &product.CategoryNum, &product.CategoryNum, &product.ExternalID, &product.Type, &product.Price, &product.Image)
 	if err != nil {
 		log.Println(err)
 	}
-	return product, err
-}
-func (p ProductDBRepository) GetListOfProdInCategory(catID int) []models.Product {
-	var product models.Product
-	var listProd []models.Product
 
-	//rows, err := p.conn.Query("SELECT products.id, products.name, products.external_id FROM products INNER JOIN products_categories on products.category =?", catID)
-	rows, err := p.conn.Query("SELECT products.id, products.name, products.external_id FROM products WHERE products.category =?", catID)
-
+	rowsI, err := p.conn.Query(
+		"SELECT pi.product_id, i.name FROM products_ingredients as pi LEFT JOIN ingredients i on i.id = pi.ingredient_id ORDER BY product_id")
 	if err != nil {
-		p.logger.Error("GetListOfProdInCategory \n", err)
+		p.logger.Error("GetListOfProdBySupplier \n", err)
 	}
-	defer rows.Close()
-	for rows.Next() {
-		err := rows.Scan(&product.ID, &product.Name, &product.ExternalID)
+	defer rowsI.Close()
+	for rowsI.Next() {
+		err := rowsI.Scan(&piProductID, &ingredient)
 		if err != nil {
 			log.Println(err)
-			return listProd
+			return product, err
 		}
-		listProd = append(listProd, product)
+		if piProductID != product.ID {
+			break
+		}
+		listIngr = append(listIngr, ingredient)
 	}
-
-	return listProd
+	product.Ingredients = listIngr
+	return product, err
 }
-func (p ProductDBRepository) GetListOfProdBySupplier(suppID int) []models.Product {
-	var product models.Product
-	var listProd []models.Product
+func (p ProductDBRepository) GetListOfProdInCategory(catID int) []models.Position {
+	var product models.Position
+	var listProd []models.Position
+	var piProductID int
+	var ingredient string
+	var listIngr []string
+	rowsI, err := p.conn.Query(
+		"SELECT pi.product_id, i.name FROM products_ingredients as pi LEFT JOIN ingredients i on i.id = pi.ingredient_id ORDER BY product_id")
+	if err != nil {
+		p.logger.Error("GetListOfProdBySupplier \n", err)
+	}
+	defer rowsI.Close()
 
-	rows, err := p.conn.Query("SELECT products_suppliers.product_id FROM products_suppliers where supplier_id=?", suppID)
+	rows, err := p.conn.Query(
+		"SELECT products.id, products.name, pc.name, pc.id, products.external_id, s.name, ps.price, ps.image, ps.supplier_id, ps.external_supplier_id FROM products LEFT JOIN products_categories pc ON pc.id = products.category LEFT JOIN products_suppliers ps ON products.external_id = ps.external_product_id LEFT JOIN suppliers s ON ps.external_supplier_id = s.external_id WHERE pc.id = ?", catID)
 	if err != nil {
 		p.logger.Error("GetListOfProdBySupplier \n", err)
 	}
 	defer rows.Close()
 	for rows.Next() {
-		err := rows.Scan(&product.ID)
+		err := rows.Scan(&product.ID, &product.Name, &product.Type, &product.CategoryNum, &product.ExternalID, &product.SupplierName, &product.Price, &product.Image, &product.SupplierId, &product.ExternalSuppId)
+		if err != nil {
+			log.Println(err)
+			log.Println(err)
+			log.Println(err)
+			log.Println(err)
+			return listProd
+		}
+		fmt.Println(product)
+		for rowsI.Next() {
+			err := rowsI.Scan(&piProductID, &ingredient)
+			if err != nil {
+				log.Println(err)
+				return listProd
+			}
+			if piProductID != product.ID {
+				break
+			}
+			listIngr = append(listIngr, ingredient)
+		}
+		product.Ingredients = listIngr
+		listProd = append(listProd, product)
+		listIngr = nil
+
+	}
+	return listProd
+}
+func (p ProductDBRepository) GetListOfProdBySupplier(suppID int) []models.Position {
+	var product models.Position
+	var listProd []models.Position
+	var piProductID int
+	var ingredient string
+	var listIngr []string
+	rowsI, err := p.conn.Query(
+		"SELECT pi.product_id, i.name FROM products_ingredients as pi LEFT JOIN ingredients i on i.id = pi.ingredient_id ORDER BY product_id")
+	if err != nil {
+		p.logger.Error("GetListOfProdBySupplier \n", err)
+	}
+	defer rowsI.Close()
+
+	rows, err := p.conn.Query(
+		"SELECT products.id, products.name, pc.name, pc.id, products.external_id, s.name, ps.price, ps.image, ps.supplier_id, ps.external_supplier_id FROM products LEFT JOIN products_categories pc ON pc.id = products.category LEFT JOIN products_suppliers ps ON products.external_id = ps.external_product_id LEFT JOIN suppliers s ON ps.external_supplier_id = s.external_id WHERE ps.supplier_id=?", suppID)
+	if err != nil {
+		p.logger.Error("GetListOfProdBySupplier \n", err)
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		err := rows.Scan(&product.ID, &product.Name, &product.Type, &product.CategoryNum, &product.ExternalID, &product.SupplierName, &product.Price, &product.Image, &product.SupplierId, &product.ExternalSuppId)
 		if err != nil {
 			log.Println(err)
 			return listProd
-
 		}
-		err = p.conn.QueryRow(
-			"SELECT name, category, external_id FROM products WHERE id = ?",
-			product.ID).Scan(&product.Name, &product.Category, &product.ExternalID)
-		if err != nil {
-			log.Println(err)
+		fmt.Println(product)
+		for rowsI.Next() {
+			err := rowsI.Scan(&piProductID, &ingredient)
+			if err != nil {
+				log.Println(err)
+				return listProd
+			}
+			if piProductID != product.ID {
+				break
+			}
+			listIngr = append(listIngr, ingredient)
 		}
-
+		product.Ingredients = listIngr
 		listProd = append(listProd, product)
-	}
+		listIngr = nil
 
+	}
 	return listProd
 }
 func (p ProductDBRepository) GetAllProducts() []models.Position {
 	var product models.Position
 	var listProd []models.Position
-	//	var ingridient string
-	//	var litIngr []string
+	var piProductID int
+	var ingredient string
+	var listIngr []string
+	rowsI, err := p.conn.Query(
+		"SELECT pi.product_id, i.name FROM products_ingredients as pi LEFT JOIN ingredients i on i.id = pi.ingredient_id ORDER BY product_id")
+	if err != nil {
+		p.logger.Error("GetListOfProdBySupplier \n", err)
+	}
+	defer rowsI.Close()
+
 	rows, err := p.conn.Query(
-		"SELECT products.id, products.name, pc.name, products.external_id, ps.price, ps.image, ps.supplier_id, ps.external_supplier_id AS prod_image FROM products LEFT JOIN products_categories pc ON pc.id = products.category LEFT JOIN products_suppliers ps ON products.external_id = ps.external_product_id LEFT JOIN suppliers s ON products.external_id = s.external_id")
+		"SELECT products.id, products.name, pc.name, pc.id, products.external_id, ps.price, ps.image, ps.supplier_id, s.name, ps.external_supplier_id AS prod_image FROM products LEFT JOIN products_categories pc ON pc.id = products.category LEFT JOIN products_suppliers ps ON products.external_id = ps.external_product_id LEFT JOIN suppliers s ON ps.external_supplier_id = s.external_id")
 	if err != nil {
 		p.logger.Error("GetListOfProdBySupplier \n", err)
 	}
 	defer rows.Close()
+
 	for rows.Next() {
-		err := rows.Scan(&product.ID, &product.Name, &product.Type, &product.ExternalID, &product.Price, &product.Image, &product.SupplierId, &product.ExternalSuppId)
+		err := rows.Scan(&product.ID, &product.Name, &product.Type, &product.CategoryNum, &product.ExternalID, &product.Price, &product.Image, &product.SupplierId, &product.SupplierName, &product.ExternalSuppId)
 		if err != nil {
 			log.Println(err)
 			return listProd
-
 		}
-
+		fmt.Println(product)
+		for rowsI.Next() {
+			err := rowsI.Scan(&piProductID, &ingredient)
+			if err != nil {
+				log.Println(err)
+				return listProd
+			}
+			if piProductID != product.ID {
+				break
+			}
+			listIngr = append(listIngr, ingredient)
+		}
+		product.Ingredients = listIngr
 		listProd = append(listProd, product)
+		listIngr = nil
 	}
+
 	return listProd
 }
 func (p ProductDBRepository) InsertToProducts(mp models.Position, productCategoryID int) (int, error) {
-	res, err := p.conn.Exec(
-		"INSERT products(name, category, external_id) VALUES(?, ?, ?)",
-		mp.Name, productCategoryID, mp.ExternalID)
+	var exist bool
+	var id int64
+	err := p.conn.QueryRow("SELECT EXISTS(SELECT * FROM products WHERE name=? AND external_id=?)",
+		mp.Name, mp.ExternalID).Scan(&exist)
+
 	if err != nil {
 		log.Println(err)
-		return 0, err
+		return int(id), err
 	}
-	id, err := res.LastInsertId()
-	if err != nil {
-		log.Println(err)
+
+	if !exist {
+		res, err := p.conn.Exec(
+			"INSERT products(name, category, external_id) VALUES(?, ?, ?)",
+			mp.Name, productCategoryID, mp.ExternalID)
+		if err != nil {
+			log.Println(err)
+
+			return 0, err
+		}
+		id, err := res.LastInsertId()
+		if err != nil {
+			log.Println(err)
+		}
+		return int(id), err
 	}
+
 	return int(id), err
 }
 

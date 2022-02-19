@@ -6,6 +6,7 @@ type Supplier struct {
 	ID                 int    `json:"ID"`
 	Name               string `json:"name"`
 	CategoryOfSupplier int    `json:"type"`
+	CategoryName       string `json:"categoryName"`
 
 	//StartOfWork        *time.Time
 	//EndOfWork          *time.Time

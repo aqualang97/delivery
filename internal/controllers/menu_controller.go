@@ -87,8 +87,10 @@ func (rp MenuController) SupplierAndProdWithID(w http.ResponseWriter, r *http.Re
 						rp.ConfigController.ErrorHandler(w, r, 404)
 					}
 					//fmt.Fprint(w, supp.Name, supp.Image)
+					fmt.Println(supp)
 					data, _ := json.Marshal(supp)
 					w.Write(data)
+
 				case 4:
 					// list of products of specific supplier
 					// /suppliers/?/products
@@ -100,8 +102,10 @@ func (rp MenuController) SupplierAndProdWithID(w http.ResponseWriter, r *http.Re
 					//for _, p := range listOfProd {
 					//	fmt.Fprint(w, p.ID, "	", p.Name, p.Category, "\n")
 					//}
+					fmt.Println(listOfProd)
 					data, _ := json.Marshal(listOfProd)
 					w.Write(data)
+
 				case 5:
 					if parts[3] != "products" {
 						rp.ConfigController.ErrorHandler(w, r, 404)
@@ -205,10 +209,9 @@ func (rp MenuController) ListOfProductsInSpecificCategory(w http.ResponseWriter,
 			strCatID := parts[2]
 			if categoryID, err := strconv.Atoi(strCatID); err == nil {
 				listOfProd := rp.ProductRepository.GetListOfProdInCategory(categoryID)
-				println(len(listOfProd))
-				for _, prod := range listOfProd {
-					fmt.Fprint(w, prod.ID, "	", prod.Name, "\n")
-				}
+				fmt.Println(listOfProd)
+				data, _ := json.Marshal(listOfProd)
+				w.Write(data)
 			}
 		}
 	default:

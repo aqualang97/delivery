@@ -56,6 +56,7 @@ func main() {
 	}
 	for {
 		time.Sleep(10 * time.Second)
+		println("start upd price")
 		for suppID, _ := range allSupp.Suppliers {
 			listProdId := parser.ParseProdSuppByDB(suppID+1, conn, TX, logger)
 			for _, prodID := range listProdId {

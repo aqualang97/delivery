@@ -8,7 +8,7 @@
                @click="$router.push(`/suppliers/${suppId}/products/${idProd}`)"
           >
             <img :src="imgLink" :alt="prodName">
-            </div>
+          </div>
         </div>
 
         <div class="name-price-cart">
@@ -27,12 +27,12 @@
 
 <script>
 export default {
-  name: "Product",
-  title:{
-    type: String,
-    required: true,
-  },
+  name: "ProductCategory",
   props:{
+    title:{
+      type: String,
+      required: true,
+    },
     idProd:Number,
     externalProdId:Number,
     prodName:String,
@@ -46,14 +46,14 @@ export default {
     ingredients:[]
   },
 
-}
+};
 </script>
 
 <style scoped>
 
 @font-face {
   font-family: "Corinthia";
-  //src: url("/home/yurii/delivery/web/shop/fonts/Corinthia-Regular.ttf");
+//src: url("/home/yurii/delivery/web/shop/fonts/Corinthia-Regular.ttf");
   font-weight: 400;
 }
 .product-light-list{
@@ -119,17 +119,8 @@ export default {
 
 }
 
-/*.name-price-cart .cart{*/
-/*}*/
-
-/*.name-price-cart .cart img{*/
-/*  width: 40%;*/
-
-/*}*/
-
 .corinthina-25{
   font-family: "Corinthia",serif;
   font-size: 25px;
 }
-
 </style>
