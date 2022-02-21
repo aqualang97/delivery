@@ -1,10 +1,14 @@
 //import axios from "axios";
 
 const state = () => ({
-    items: [],
-    checkoutStatus: null
+    productCart: [],
+    url: "http://localhost:8080/",
+    errors : [],
+    loaded : false
 })
-const mutations = {}
+const mutations = {
+    set
+}
 const actions = {}
 const getters = {}
 export default {
