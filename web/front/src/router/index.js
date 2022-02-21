@@ -10,6 +10,8 @@ import productSpec from "../views/ProductSpecificSupplierView";
 import categoriesList from "../views/CategoriesList";
 import suppliersList from "../views/SuppliersList";
 import HomePageView from "../views/HomePageView";
+import productCategory from "../views/ProductCategoryList";
+import productSupplier from "../views/ProductSupplierList";
 // import axios from "axios"
 
 Vue.use(VueRouter);
@@ -54,6 +56,17 @@ const routes = [
     name: "categories",
     component: categoriesList,
   },
+  {
+    path: "/products&category=:cat_id",
+    name: "product-category",
+    component: productCategory,
+  },
+  {
+    path: "/products&supplier=:supp_id",
+    name: "product-supplier",
+    component: productSupplier,
+  },
+
   {
     path: "/suppliers",
     name: "suppliers",
