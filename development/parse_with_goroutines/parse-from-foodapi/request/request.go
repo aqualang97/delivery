@@ -69,7 +69,8 @@ func GetProductFromAPI(suppID, productID int) *models.Position {
 	//it's externalID
 	resp := ReqWithCont(fmt.Sprintf("%s%s/%d%s/%d", url, endpointSupp, suppID, endpointMenu, productID))
 	var product *models.Position
-	fmt.Printf("%s%s/%d%s/%d", url, endpointSupp, suppID, endpointMenu, productID)
+	//fmt.Printf("%s%s/%d%s/%d", url, endpointSupp, suppID, endpointMenu, productID)
+	//time.Sleep(1 * time.Millisecond)
 	body, err := ioutil.ReadAll(resp.Body)
 	err = json.Unmarshal(body, &product)
 	if err != nil {

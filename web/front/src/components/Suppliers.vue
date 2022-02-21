@@ -2,11 +2,16 @@
       <div class="supplier">
         <div class="img-name-supp">
           <h3>{{ supplierName }}</h3>
-          <img :src="image" :alt="'supp img'">
+
+          <div :title="'Move to : ' + supplierName"
+               @click="$router.push(`/products&supplier=${id}`)"
+          >
+            <img :src="image" :alt="'supp img'">
+          </div>
         </div>
         <div class="type-hours-cont">
           <div class="type-hours corinthina-25">
-            <h6>Category: {{ typeOfSupp }}</h6>
+            <h6>Category: {{ nameOfType }}</h6>
             <p>Working hours: </p>
             <p> {{ opening }} - {{closing}}</p>
           </div>
@@ -21,6 +26,7 @@ export default {
     id:Number,
     supplierName:String,
     typeOfSupp:Number, //потом изменю на стринг, когда в беке добавлю
+    nameOfType:String,
     opening:String,
     closing:String,
     image:String,
@@ -48,6 +54,7 @@ export default {
 }
 
 .supplier .img-name-supp img{
+  cursor: pointer;
   max-width: 300px;
   display: block;
   margin-left: auto;

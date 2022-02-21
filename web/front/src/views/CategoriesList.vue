@@ -3,6 +3,7 @@
     <categories v-for="(category) in categoriesList"
                 :key="category.name"
                 :category-name="category.name"
+                :cat-id="category.id"
     ></categories>
   </div>
 </template>
@@ -24,10 +25,8 @@ export default {
       const json  = await response.json();
       for (let category in json){
         console.log(json[category].name);
-
       }
       this.categoriesList=json
-
     }
     main()
   }
