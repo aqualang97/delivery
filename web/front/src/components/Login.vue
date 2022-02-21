@@ -5,12 +5,12 @@
       <ul>
         <li>
           <label for="email">E-mail</label>
-          <input v-model="email" type="email" id="email" name="user_mail"
+          <input v-model="emailInput" type="email" id="email" name="user_mail"
                  placeholder="Enter E-mail" class="corinthina-25" value="" required>
         </li>
         <li>
           <label for="password">Password</label>
-          <input v-model="password" type="password" id="password" name="user_password"
+          <input v-model="passwordInput" type="password" id="password" name="user_password"
                  placeholder="Enter password" value="" class="corinthina-25" required>
         </li>
       </ul>
@@ -30,18 +30,28 @@ export default {
 
   },
   data(){
-    return {email:"", password:""}
+    return{
+      body:null,
+      emailInput:"",
+      passwordInput:"",
+    }
   },
   methods:{
-    login(){
-      let email = this.email
-      let password = this.password
-      this.$store.dispatch(
-          'login',
-          {email, password}
-      )
-      .then(()=> this.$router.push('Home')
-      ).catch(err=>console.log(err))
+    async login(){
+      let resp = await fetch("http://localhost:8080/login",{
+        method: "POST",
+        body: JSON.stringify({email:this.emailInput, password:this.passwordInput})
+      })
+
+      console.log(await resp.json())
+
+      for (let index in await resp.json()){
+        console.log(index)
+      }
+
+      localStorage.setItem('user_id', toString(resp.json.user_id))
+      // .then(()=> this.$router.push('Home')
+      // ).catch(err=>console.log(err))
 
 }}}
 </script>

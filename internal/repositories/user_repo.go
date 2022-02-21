@@ -43,6 +43,7 @@ func (udbr UserDBRepository) GetUserByEmail(email string) (*models.User, error) 
 	if err != nil {
 		return &user, err
 	}
+
 	return &user, nil
 }
 func (udbr UserDBRepository) GetUserByLogin(login string) (*models.User, error) {

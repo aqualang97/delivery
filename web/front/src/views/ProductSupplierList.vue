@@ -10,8 +10,7 @@
           :img-link="prod.image"
           :type="prod.type"
           :supp-id="prod.supplierId"
-          :external-supp-id="prod.externalSuppId"
-          :ingredients="prod.ingredients">
+          :external-supp-id="prod.externalSuppId">
     </product-supplier>
 
   </div>
@@ -26,7 +25,7 @@ export default {
   data() {
     return {
       info: null,
-      prodCat: null
+      prodCat: []
     };
   },
   mounted() {
@@ -52,15 +51,25 @@ export default {
       main()
     }else {
       console.log("else")
-      this.info = this.$store.state.productStore.posts
-//      console.log(this.info)
+      console.log(supp)
+      console.log(this.$store.state.productStore.posts)
 
-      for (let i in this.info) {
-        if (this.info[i].supplierId == supp){
-          this.prodCat.append(this.info[i])
-          this.info = this.prodCat
+      for (let i in this.$store.state.productStore.posts) {
+        console.log(this.$store.state.productStore.posts[i].supplierId)
+        if (this.$store.state.productStore.posts[i].supplierId == supp){
+          console.log(this.$store.state.productStore.posts[i])
+          this.prodCat.push(this.$store.state.productStore.posts[i])
+
         }
       }
+      // for (let i of this.$store.state.productStore.posts) {
+      //   console.log(i)
+      //
+      //
+      // }
+      this.info = this.prodCat
+
+      console.log(this.prodCat, 123)
       // console.log(this.prodCat, 123)
 
 

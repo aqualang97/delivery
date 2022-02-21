@@ -7,7 +7,7 @@ const state = () => ({
     loaded : false
 })
 const mutations = {
-    set
+
 }
 const actions = {}
 const getters = {}

@@ -44,7 +44,7 @@ export default {
         this.prodCat = await response.json();
         console.log(this.prodCat)
         for (let prod in this.prodCat){
-          console.log(this.prodCat`[prod].name)
+          console.log(this.prodCat[prod].name)
         }
       }
       main()

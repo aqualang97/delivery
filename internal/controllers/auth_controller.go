@@ -14,6 +14,7 @@ import (
 func (a AuthController) Login(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case "POST":
+		w.Header().Add("Access-Control-Allow-Origin", "*")
 		req := new(models.LoginRequest)
 		if err := json.NewDecoder(r.Body).Decode(&req); err != nil { //берем тело запроса декодим и декодим в тело запроса
 			http.Error(w, err.Error(), http.StatusBadRequest)
@@ -23,17 +24,21 @@ func (a AuthController) Login(w http.ResponseWriter, r *http.Request) {
 		}
 
 		user, err := a.UserRepository.GetUserByEmail(req.Email)
+		fmt.Println(user)
 		if err != nil {
 			http.Error(w, "invalid credentials", http.StatusBadRequest)
 			return
 		}
+		println(user.PasswordHash)
+		println(req.Password)
+
 		if err = bcrypt.CompareHashAndPassword([]byte(user.PasswordHash), []byte(req.Password)); err != nil {
 			http.Error(w, "invalid credentials", http.StatusUnauthorized)
 			return
 		}
+
 		_ = a.UserAccessTokenRepository.ExpiredAccessToken(user.ID)
 		_ = a.UserRefreshTokenRepository.ExpiredRefreshToken(user.ID)
-
 		//fmt.Println(hp.Config.AccessLifetimeMinutes)
 		cfg := a.ConfigController.Config
 		accessString, err := services.GenerateToken(user.ID, cfg.AccessLifetimeMinutes, cfg.AccessSecret)
@@ -76,9 +81,18 @@ func (a AuthController) Login(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			log.Fatal(err)
 		}
-		w.WriteHeader(http.StatusOK)
-		json.NewEncoder(w).Encode(accessString)
-		json.NewEncoder(w).Encode(refreshString)
+		resp := models.UserResponsePairTokens{
+			UserID:       user.ID,
+			AccessToken:  accessString,
+			RefreshToken: refreshString,
+		}
+		//w.WriteHeader(http.StatusOK)
+		//json.NewEncoder(w).Encode(accessString)
+		//json.NewEncoder(w).Encode(refreshString)
+
+		data, _ := json.Marshal(resp)
+		w.Write(data)
+
 	}
 }
 
