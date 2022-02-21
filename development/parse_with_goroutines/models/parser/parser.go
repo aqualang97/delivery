@@ -65,29 +65,33 @@ func ParseFromAPI(supp models.SupplierForParse, goNum int, conn *sql.DB, TX *sql
 		productCategoryID, _ := connection.ProductsCategoriesRepo.CreateCategory(prodCat)
 
 		productID, _ := connection.ProductRepo.InsertToProducts(product, productCategoryID)
-		prodSupModel := models.ProductsSuppliers{
-			ProductID:          productID,
-			SupplierID:         suppId,
-			ExternalProductID:  product.ExternalID,
-			ExternalSupplierID: supp.ExternalID,
-			Price:              product.Price,
-			Image:              product.Image,
-		}
-		exist := connection.ProductsSuppliersRepo.IsExistProductSupplier(prodSupModel)
-		if !exist {
-			//
-			_ = connection.ProductsSuppliersRepo.InsertProductSupplier(prodSupModel)
-			//
-			ingredients := product.Ingredients
-			for _, ing := range ingredients {
-				exist := connection.IngredientRepo.IsExistIngredient(ing)
-				if !exist {
-					_ = connection.IngredientRepo.InsertIngredient(ing)
+		if productID != 0 {
+			prodSupModel := models.ProductsSuppliers{
+				ProductID:          productID,
+				SupplierID:         suppId,
+				ExternalProductID:  product.ExternalID,
+				ExternalSupplierID: supp.ExternalID,
+				Price:              product.Price,
+				Image:              product.Image,
+			}
+
+			fmt.Println(prodSupModel)
+			exist := connection.ProductsSuppliersRepo.IsExistProductSupplier(prodSupModel)
+			if !exist {
+				//
+				_ = connection.ProductsSuppliersRepo.InsertProductSupplier(prodSupModel)
+				//
+				ingredients := product.Ingredients
+				for _, ing := range ingredients {
+					exist := connection.IngredientRepo.IsExistIngredient(ing)
+					if !exist {
+						_ = connection.IngredientRepo.InsertIngredient(ing)
+					}
+					ingId, _ := connection.IngredientRepo.GetIngredientIDByName(ing)
+					//
+					_ = connection.ProductsIngredientsRepo.InsertProductIngredient(productID, ingId)
+					//
 				}
-				ingId, _ := connection.IngredientRepo.GetIngredientIDByName(ing)
-				//
-				_ = connection.ProductsIngredientsRepo.InsertProductIngredient(productID, ingId)
-				//
 			}
 		}
 

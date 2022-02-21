@@ -30,4 +30,6 @@ func Router(
 	mux.Handle("/profile", m.RequireAuthentication(http.HandlerFunc(c.User.Profile)))
 	mux.HandleFunc("/refresh", c.User.Refresh)
 
+	//Cart
+	mux.HandleFunc("/products-in-cart", c.User.GetProductsInCart)
 }

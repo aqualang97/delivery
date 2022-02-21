@@ -1,11 +1,14 @@
 <template>
-
   <div class="product-light-list">
     <div class="product-light-elem">
       <div class="product">
         <div class="img-name-prod">
           <h3>{{ prodName }}</h3>
-          <img :src="imgLink" :alt="prodName">
+          <div
+               @click="$router.push(`/suppliers/${suppId}/products/${idProd}`)"
+          >
+            <img :src="imgLink" :alt="prodName">
+          </div>
         </div>
 
         <div class="name-price-cart">
@@ -24,8 +27,9 @@
 
 <script>
 export default {
-  name: "Product",
+  name: "ProductSupplier",
   props:{
+
     idProd:Number,
     externalProdId:Number,
     prodName:String,
@@ -33,16 +37,20 @@ export default {
     imgLink:String,
     type:String,
 
+    suppId:Number,
+    externalSuppId:Number,
+
+    ingredients:[]
   },
 
-}
+};
 </script>
 
 <style scoped>
 
 @font-face {
   font-family: "Corinthia";
-  //src: url("/home/yurii/delivery/web/shop/fonts/Corinthia-Regular.ttf");
+//src: url("/home/yurii/delivery/web/shop/fonts/Corinthia-Regular.ttf");
   font-weight: 400;
 }
 .product-light-list{
@@ -67,6 +75,7 @@ export default {
   padding-right: 50px;
 }
 .product-light-elem .product img{
+  cursor: pointer;
   max-width: 300px;
   display: block;
   margin-left: auto;
@@ -107,17 +116,8 @@ export default {
 
 }
 
-/*.name-price-cart .cart{*/
-/*}*/
-
-/*.name-price-cart .cart img{*/
-/*  width: 40%;*/
-
-/*}*/
-
 .corinthina-25{
   font-family: "Corinthia",serif;
   font-size: 25px;
 }
-
 </style>
