@@ -14,9 +14,9 @@ type IngredientRepositoryInterface interface {
 }
 
 type ProductRepositoryInterface interface {
-	GetProductByID(id int) (models.Product, error)
-	GetListOfProdInCategory(catID int) []models.Product
-	GetListOfProdBySupplier(suppID int) []models.Product
+	GetProductByID(id int) (models.Position, error)
+	GetListOfProdInCategory(catID int) []models.Position
+	GetListOfProdBySupplier(suppID int) []models.Position
 	GetAllProducts() []models.Position
 	InsertToProducts(mp models.Position, productCategoryID int) (int, error)
 	UpdateProductById(mp models.Product) error

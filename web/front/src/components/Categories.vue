@@ -1,7 +1,11 @@
 <template>
   <div class="categories-container">
     <div class="categories">
-      {{categoryName}}
+      <div :title="'Ingredients: ' + ingredients"
+           @click="$router.push(`/products&category=${catId}`)"
+      >
+        {{categoryName}}
+      </div>
     </div>
   </div>
 </template>
@@ -11,6 +15,8 @@ export default {
   name: "Categories",
   props:{
     categoryName:String,
+    catId:Number,
+
   }
 }
 </script>

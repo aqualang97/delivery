@@ -4,6 +4,8 @@ import (
 	"delivery/internal/auth/services"
 	"delivery/internal/models"
 	"encoding/json"
+	"fmt"
+	"log"
 	"net/http"
 	"time"
 )
@@ -108,6 +110,69 @@ func (u UserController) Refresh(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 		json.NewEncoder(w).Encode(newAccessTokenString)
 		json.NewEncoder(w).Encode(newRefreshTokenString)
+	default:
+		http.Error(w, "Only POST method is allowed", http.StatusMethodNotAllowed)
+	}
+}
+
+func (u UserController) GetProductsInCart(w http.ResponseWriter, r *http.Request) {
+	switch r.Method {
+	case "POST":
+		w.Header().Add("Access-Control-Allow-Origin", "*")
+		req := new(models.UserRequestPairTokens)
+		if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
+		refreshTokenString := req.AccessToken
+		cfg := u.ConfigController.Config
+		claims, _ := services.Claims(refreshTokenString, cfg.AccessSecret)
+		//user, err := u.UserRepository.GetUserById(claims.ID)
+		productsInOrderProd, err := u.OrderProductRepository.GetAllProductsByOrderID(claims.ID)
+		if err != nil {
+			log.Println(err)
+		}
+		fmt.Println(productsInOrderProd)
+		data, _ := json.Marshal(productsInOrderProd)
+		w.Write(data)
+	default:
+		http.Error(w, "Only POST method is allowed", http.StatusMethodNotAllowed)
+	}
+}
+
+func (u UserController) AddProductsInCart(w http.ResponseWriter, r *http.Request) {
+	switch r.Method {
+	case "POST":
+		w.Header().Add("Access-Control-Allow-Origin", "*")
+		//req := new([]models.OrderProducts)
+		var req []models.OrderProducts
+
+		if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
+		//var listOP []models.OrderProducts
+		////user, err := u.UserRepository.GetUserById(claims.ID)
+		//for i := range req{
+		//	orderProduct := models.OrderProducts{
+		//		Id:               0,
+		//		ProductId:        req[i].ProductId,
+		//		ProductName:      req[i].ProductName,
+		//		OrderId:          req[i].OrderId,
+		//		NumbersOfProduct: req[i].NumbersOfProduct,
+		//		PurchasePrice:    req[i].PurchasePrice,
+		//		AccessToken:      "",
+		//		RefreshToken:     "",
+		//		CreatedAt:        nil,
+		//		UpdatedAt:        nil,
+		//	}
+
+		//		}
+
+		err := u.OrderProductRepository.InsertToOrdersProducts(req)
+		if err != nil {
+			log.Println(err)
+		}
 	default:
 		http.Error(w, "Only POST method is allowed", http.StatusMethodNotAllowed)
 	}

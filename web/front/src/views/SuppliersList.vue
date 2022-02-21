@@ -10,6 +10,7 @@
         :closing="supp.workingHours.closing"
         :external-i-d="supp.externalID"
         :image="supp.image"
+        :name-of-type="supp.categoryName"
     ></suppliers>
   </div>
 </template>

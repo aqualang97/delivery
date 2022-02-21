@@ -7,10 +7,13 @@ import (
 )
 
 func LogInit() *myLogger.Logger {
-	logFile, err := os.OpenFile("/home/NIX/student/delivery/logs/logfile", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+	//logFile, err := os.Create("/home/NIX/student/delivery/logs/logfile")
+
+	logFile, err := os.OpenFile("/home/NIX/student/delivery/logs/newLogFile", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 	if err != nil {
 		fmt.Println(err)
-		os.Exit(1)
+		fmt.Println(err)
+		fmt.Println(err)
 	}
 	defer logFile.Close()
 

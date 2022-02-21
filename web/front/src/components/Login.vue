@@ -30,7 +30,7 @@ export default {
 
   },
   data(){
-    return {email:String, password:String}
+    return {email:"", password:""}
   },
   methods:{
     login(){
@@ -40,19 +40,20 @@ export default {
           'login',
           {email, password}
       )
-      .then(()=> this.$router.push('/')
+      .then(()=> this.$router.push('Home')
       ).catch(err=>console.log(err))
 
 }}}
 </script>
 
 <style scoped>
-header, main, footer{
-  max-width: 1440px;
-}
+/*header, main, footer{*/
+/*  max-width: 1440px;*/
+/*}*/
 
 
 .login-form-container{
+  display: block;
 
   background-color: #FADADD;
 }
