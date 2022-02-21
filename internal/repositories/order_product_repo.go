@@ -17,19 +17,24 @@ func NewOrderProductRepo(conn *sql.DB, TX *sql.Tx, logger *logger.Logger) *Order
 	return &OrderProductDBRepository{conn: conn, TX: TX, logger: logger}
 }
 
-func (o OrderProductDBRepository) InsertToOrdersProducts(mo models.OrderProducts) (int64, error) {
-	res, err := o.conn.Exec(
-		"INSERT orders_products(product_id, order_id, numbers_of_product, purchase_price) VALUES(?, ?, ?, ?)",
-		mo.ProductId, mo.OrderId, mo.NumbersOfProduct, mo.PurchasePrice)
-	if err != nil {
-		log.Println(err)
-		return 0, err
+func (o OrderProductDBRepository) InsertToOrdersProducts(moList []models.OrderProducts) error {
+	var err error
+	for i := range moList {
+		mo := moList[i]
+		_, err := o.conn.Exec(
+			"INSERT orders_products(product_id, order_id, numbers_of_product, purchase_price) VALUES(?, ?, ?, ?)",
+			mo.ProductId, mo.OrderId, mo.NumbersOfProduct, mo.PurchasePrice)
+		if err != nil {
+			log.Println(err)
+			return err
+		}
 	}
-	id, err := res.LastInsertId()
-	if err != nil {
-		log.Println(err)
-	}
-	return id, err
+
+	//id, err := res.LastInsertId()
+	//if err != nil {
+	//	log.Println(err)
+	//}
+	return err
 }
 
 func (o OrderProductDBRepository) UpdateNumbersByProductAndOrderID(mo models.OrderProducts) error {
@@ -40,27 +45,27 @@ func (o OrderProductDBRepository) UpdateNumbersByProductAndOrderID(mo models.Ord
 	}
 	return err
 }
-func (o OrderDBRepository) GetAllProductsByOrderID(orderID int) ([]models.OrderProducts, error) {
+func (o OrderProductDBRepository) GetAllProductsByOrderID(orderID int) ([]models.OrderProducts, error) {
 	var mo models.OrderProducts
-	var productsInOrder []models.OrderProducts
+	var productsInOrderProd []models.OrderProducts
 
-	rows, err := o.conn.Query("SELECT id, product_id, order_id, numbers_of_product, purchase_price FROM orders_products WHERE order_id=?", orderID)
+	rows, err := o.conn.Query("SELECT id, product_id, order_id, numbers_of_product, purchase_price, p.name FROM orders_products LEFT JOIN products as p ON orders_products.product_id=p.id WHERE order_id=?", orderID)
 	if err != nil {
 		log.Println(err)
-		return productsInOrder, err
+		return productsInOrderProd, err
 	}
 	defer rows.Close()
 	for rows.Next() {
-		err := rows.Scan(&mo.Id, &mo.ProductId, &mo.OrderId, &mo.NumbersOfProduct, &mo.PurchasePrice)
+		err := rows.Scan(&mo.Id, &mo.ProductId, &mo.OrderId, &mo.NumbersOfProduct, &mo.PurchasePrice, &mo.ProductName)
 		if err != nil {
 			log.Fatal(err)
 		}
-		productsInOrder = append(productsInOrder, mo)
+		productsInOrderProd = append(productsInOrderProd, mo)
 	}
-	return productsInOrder, err
+	return productsInOrderProd, err
 }
 
-func (o OrderDBRepository) DeleteProduct(order models.OrderProducts) error {
+func (o OrderProductDBRepository) DeleteProduct(order models.OrderProducts) error {
 	_, err := o.conn.Exec("DELETE FROM orders_products WHERE product_id=? AND order_id=?", order.ProductId, order.OrderId)
 	if err != nil {
 		log.Println(err)
@@ -68,7 +73,7 @@ func (o OrderDBRepository) DeleteProduct(order models.OrderProducts) error {
 	return err
 }
 
-func (o OrderDBRepository) DeleteAll(order models.OrderProducts) error {
+func (o OrderProductDBRepository) DeleteAll(order models.OrderProducts) error {
 	_, err := o.conn.Exec("DELETE FROM orders_products WHERE order_id=?", order.OrderId)
 	if err != nil {
 		log.Println(err)

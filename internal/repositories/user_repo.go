@@ -18,6 +18,7 @@ type UserDBRepository struct {
 func NewUserRepo(conn *sql.DB, TX *sql.Tx, logger *logger.Logger) *UserDBRepository {
 	return &UserDBRepository{conn: conn, TX: TX, logger: logger}
 }
+
 func (udbr UserDBRepository) GetUserById(id int) (models.User, error) {
 	var user models.User
 	err := udbr.conn.QueryRow(
@@ -26,7 +27,7 @@ func (udbr UserDBRepository) GetUserById(id int) (models.User, error) {
 	return user, err
 
 }
-func (udbr UserDBRepository) GetUserByEmail(email string) (models.User, error) {
+func (udbr UserDBRepository) GetUserByEmail(email string) (*models.User, error) {
 	var user models.User
 	rows, err := udbr.conn.Query("SELECT id, login, email, password FROM users WHERE email = ?", email)
 	if err != nil {
@@ -40,11 +41,11 @@ func (udbr UserDBRepository) GetUserByEmail(email string) (models.User, error) {
 		}
 	}
 	if err != nil {
-		return user, err
+		return &user, err
 	}
-	return user, nil
+	return &user, nil
 }
-func (udbr UserDBRepository) GetUserByLogin(login string) (models.User, error) {
+func (udbr UserDBRepository) GetUserByLogin(login string) (*models.User, error) {
 	var user models.User
 	rows, err := udbr.conn.Query("SELECT id, login, email, password FROM users WHERE login = ?", login)
 	if err != nil {
@@ -58,9 +59,9 @@ func (udbr UserDBRepository) GetUserByLogin(login string) (models.User, error) {
 		}
 	}
 	if err != nil {
-		return user, err
+		return &user, err
 	}
-	return user, nil
+	return &user, nil
 }
 func (udbr UserDBRepository) CreateUser(user *models.RegistrationRequest, passwordHash string) (int, error) {
 	res, err := udbr.conn.Exec("INSERT users(login, email, password) VALUES(?, ?, ?)",
