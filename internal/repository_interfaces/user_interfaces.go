@@ -32,7 +32,7 @@ type UserRefreshTokenRepositoryInterface interface {
 }
 
 type OrderProductRepositoryInterface interface {
-	InsertToOrdersProducts(mo models.OrderProducts) (int, error)
+	InsertToOrdersProducts(moList []models.OrderProducts) error
 	UpdateNumbersByProductAndOrderID(mo models.OrderProducts) error
 	GetAllProductsByOrderID(orderID int) ([]models.OrderProducts, error)
 	DeleteProduct(order models.OrderProducts) error

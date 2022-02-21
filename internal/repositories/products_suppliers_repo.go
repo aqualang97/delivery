@@ -3,6 +3,7 @@ package repositories
 import (
 	"database/sql"
 	"delivery/internal/models"
+	"fmt"
 	"github.com/aqualang97/logger/v4"
 	"log"
 )
@@ -23,15 +24,19 @@ func (p ProductsSuppliersRepository) IsExistProductSupplier(ps models.ProductsSu
 	if err != nil {
 		log.Println(err)
 	}
+
 	return exist
 }
 func (p ProductsSuppliersRepository) InsertProductSupplier(ps models.ProductsSuppliers) error {
 	_, err := p.conn.Exec(
-		"INSERT products_suppliers(product_id, supplier_id, external_product_id, external_supplier_id, price, image)VALUES(?, ?, ?, ?, ?, ?)",
+		"INSERT products_suppliers(product_id, supplier_id, external_product_id, external_supplier_id, price, image) VALUES(?, ?, ?, ?, ?, ?)",
 		ps.ProductID, ps.SupplierID, ps.ExternalProductID, ps.ExternalSupplierID, ps.Price, ps.Image)
 	if err != nil {
 		log.Println(err)
+
 	}
+	fmt.Println(ps.Price)
+	println("+++")
 	return err
 }
 
@@ -45,7 +50,7 @@ func (p ProductsSuppliersRepository) UpdatePriceByExternalData(price float64, ex
 }
 
 func (p ProductsSuppliersRepository) DeleteProductBySupplier(ps models.ProductsSuppliers) error {
-	_, err := p.conn.Exec("DELETE FROM products_suppliers WHERE supplier_id=? AND external_supplier_id=?",
+	_, err := p.conn.Exec("DELETE FROM products_suppliers WHERE supplier_id=? AND external_supplier_id=? ",
 		ps.SupplierID, ps.ExternalSupplierID)
 	if err != nil {
 		log.Println(err)

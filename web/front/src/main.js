@@ -11,6 +11,9 @@ import ProductSpecificSupplier from "./components/ProductSpecificSupplier";
 import Categories from "./components/Categories";
 import Suppliers from "./components/Suppliers";
 import HomePage from "./components/HomePage";
+import ProductCategory from "./components/ProductCategory";
+import ProductSupplier from "./components/ProductSupplier";
+
 // import example from "./views/example";
 
 Vue.config.productionTip = false;
@@ -18,6 +21,9 @@ Vue.config.productionTip = false;
 Vue.component("card", Card)
 Vue.component('product', Product)
 Vue.component('productSpecSupp', ProductSpecificSupplier)
+Vue.component('productSupplier', ProductSupplier)
+
+Vue.component('productCategory', ProductCategory)
 Vue.component("login", Login)
 Vue.component("registration", Registration)
 Vue.component("cart", Cart)
