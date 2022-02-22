@@ -5,6 +5,8 @@ import "delivery/internal/models"
 //go:generate mockgen -source=/home/yurii/delivery/internal/repository_interfaces/user_interfaces.go -destination=mocks/user.go
 
 type UserRepositoryInterface interface {
+	IsExistUserByLogin(login string) (bool, error)
+	IsExistUserByEmail(email string) (bool, error)
 	GetUserById(id int) (models.User, error)
 	GetUserByEmail(email string) (*models.User, error)
 	GetUserByLogin(login string) (*models.User, error)

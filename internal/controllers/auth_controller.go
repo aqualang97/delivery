@@ -86,7 +86,8 @@ func (a AuthController) Login(w http.ResponseWriter, r *http.Request) {
 			AccessToken:  accessString,
 			RefreshToken: refreshString,
 		}
-		//w.WriteHeader(http.StatusOK)
+
+		w.WriteHeader(http.StatusOK)
 		//json.NewEncoder(w).Encode(accessString)
 		//json.NewEncoder(w).Encode(refreshString)
 
@@ -99,6 +100,8 @@ func (a AuthController) Login(w http.ResponseWriter, r *http.Request) {
 func (a AuthController) Logout(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case "GET":
+		w.Header().Add("Access-Control-Allow-Origin", "*")
+
 		tokenString := services.GetTokenFromBearerString(r.Header.Get("Authorization"))
 		cfg := a.ConfigController.Config
 		claims, _ := services.Claims(tokenString, cfg.AccessSecret)
@@ -117,6 +120,7 @@ func (a AuthController) Logout(w http.ResponseWriter, r *http.Request) {
 func (a AuthController) Registration(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case "POST":
+		w.Header().Add("Access-Control-Allow-Origin", "*")
 
 		req := new(models.RegistrationRequest)
 		if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
@@ -124,22 +128,26 @@ func (a AuthController) Registration(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		user, err := a.UserRepository.GetUserByEmail(req.Email)
+		exist, err := a.UserRepository.IsExistUserByEmail(req.Email)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
 		}
-		if len(user.Email) != 0 {
+		if exist {
+
 			http.Error(w, "This email is already taken.", http.StatusConflict)
+			//data, _ := json.Marshal("This email is already taken.")
+			//w.WriteHeader(http.StatusConflict)
+			//w.Write(data)
 			return
 		}
 
-		user, err = a.UserRepository.GetUserByLogin(req.Login)
+		exist, err = a.UserRepository.IsExistUserByLogin(req.Login)
 		if err != nil {
-			http.Error(w, err.Error(), http.StatusBadRequest)
+			http.Error(w, err.Error(), http.StatusConflict)
 			return
 		}
-		if len(user.Login) != 0 {
+		if exist {
 			http.Error(w, "This user name is already taken.", http.StatusConflict)
 			return
 		}
@@ -150,7 +158,7 @@ func (a AuthController) Registration(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
 		}
-		user, err = a.UserRepository.GetUserByEmail(req.Email)
+		user, err := a.UserRepository.GetUserByEmail(req.Email)
 		cfg := a.ConfigController.Config
 		accessString, err := services.GenerateToken(user.ID, cfg.AccessLifetimeMinutes, cfg.AccessSecret)
 
@@ -192,6 +200,11 @@ func (a AuthController) Registration(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		err = a.UserRefreshTokenRepository.InsertRefreshToken(respRefresh)
+		resp := models.UserResponsePairTokens{
+			UserID:       user.ID,
+			AccessToken:  accessString,
+			RefreshToken: refreshString,
+		}
 
 		//Если оставляем юзера залогиненым поссле регистрации, то даем ему пару токенов
 		//user, err := authRepo.NewUserRepository().GetUserByEmail(req.Email)
@@ -199,11 +212,10 @@ func (a AuthController) Registration(w http.ResponseWriter, r *http.Request) {
 		//	http.Error(w, "invalid credentials", http.StatusUnauthorized)
 		//	return
 		//}
+		data, _ := json.Marshal(resp)
+
 		w.WriteHeader(http.StatusOK)
-		json.NewEncoder(w).Encode(respAccess)
-		json.NewEncoder(w).Encode(respRefresh)
-		json.NewEncoder(w).Encode(accessString)
-		json.NewEncoder(w).Encode(refreshString)
+		w.Write(data)
 	default:
 		http.Error(w, "Only POST method is allowed", http.StatusMethodNotAllowed)
 	}

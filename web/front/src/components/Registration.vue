@@ -20,22 +20,22 @@
 
         <li>
           <label for="confirmPasswordReg">Confirm Password</label>
-          <input v-model="confirmPassword" type="password" id="confirmPasswordReg" name="user_confirm_password_reg"
+          <input v-model="confirmPasswordReg" type="password" id="confirmPasswordReg" name="user_confirm_password_reg"
                  placeholder="Enter password" value="" class="corinthina-25" required>
         </li>
 
-        <li>
-          <label for="address">Address</label>
-          <input v-model="address" type="text" id="address" name="user_address"
-                 placeholder="Enter address" value="" class="corinthina-25" required>
-        </li>
-        <li>
-          <label for="phone">Phone Number</label>
-          <input v-model="phone" type="text" id="phone" name="user_phone"
-                 placeholder="Enter phone" value="" class="corinthina-25" required>
-        </li>
+<!--        <li>-->
+<!--          <label for="address">Address</label>-->
+<!--          <input v-model="address" type="text" id="address" name="user_address"-->
+<!--                 placeholder="Enter address" value="" class="corinthina-25" required>-->
+<!--        </li>-->
+<!--        <li>-->
+<!--          <label for="phone">Phone Number</label>-->
+<!--          <input v-model="phone" type="text" id="phone" name="user_phone"-->
+<!--                 placeholder="Enter phone" value="" class="corinthina-25" required>-->
+<!--        </li>-->
       </ul>
-      <button type="button" name="button">Registration</button>
+      <button type="button" name="button" @click="registration">Registration</button>
       <div class="return-forgot">
         <button type="button" name="button" class="btn-bg-return-colour">Return to main</button>
       </div>
@@ -55,10 +55,47 @@ export default {
       loginReg:"",
       passwordReg:"",
       confirmPasswordReg:"",
-      address:"",
-      phone:"",
     }
   },
+  methods:{
+    async registration(){
+      console.log(this.passwordReg)
+      if ((this.loginReg || this.passwordReg || this.confirmPasswordReg|| this.emailReg) === ""){
+        await alert("All fields must be completed")
+        return
+      }
+      if (this.passwordReg !==this.confirmPasswordReg){
+        await alert("The passwords are different")
+        this.passwordReg = this.confirmPasswordReg = ""
+
+        return
+
+      }
+      if (this.passwordReg.length < 8){
+        await alert("The password is short")
+        this.passwordReg = this.confirmPasswordReg = ""
+        return
+
+      }
+      localStorage.setItem('user', "")
+      let resp = await fetch("http://localhost:8080/registration",{
+        method: "POST",
+        body: JSON.stringify({email:this.emailReg, login: this.loginReg, password:this.passwordReg})
+      })
+      if (resp.status !== 200){
+        alert((await Promise.resolve(resp.text())).toString())
+        this.emailReg = this.loginReg = this.passwordReg = this.confirmPasswordReg = ""
+      }
+
+      let data = await resp.json()
+      console.log(data)
+      alert("Successful registration")
+      localStorage.setItem('user', JSON.stringify(data))
+      await this.$router.push("/cart")
+
+      // console.log((await Promise.resolve(resp.text())).toString()
+    }
+  }
 }
 </script>
 

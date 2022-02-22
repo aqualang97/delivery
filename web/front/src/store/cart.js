@@ -2,7 +2,7 @@
 
 const state = () => ({
     productCart: [],
-    url: "http://localhost:8080/",
+    url: "http://localhost:8080/products-in-cart",
     errors : [],
     loaded : false
 })

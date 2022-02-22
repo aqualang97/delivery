@@ -11,7 +11,6 @@ func Router(
 	mux *http.ServeMux,
 ) {
 	m := middlware.NewMiddleware(c)
-
 	//Menu
 	mux.HandleFunc("/", c.Menu.Home)
 

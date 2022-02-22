@@ -32,11 +32,15 @@ func (s *Server) Start() error {
 
 	controller := controllers.NewController(s.cfg, myLogger, conn, TX)
 	mux := http.NewServeMux()
-	router.Router(controller, mux)
 
+	router.Router(controller, mux)
 	s.cfg.Logger.InfoConsole("Start listen...")
 	log.Fatal(http.ListenAndServe(s.cfg.Port, mux)) //слушаем порт 8080 для входящих запросов
 
 	return err
 
+}
+
+func settingsHeader(w http.ResponseWriter) {
+	w.Header().Add("Access-Control-Allow-Origin", "*")
 }

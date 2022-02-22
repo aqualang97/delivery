@@ -27,7 +27,6 @@
 export default {
   name: "Login",
   props:{
-
   },
   data(){
     return{
@@ -38,18 +37,27 @@ export default {
   },
   methods:{
     async login(){
+      localStorage.setItem('user', "")
       let resp = await fetch("http://localhost:8080/login",{
         method: "POST",
         body: JSON.stringify({email:this.emailInput, password:this.passwordInput})
       })
-
-      console.log(await resp.json())
-
-      for (let index in await resp.json()){
-        console.log(index)
+      if (resp.status !== 200){
+        alert(resp.statusText)
+        console.log(resp.status)
+        return
       }
+      let data = await resp.json()
+      console.log(data)
+      alert("Successful authorization")
+      localStorage.setItem('user', JSON.stringify(data))
+      await this.$router.push("/cart")
 
-      localStorage.setItem('user_id', toString(resp.json.user_id))
+
+      // for (let index in await resp.json()){
+      //   console.log(index)
+      // }
+
       // .then(()=> this.$router.push('Home')
       // ).catch(err=>console.log(err))
 
