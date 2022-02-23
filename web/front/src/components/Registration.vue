@@ -92,7 +92,6 @@ export default {
       alert("Successful registration")
       localStorage.setItem('user', JSON.stringify(data))
       await this.$router.push("/cart")
-
       // console.log((await Promise.resolve(resp.text())).toString()
     }
   }

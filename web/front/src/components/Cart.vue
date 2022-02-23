@@ -26,7 +26,7 @@
     <div class="total">
       <div class="total-txt corinthina-40">
         <h2>Total payment:</h2>
-        <h6>1000 UAH</h6>
+        <h6>{{ total }} $</h6>
       </div>
       <div class="buy">
         <button type="button" name="button">Buy</button>

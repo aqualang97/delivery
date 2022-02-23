@@ -5,8 +5,15 @@
 <script>
 export default {
   name: "CartView",
-  components: {}
-
+  components: {},
+  methods:{
+    plus(numProdCart){
+      return numProdCart+=1
+    },
+    minus(numProdCart){
+      return numProdCart-=1
+    }
+  }
 }
 </script>
 

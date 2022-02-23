@@ -12,8 +12,7 @@
           :type="prod.type"
           :supp-id="prod.supplierId"
           :external-supp-id="prod.externalSuppId"
-          :ingredients="prod.ingredients"
-      >
+          :ingredients="prod.ingredients">
       </product>
     </div>
 <!--    <div v-else >-->
@@ -30,22 +29,32 @@
 export default {
   name: "ProductList",
   elem: 'prod',
-
+  props:{
+  },
   data() {
     return {
-      info: null
+      info: null,
+      numProdCart:0,
+
     };
   },
   methods:{
     getProdList(){
       this.$store.dispatch('productStore/fetch')
       console.log(this.$store.state.productStore.posts.length)
+    },
+    plus(numProdCart){
+      return numProdCart+=1
+    },
+    minus(numProdCart){
+      return numProdCart-=1
     }
 
   },
   mounted() {
     if (this.$store.state.productStore.posts.length === 0){
       this.getProdList()
+
     }
 
   }

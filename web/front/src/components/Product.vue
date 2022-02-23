@@ -16,7 +16,8 @@
             <h6>Category: {{ type }}</h6>
             <p>Price: {{ price }}$</p>
             <div class="btn-add-to-cart">
-              <button type="button" name="add-to-cart">Add!</button>
+               <button type="button" name="add-to-cart" :id="`prod${idProd}`" @click="add">Add!</button>
+
             </div>
           </div>
         </div>
@@ -42,9 +43,27 @@ export default {
 
     suppId:Number,
     externalSuppId:Number,
-
     ingredients:[]
   },
+  data(){
+    return{
+      quantity:0,
+    }
+  },
+  methods:{
+    add(){
+      this.$emit(
+          'plus', 'minus'
+      )
+      // let b = document.getElementById(`prod${this.idProd}`)
+      // b.parentNode.removeChild(b)
+      // let minus = document.createElement("minusbtn")
+      // minus.setAttribute("id", `products${this.idProd}`);
+      // minus.innerHTML = "1111111"
+      // document.body.append(minus);
+
+    }
+  }
 
 }
 </script>
