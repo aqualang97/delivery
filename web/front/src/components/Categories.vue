@@ -3,6 +3,7 @@
     <div class="categories">
       <div :title="'Ingredients: ' + ingredients"
            @click="$router.push(`/products&category=${catId}`)"
+           class="category-name"
       >
         {{categoryName}}
       </div>

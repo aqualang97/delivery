@@ -1,41 +1,38 @@
 <template>
   <main class="cart-container">
-    <div class="your-cart">
-      <h1 class="corinthina-40">Your cart</h1>
-    </div>
-    <div class="products-in-cart">
-      <div class="prod corinthina-25">
-<!--        <img src={{imgLink}}" alt="prod">-->
-        <h3>Product Name</h3>
-        <p>Price</p>
-      </div>
-      <div class="numbers">
-        <div class="minus">
-          <p>-</p>
+    <div class="product" :key="idProd" >
+      <div class="img-name-prod">
+        <h3>{{ prodName }}</h3>
+        <div :title="'Ingredients: ' + ingredients"
+             @click="$router.push(`/suppliers/${suppId}/products/${idProd}`)">
+          <img :src="imgLink" :alt="prodName" class="img-cart">
         </div>
-        <div class="num-of-products corinthina-40">
-          <p></p>
+      </div>
+      <div class="plus-minus-cont">
+        <div class="minus">
+          <p @click="minusProd(idProd)">-</p>
+        </div>
+        <div class="quantity corinthina-40">
+          <p>{{quantity}}</p>
         </div>
         <div class="plus">
-          <p>+</p>
+          <p @click="plusProd(idProd)">+</p>
+        </div>
+      </div>
+      <div class="name-price-cart">
+        <div class="name-price corinthina-25">
+          <h6>Category: {{ type }}</h6>
+          <p>Price: {{ price }}$</p>
+          <p>Sum: {{totalPosition}}</p>
         </div>
       </div>
     </div>
 
-
-    <div class="total">
-      <div class="total-txt corinthina-40">
-        <h2>Total payment:</h2>
-        <h6>{{ total }} $</h6>
-      </div>
-      <div class="buy">
-        <button type="button" name="button">Buy</button>
-      </div>
-    </div>
   </main>
 </template>
 
 <script>
+
 export default {
   name: "Cart",
   props:{
@@ -45,17 +42,93 @@ export default {
     price:Number,
     imgLink:String,
     type:String,
+    ingredients:[],
     quantity:Number,
-    total:Number
+  },
+  data(){
+    return{
+      totalPosition:this.price*this.quantity
+    }
+  },
+  methods:{
+    plusProd(prodId){
+      let  j = this.$store.state.cart.productCart;
+      for (let i in j) {
+        if (j[i].idProd === prodId){
+          this.$store.commit('cart/plusNumProd', i);
+          let newQuantity = this.$store.state.cart.productCart[i].quantity
+          this.totalPosition = (newQuantity * this.price).toFixed(2)
+          console.log(j);
+          return
+        }
+      }
+    },
+    minusProd(prodId){
+      let  j = this.$store.state.cart.productCart;
+      for (let i in j) {
+        if (j[i].idProd === prodId){
+          this.$store.commit('cart/minusNumProd', i);
+          let newQuantity = this.$store.state.cart.productCart[i].quantity
+          this.totalPosition = (newQuantity * this.price).toFixed(2)
+          console.log(this.$store.state.cart.productCart[i].quantity)
+          console.log(j)
+          return
+        }
+      }
+    }
   }
 }
 </script>
 
 <style scoped>
+
 .cart-container{
   background-color: #FADADD;
   padding-top: 50px;
   padding-bottom: 50px;
+  display: block;
+}
+
+
+.cart-container .product{
+  display: flex;
+
+  padding-left: 20px;
+  padding-right: 250px;
+  flex-direction: row;
+  justify-content: center;
+}
+
+.cart-container .product .img-name-prod{
+  flex-direction: column;
+  padding-right: 50px;
+}
+.cart-container.product .img-name-prod img{
+  cursor: pointer;
+  max-width: 300px;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  float: left;
+}
+.plus-minus-cont{
+  display: flex;
+  align-items: center;
+  font-size: 30pt;
+}
+
+.plus-minus-cont .plus{
+  cursor: pointer;
+}
+.plus-minus-cont .minus{
+  cursor: pointer;
+
+}
+.plus-minus-cont .quantity{
+
+}
+.img-cart{
+  max-width: 300px;
 }
 .your-cart{
   text-align: center;
@@ -104,15 +177,6 @@ export default {
 }
 .numbers .plus img, .numbers .minus img{
   width: 100%;
-}
-
-.numbers{
-  display: flex;
-  padding-left: 50px;
-}
-.num-of-products{
-  display: flex;
-  align-items: center;
 }
 
 .total{

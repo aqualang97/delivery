@@ -56,20 +56,13 @@ export default {
 //      console.log(this.info)
 
       for (let i in this.info) {
-
-
         if (this.info[i].categoryNum == cat){
           this.prodCat.push(this.info[i])
           console.log(this.prodCat)
         }
-
       }
-
       // console.log(this.prodCat, 123)
-
-
     }
-
 }
 }
 </script>

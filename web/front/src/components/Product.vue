@@ -16,8 +16,7 @@
             <h6>Category: {{ type }}</h6>
             <p>Price: {{ price }}$</p>
             <div class="btn-add-to-cart">
-               <button type="button" name="add-to-cart" :id="`prod${idProd}`" @click="add">Add!</button>
-
+                             <button  type="button" name="add-to-cart" :id="`prod${idProd}`" @click="addToCart(idProd)" >Add!</button>
             </div>
           </div>
         </div>
@@ -43,7 +42,8 @@ export default {
 
     suppId:Number,
     externalSuppId:Number,
-    ingredients:[]
+    ingredients:[],
+    quantityInCart:Number
   },
   data(){
     return{
@@ -55,14 +55,60 @@ export default {
       this.$emit(
           'plus', 'minus'
       )
-      // let b = document.getElementById(`prod${this.idProd}`)
-      // b.parentNode.removeChild(b)
-      // let minus = document.createElement("minusbtn")
-      // minus.setAttribute("id", `products${this.idProd}`);
-      // minus.innerHTML = "1111111"
-      // document.body.append(minus);
+      let b = document.getElementById(`prod${this.idProd}`)
+      b.parentNode.removeChild(b)
+      let minus = document.createElement("minusbtn")
+      minus.setAttribute("id", `products${this.idProd}`);
+      minus.innerHTML = "1111111"
+      document.body.append(minus);
+    },
+    addToCart(prodIdAdd){
+      const prod = {
+        idProd:this.idProd,
+        externalProdId:this.externalProdId,
+        prodName:this.prodName,
+        price:this.price,
+        imgLink:this.imgLink,
+        type:this.type,
 
+        suppId:this.suppId,
+        externalSuppId:this.externalSuppId,
+        ingredients:this.ingredients,
+
+        quantity:this.quantity
+      }
+
+      let  j = this.$store.state.cart.productCart
+      console.log(j.length)
+      if (j.length === 0){
+        this.$store.commit('cart/addProdToCart', prod)
+        console.log(j)
+
+      }else {
+        for (let i in j) {
+          if (j[i].idProd === prodIdAdd){
+            this.$store.commit('cart/plusNumProd', i)
+            console.log(j)
+            return
+          }
+        }
+        this.$store.commit('cart/addProdToCart', prod)
+        console.log(j)
+
+      }
+
+        // if(prod in  this.$store.state.cart.productCart){
+      //   console.log(this.$store.state.cart.quantity)
+      //   // this.$store.commit('cart/updateNumProd',  )
+      //   console.log("+")
+      //
+      // }else {
+      //   this.$store.commit('cart/addProdToCart', prod)
+      //   console.log("-")
+      // }
+      // console.log(this.$store.state.cart)
     }
+
   }
 
 }

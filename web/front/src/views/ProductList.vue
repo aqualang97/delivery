@@ -3,7 +3,7 @@
     <div>
       <product
           v-for="(prod) in $store.state.productStore.posts"
-          :key="prod.name"
+          :key="prod.ID"
           :prod-name="prod.name"
           :id-prod="prod.ID"
           :external-prod-id="prod.id"
@@ -54,7 +54,6 @@ export default {
   mounted() {
     if (this.$store.state.productStore.posts.length === 0){
       this.getProdList()
-
     }
 
   }

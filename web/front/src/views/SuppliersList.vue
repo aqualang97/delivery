@@ -1,5 +1,6 @@
 <template>
   <div>
+
     <suppliers
         v-for="(supp) in info"
         :key="supp.name"

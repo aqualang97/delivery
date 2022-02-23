@@ -46,11 +46,18 @@ func main() {
 
 		wg.Add(2)
 	}
-	allSupp := request.GetSuppliers()
-
+	allSupp, err := request.GetSuppliers()
+	if err != nil {
+		log.Println(err, "\n Can't parse supplier")
+		return
+	}
 	for i, s := range allSupp.Suppliers {
 		println("shop", i)
-		menu := request.GetMenuWithSuppID(i + 1)
+		menu, err := request.GetMenuWithSuppID(i + 1)
+		if err != nil {
+			log.Println(err, "\n Can't parse menu")
+			continue
+		}
 		s.Menu = menu.Menu
 		pool.StartSendData <- s
 	}
@@ -60,12 +67,15 @@ func main() {
 		for suppID, _ := range allSupp.Suppliers {
 			listProdId := parser.ParseProdSuppByDB(suppID+1, conn, TX, logger)
 			for _, prodID := range listProdId {
-
 				//можно конечно и не делать запрос на GetProductFromAPI,
 				// но раз он есть, можем походить конкретно по продукту
 
 				// либо могу выташить все экстернал айди из бд и пройтись по ним
-				position := request.GetProductFromAPI(suppID+1, prodID)
+				position, err := request.GetProductFromAPI(suppID+1, prodID)
+				if err != nil {
+					log.Println(err, "\n Can't parse price")
+					continue
+				}
 				//_ = parser.ParsePriceToDB(position.Price, prodID, suppID+1, conn, TX)
 				var prodSupp models.ProductsSuppliers
 				prodSupp.Price = position.Price
