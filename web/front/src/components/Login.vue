@@ -54,9 +54,7 @@ export default {
       console.log(data)
       alert("Successful authorization")
       localStorage.setItem('user', JSON.stringify(data))
-      await this.$router.push("/cart")
-
-
+        await this.$router.push("/cart")
       // for (let index in await resp.json()){
       //   console.log(index)
       // }

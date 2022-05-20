@@ -25,7 +25,7 @@
                 <div v-if="j.idProd === idProd" >
                   <button type="button" name="plus-to-cart" :id="`plus-prod${idProd}`" @click="plusToCart(idProd)">+</button>
                   <p>{{j.quantity}}</p>
-                  <button type="button" name="minus-from-cart" :id="`-munus-prod${idProd}`" @click="minusFromCart(idProd)">-</button>
+                  <button type="button" name="minus-from-cart" :id="`munus-prod${idProd}`" @click="minusFromCart(idProd)">-</button>
                 </div>
               </div>
             </div>

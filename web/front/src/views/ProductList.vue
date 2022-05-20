@@ -11,11 +11,11 @@
     <div class="sorted">
       <div class="categories">
         <p>Categories</p>
-        <categories-list/>
+        <categories-list class="categories-cont"/>
       </div>
       <div class="supplier">
         <p>Suppliers</p>
-        <suppliers-list/>
+        <suppliers-list class="supplier-cont"/>
       </div>
     </div>
     <div>
@@ -125,10 +125,19 @@ export default {
   border: #f28ec1 1px dashed;
   border-radius: 9px;
   margin: 0;
+
 }
 .sorted .supplier{
   border: #f28ec1 1px dashed;
   border-radius: 9px;
   margin: 0;
 }
+.sorted .categories .categories-cont{
+
+}
+.sorted .supplier .supplier-cont{
+
+}
+
+
 </style>

@@ -61,5 +61,7 @@ export default {
 .categories-sort li{
   cursor: pointer;
   margin: 5px;
+  padding: 5px;
+
 }
 </style>

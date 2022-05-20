@@ -102,10 +102,22 @@ func (a AuthController) Logout(w http.ResponseWriter, r *http.Request) {
 
 		tokenString := services.GetTokenFromBearerString(r.Header.Get("Authorization"))
 		cfg := a.ConfigController.Config
-		claims, _ := services.Claims(tokenString, cfg.AccessSecret)
+		claims, err := services.Claims(tokenString, cfg.AccessSecret)
+		if err != nil {
+			cfg.Logger.Error("Auth err", err)
+			return
+		}
 		//user, err := hp.UserRepository.GetUserById(claims.ID)
-		_ = a.UserRefreshTokenRepository.ExpiredRefreshToken(claims.ID)
-		_ = a.UserAccessTokenRepository.ExpiredAccessToken(claims.ID)
+		err = a.UserRefreshTokenRepository.ExpiredRefreshToken(claims.ID)
+		if err != nil {
+			cfg.Logger.Error("Auth err", err)
+			return
+		}
+		err = a.UserAccessTokenRepository.ExpiredAccessToken(claims.ID)
+		if err != nil {
+			cfg.Logger.Error("Auth err", err)
+			return
+		}
 		fmt.Println("logout", claims.ID)
 
 		w.WriteHeader(http.StatusOK)

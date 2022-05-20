@@ -1,6 +1,7 @@
 <template>
   <div id="app">
     <div id="nav">
+
       <router-link to="/">Home</router-link> |
       <router-link to="/homehome">HomeHome</router-link> |
       <router-link to="/about">About</router-link> |
@@ -11,7 +12,8 @@
       <router-link to="/cart">Cart</router-link> |
       <router-link to="/categories">Categories</router-link> |
       <router-link to="/suppliers">Suppliers</router-link> |
-      <router-link to="/old-orders">Old Orders</router-link>
+      <router-link to="/old-orders">Old Orders</router-link> |
+      <router-link to="/logout">Logout</router-link>
     </div>
     <router-view />
   </div>

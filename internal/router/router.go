@@ -22,7 +22,7 @@ func Router(
 	//Auth
 	mux.HandleFunc("/login", m.CORS(http.HandlerFunc(c.Auth.Login)))
 	mux.HandleFunc("/registration", m.CORS(http.HandlerFunc(c.Auth.Registration)))
-	mux.Handle("/logout", m.RequireAuthentication(http.HandlerFunc(c.Auth.Logout)))
+	mux.Handle("/logout", m.CORS(http.HandlerFunc(c.Auth.Logout)))
 
 	//User
 	mux.Handle("/profile", m.RequireAuthentication(http.HandlerFunc(c.User.Profile)))

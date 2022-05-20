@@ -19,6 +19,7 @@ import pay from "../views/PayList";
 import cardMethod from "../views/CardMethodList";
 import oldOrdersList from "../views/OldOrdersList";
 import oldOrdersUserList from "../views/OldOrdersUserList";
+import logoutVue from "../views/LogoutVue";
 // import axios from "axios"
 
 Vue.use(VueRouter);
@@ -139,6 +140,11 @@ const routes = [
     path: "/old-orders/:user_id",
     name: "old-orders",
     component: oldOrdersUserList,
+  },
+  {
+    path: "/logout",
+    name: "logout",
+    component: logoutVue,
   },
 
 

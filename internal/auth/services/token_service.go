@@ -57,7 +57,7 @@ func GetTokenFromBearerString(bearerString string) string {
 		return ""
 	}
 
-	parts := strings.Split(bearerString, "Bearer")
+	parts := strings.Split(bearerString, "Bearer ")
 	if len(parts) != 2 {
 		return ""
 	}

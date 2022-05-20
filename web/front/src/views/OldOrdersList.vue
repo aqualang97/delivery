@@ -39,7 +39,7 @@ export default {
         }
         let data = await resp.json()
         console.log("NEW", data)
-        alert("access is allowed)")
+        // alert("access is allowed)")
 
         localStorage.setItem('user', JSON.stringify(data))
         await this.$router.push("/old-orders/"+(obj.user_id).toString())

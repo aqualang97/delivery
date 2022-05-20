@@ -21,6 +21,7 @@ import Pay from "./components/Pay";
 import CardMethod from "./components/CardMethod";
 import OldOrders from "./components/OldOrders";
 import OldOrdersUser from "./components/OldOrdersUser";
+import Logout from "./components/Logout";
 // import Total from "./components/Total";
 // import example from "./views/example";
 
@@ -46,7 +47,7 @@ Vue.component('pay', Pay)
 Vue.component('card-method', CardMethod)
 Vue.component('old-orders', OldOrders)
 Vue.component('old-orders-user', OldOrdersUser)
-
+Vue.component('logout', Logout)
 new Vue({
   router,
   store,

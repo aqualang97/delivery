@@ -58,8 +58,8 @@ export default {
   display: flex;
   justify-content: space-between;
 }
-.supplier-sort{
-}
+
+
 .supplier-sort ul{
   margin: 0;
 
@@ -67,6 +67,8 @@ export default {
 .supplier-sort li{
   cursor: pointer;
   margin: 5px;
+  padding: 5px;
+
 }
 .supplier{
   display: block;

@@ -51,6 +51,7 @@ export default {
       if(usr===null){
         alert("You are not login, access denied")
         await this.$router.push("/sign-in")
+
       }
       else{
         const obj = JSON.parse(usr)
@@ -69,7 +70,7 @@ export default {
         }
         let data = await resp.json()
         console.log(data)
-        alert("access is allowed)")
+        // alert("access is allowed)")
 
         localStorage.setItem('user', JSON.stringify(data))
 

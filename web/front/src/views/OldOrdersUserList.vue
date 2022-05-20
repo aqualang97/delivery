@@ -16,6 +16,7 @@
 </template>
 
 <script>
+import cartView from "./CartView";
 export default {
   name: "OldOrdersUserList",
   components: {},
@@ -31,7 +32,7 @@ export default {
       user_order:null,
       // name:String(),
       // category:String(),
-      // image:String(),
+       image:String(),
       // quantity:Number(),
       // purchase_price:Number(),
 
@@ -45,16 +46,25 @@ export default {
         method:"GET"
       })
       console.log(resp.status)
-      let ordersData = await resp.json()
-      this.orders = ordersData
-      this.user_order.image = this.orders.category
+      this.orders = await resp.json()
+      this.image = this.orders.image
       // for (let order in ordersData){
       //   console.log(order)
       // }
     }
   },
   mounted() {
-    this.getOrders()
+    cartView.methods.isLogin()
+    let usr = localStorage.getItem("user")
+    this.user_id = JSON.parse(usr).user_id
+    let id = this.$route.params.user_id
+    if (parseInt(id) === this.user_id){
+      this.getOrders()
+    }else {
+      alert("oops")
+      this.$router.push("/all-products")
+
+    }
 
     }
 }

@@ -3,6 +3,7 @@ package middlware
 import (
 	"delivery/internal/auth/services"
 	"delivery/internal/controllers"
+	"log"
 	"net/http"
 )
 
@@ -19,11 +20,12 @@ func NewMiddleware(c *controllers.Controllers) *Middleware {
 func (m Middleware) RequireAuthentication(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Add("Access-Control-Allow-Origin", "*")
-
 		tokenString := services.GetTokenFromBearerString(r.Header.Get("Authorization"))
+		log.Println()
 		_, err := services.ValidateToken(tokenString, m.controller.ConfigController.Config.AccessSecret)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusUnauthorized)
+			log.Println(err)
 			return
 		}
 
