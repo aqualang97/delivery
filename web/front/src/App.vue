@@ -10,8 +10,8 @@
       <router-link to="/sign-up">Sign Up</router-link> |
       <router-link to="/cart">Cart</router-link> |
       <router-link to="/categories">Categories</router-link> |
-      <router-link to="/suppliers">Suppliers</router-link>
-
+      <router-link to="/suppliers">Suppliers</router-link> |
+      <router-link to="/old-orders">Old Orders</router-link>
     </div>
     <router-view />
   </div>

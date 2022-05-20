@@ -18,6 +18,8 @@ func NewMiddleware(c *controllers.Controllers) *Middleware {
 
 func (m Middleware) RequireAuthentication(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Add("Access-Control-Allow-Origin", "*")
+
 		tokenString := services.GetTokenFromBearerString(r.Header.Get("Authorization"))
 		_, err := services.ValidateToken(tokenString, m.controller.ConfigController.Config.AccessSecret)
 		if err != nil {
@@ -49,4 +51,10 @@ func (m Middleware) RequireAuthentication(next http.Handler) http.Handler {
 		//}
 		next.ServeHTTP(w, r)
 	})
+}
+func (m Middleware) CORS(next http.Handler) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Add("Access-Control-Allow-Origin", "*")
+		next.ServeHTTP(w, r)
+	}
 }

@@ -51,7 +51,12 @@ export default {
     }
   },
   methods:{
-    plusProd(prodId){
+    totalEmit(){
+      this.$emit(
+          'calcSum'
+      )
+    },
+    async plusProd(prodId){
       let  j = this.$store.state.cart.productCart;
       for (let i in j) {
         if (j[i].idProd === prodId){
@@ -59,11 +64,14 @@ export default {
           let newQuantity = this.$store.state.cart.productCart[i].quantity
           this.totalPosition = (newQuantity * this.price).toFixed(2)
           console.log(j);
-          return
+          localStorage.setItem('user_order', "")
+          localStorage.setItem('user_order', JSON.stringify(this.$store.state.cart.productCart))
+          await new Promise(r => setTimeout(r, 100));
+          document.location.reload();
         }
       }
     },
-    minusProd(prodId){
+    async minusProd(prodId){
       let  j = this.$store.state.cart.productCart;
       for (let i in j) {
         if (j[i].idProd === prodId){
@@ -72,7 +80,10 @@ export default {
           this.totalPosition = (newQuantity * this.price).toFixed(2)
           console.log(this.$store.state.cart.productCart[i].quantity)
           console.log(j)
-          return
+          localStorage.setItem('user_order', "")
+          localStorage.setItem('user_order', JSON.stringify(this.$store.state.cart.productCart))
+          await new Promise(r => setTimeout(r, 100));
+          document.location.reload();
         }
       }
     }

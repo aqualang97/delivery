@@ -13,6 +13,14 @@ import Suppliers from "./components/Suppliers";
 import HomePage from "./components/HomePage";
 import ProductCategory from "./components/ProductCategory";
 import ProductSupplier from "./components/ProductSupplier";
+import Buy from "./components/Buy";
+import Checkout from "./components/Checkout";
+import BackShopping from "./components/BackShopping";
+import Pay from "./components/Pay";
+// import CashMethod from "./components/CashMethod";
+import CardMethod from "./components/CardMethod";
+import OldOrders from "./components/OldOrders";
+import OldOrdersUser from "./components/OldOrdersUser";
 // import Total from "./components/Total";
 // import example from "./views/example";
 
@@ -30,9 +38,25 @@ Vue.component("cart", Cart)
 Vue.component('categories', Categories)
 Vue.component('suppliers', Suppliers)
 Vue.component('homehome', HomePage)
+Vue.component('buy', Buy)
+Vue.component('checkout', Checkout)
+Vue.component('back-to-shopping', BackShopping)
+Vue.component('pay', Pay)
+// Vue.component('cash-method', CashMethod)
+Vue.component('card-method', CardMethod)
+Vue.component('old-orders', OldOrders)
+Vue.component('old-orders-user', OldOrdersUser)
 
 new Vue({
   router,
   store,
   render: (h) => h(App),
+  // data(){
+  //   return{
+  //     sort:null
+  //   }
+  // },
+
+
 }).$mount("#app");
+

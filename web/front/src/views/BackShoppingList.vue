@@ -1,15 +1,19 @@
 <template>
-  <registration></registration>
+  <div>
+    <back-shopping>
+
+    </back-shopping>
+  </div>
 </template>
 
 <script>
 export default {
-  name: "RegistrationView",
+  name: "BackShoppingList",
   components:{},
-  methods:{
-
-  },
+  props:{},
+  methods:{},
   mounted() {
+
   }
 }
 </script>

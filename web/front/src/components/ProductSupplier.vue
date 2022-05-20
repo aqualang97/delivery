@@ -10,13 +10,20 @@
             <img :src="imgLink" :alt="prodName">
           </div>
         </div>
-
+  
         <div class="name-price-cart">
           <div class="name-price corinthina-25">
-            <h6>Category: {{ type }}</h6>
+            <h6>Category: {{ replaceAndTitle(type) }}</h6>
             <p>Price: {{ price }}$</p>
             <div class="btn-add-to-cart">
-              <button type="button" name="add-to-cart">Add!</button>
+              <button type="button" name="add-to-cart" :id="`prod${idProd}`" @click="addToCart(idProd)" >Add!</button>
+              <div v-for="j in $store.state.cart.productCart" :key="j.idProd">
+                <div v-if="j.idProd === idProd" >
+                  <button type="button" name="plus-to-cart" :id="`prod${idProd}`" @click="plusToCart(idProd)">+</button>
+                  <p>{{j.quantity}}</p>
+                  <button type="button" name="minus-from-cart" :id="`prod${idProd}`" @click="minusFromCart(idProd)">-</button>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -29,7 +36,6 @@
 export default {
   name: "ProductSupplier",
   props:{
-
     idProd:Number,
     externalProdId:Number,
     prodName:String,
@@ -39,10 +45,95 @@ export default {
 
     suppId:Number,
     externalSuppId:Number,
-
-    ingredients:[]
+    ingredients:[],
+    quantityInCart:Number
   },
+  data(){
+    return{
+      quantity:0,
+    }
+  },
+  methods:{
+    addToCart(prodIdAdd) {
+      const prod = {
+        idProd: this.idProd,
+        externalProdId: this.externalProdId,
+        prodName: this.prodName,
+        price: this.price,
+        imgLink: this.imgLink,
+        type: this.type,
 
+        suppId: this.suppId,
+        externalSuppId: this.externalSuppId,
+        ingredients: this.ingredients,
+
+        quantity: this.quantity,
+      }
+      let elem = document.getElementById(`prod${this.idProd}`)
+      elem.parentNode.removeChild(elem);
+
+      let j = this.$store.state.cart.productCart
+      console.log(j.length)
+      if (j.length === 0) {
+        this.$store.commit('cart/addProdToCart', prod)
+        console.log(j)
+
+      } else {
+        for (let i in j) {
+          if (j[i].idProd === prodIdAdd) {
+            this.$store.commit('cart/plusNumProd', i)
+            console.log(j)
+            return
+          }
+        }
+        this.$store.commit('cart/addProdToCart', prod)
+        console.log(j)
+
+      }
+
+
+      // if(prod in  this.$store.state.cart.productCart){
+      //   console.log(this.$store.state.cart.quantity)
+      //   // this.$store.commit('cart/updateNumProd',  )
+      //   console.log("+")
+      //
+      // }else {
+      //   this.$store.commit('cart/addProdToCart', prod)
+      //   console.log("-")
+      // }
+      // console.log(this.$store.state.cart)
+    },
+    plusToCart(prodIdAdd) {
+      let  j = this.$store.state.cart.productCart;
+      for (let i in j) {
+        if (j[i].idProd === prodIdAdd){
+          this.$store.commit('cart/plusNumProd', i);
+          let newQuantity = this.$store.state.cart.productCart[i].quantity
+          this.totalPosition = (newQuantity * this.price).toFixed(2)
+          console.log(j);
+          return
+        }
+      }
+    },
+    minusFromCart(prodIdMinus) {
+      let  j = this.$store.state.cart.productCart;
+      for (let i in j) {
+        if (j[i].idProd === prodIdMinus){
+          this.$store.commit('cart/minusNumProd', i);
+          let newQuantity = this.$store.state.cart.productCart[i].quantity
+          this.totalPosition = (newQuantity * this.price).toFixed(2)
+          console.log(this.$store.state.cart.productCart[i].quantity)
+          console.log(j)
+          return
+        }
+      }
+    },
+    replaceAndTitle(str){
+      str=str.replace("_", " ")
+      str = str[0].toUpperCase() + str.substring(1)
+      return str
+    },
+  }
 };
 </script>
 

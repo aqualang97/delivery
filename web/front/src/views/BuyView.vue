@@ -1,11 +1,15 @@
 <template>
-  <registration></registration>
+  <div>
+    <buy>
+
+    </buy>
+  </div>
 </template>
 
 <script>
 export default {
-  name: "RegistrationView",
-  components:{},
+  name: "BuyView",
+  components: {},
   methods:{
 
   },

@@ -19,7 +19,6 @@ func (rp MenuController) Home(w http.ResponseWriter, r *http.Request) {
 func (rp MenuController) Suppliers(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case "GET":
-		w.Header().Add("Access-Control-Allow-Origin", "*")
 
 		listOfSupp, _ := rp.SupplierRepository.GetAllSuppliers()
 		//for _, supp := range listOfSupp {
@@ -44,7 +43,6 @@ func (rp MenuController) IndividualSupplier(w http.ResponseWriter, r *http.Reque
 		//supp := rp.SupplierRepository.GetSupplierByID()
 		path := r.URL.Path
 		parts := strings.Split(path, "/suppliers/")
-		w.Header().Add("Access-Control-Allow-Origin", "*")
 
 		if len(parts) != 2 {
 			return
@@ -71,7 +69,6 @@ func (rp MenuController) IndividualSupplier(w http.ResponseWriter, r *http.Reque
 func (rp MenuController) SupplierAndProdWithID(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case "GET":
-		w.Header().Add("Access-Control-Allow-Origin", "*")
 
 		//supp := rp.SupplierRepository.GetSupplierByID()
 		path := r.URL.Path
@@ -86,7 +83,6 @@ func (rp MenuController) SupplierAndProdWithID(w http.ResponseWriter, r *http.Re
 						log.Println(err)
 						rp.ConfigController.ErrorHandler(w, r, 404)
 					}
-					//fmt.Fprint(w, supp.Name, supp.Image)
 					fmt.Println(supp)
 					data, _ := json.Marshal(supp)
 					w.Write(data)
@@ -166,7 +162,6 @@ func (rp MenuController) SupplierAndProdWithID(w http.ResponseWriter, r *http.Re
 func (rp MenuController) Categories(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case "GET":
-		w.Header().Add("Access-Control-Allow-Origin", "*")
 
 		logger := rp.ConfigController.Logger
 		categories, err := rp.ProductsCategoriesRepository.GetAllCategories()
@@ -201,7 +196,6 @@ func (rp MenuController) Categories(w http.ResponseWriter, r *http.Request) {
 func (rp MenuController) ListOfProductsInSpecificCategory(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case "GET":
-		w.Header().Add("Access-Control-Allow-Origin", "*")
 
 		path := r.URL.Path
 		parts := strings.Split(path, "/")
@@ -226,7 +220,6 @@ func (rp MenuController) ListOfAllProducts(w http.ResponseWriter, r *http.Reques
 		listAllProducts := rp.ProductRepository.GetAllProducts()
 		fmt.Println(listAllProducts)
 		data, _ := json.Marshal(listAllProducts)
-		w.Header().Add("Access-Control-Allow-Origin", "*")
 		w.Write(data)
 
 	default:

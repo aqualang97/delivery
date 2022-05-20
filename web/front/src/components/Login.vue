@@ -38,6 +38,9 @@ export default {
   methods:{
     async login(){
       localStorage.setItem('user', "")
+      // localStorage.clear()
+      // this.$store.commit('cart/clearCart');
+
       let resp = await fetch("http://localhost:8080/login",{
         method: "POST",
         body: JSON.stringify({email:this.emailInput, password:this.passwordInput})

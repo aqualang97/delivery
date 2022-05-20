@@ -1,6 +1,5 @@
 <template>
 <div>
-
   <cart
       v-for="i in cartList"
       :key="i.idProd"
@@ -20,7 +19,14 @@
       <h2>{{ total }} $</h2>
     </div>
     <div class="buy">
-      <button type="button" name="button">Buy</button>
+      <button type="button" name="button"
+              @click="$router.push(`/buy`)&&isLogin()">
+        Buy
+      </button>
+      <button type="button" name="button"
+              @click="clear">
+        Clear cart
+      </button>
     </div>
   </div>
 </div>
@@ -29,14 +35,91 @@
 <script>
 export default {
   name: "CartView",
-  components: {},
+  components: {
+  },
   methods:{
+
+    async clear(){
+      localStorage.removeItem("user_order")
+      this.$store.commit('cart/clearCart');
+      await document.location.reload()
+    },
+
+    async isLogin(){
+      let usr = localStorage.getItem('user')
+      console.log(usr)
+      if(usr===null){
+        alert("You are not login, access denied")
+        await this.$router.push("/sign-in")
+      }
+      else{
+        const obj = JSON.parse(usr)
+        let resp = await fetch("http://localhost:8080/refresh",{
+          method: "POST",
+          body: JSON.stringify({refresh_token:obj.refresh_token})
+        })
+
+        if (resp.status !== 200){
+          await this.$router.push("/sign-in")
+
+          alert(resp.statusText)
+          // await new Promise(r => setTimeout(r, 500));
+          console.log(resp.status)
+          return
+        }
+        let data = await resp.json()
+        console.log(data)
+        alert("access is allowed)")
+
+        localStorage.setItem('user', JSON.stringify(data))
+
+
+        console.log(obj.user_id)
+        console.log(obj.access_token)
+        console.log(obj.refresh_token)
+      }
+    },
+
+    ifUpdPage(){
+      console.log("upd")
+      let localCart = JSON.parse(localStorage.getItem("user_order"))
+      console.log(localCart)
+      console.log("if pd", localCart)
+      if (localCart!==null){
+        if(localCart.length!==0&&this.$store.state.cart.productCart.length===0){
+          this.$store.commit('cart/inputLocalToState', localCart);
+        }
+      }
+    },
+
+    toLocal(){
+      console.log("To localCart")
+
+      console.log(this.$store.state.cart.productCart)
+
+      localStorage.setItem('user_order', "")
+      localStorage.setItem('user_order', JSON.stringify(this.$store.state.cart.productCart))
+    },
     plus(numProdCart){
       return numProdCart+=1
     },
     minus(numProdCart){
       return numProdCart-=1
-    }
+    },
+    fromLocal(){
+      let localCart = JSON.parse(localStorage.getItem("user_order"))
+      console.log("localCart")
+      console.log("localCart")
+      console.log("localCart")
+      console.log("localCart")
+      console.log(localCart)
+      console.log(localCart.length)
+      this.$store.commit('cart/inputLocalToState', localCart);
+
+      console.log("localCart")
+      console.log("upd state", this.$store.state.cart.productCart)
+    },
+
   },
   data() {
     return {
@@ -45,7 +128,12 @@ export default {
     };
   },
   mounted() {
+    this.ifUpdPage()
+    this.toLocal()
+    this.fromLocal()
+
     let  j = this.$store.state.cart.productCart;
+
     if (j.length !== 0){
       for (let i in j){
         console.log(j[i].quantity);

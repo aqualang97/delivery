@@ -2,14 +2,14 @@
   <div>
     <product-spec-supp
 
-        :prod-name="info.name"
-        :id-prod="info.ID"
-        :external-prod-id="info.id"
+        :prodName="info.name"
+        :idProd="info.ID"
+        :externalProdId="info.id"
         :price="info.price"
-        :img-link="info.image"
+        :imgLink="info.image"
         :type="info.type"
-        :supp-id="info.supplierId"
-        :external-supp-id="info.externalSuppId"
+        :suppId="info.supplierId"
+        :externalSuppId="info.externalSuppId"
         :ingredients="info.ingredients"
     >
     </product-spec-supp>
@@ -22,10 +22,13 @@ export default {
   components: {},
   data() {
     return {
-      // suppID:Number,
-      // prodID:Number,
+      suppID:Number,
+      prodID:Number,
       info: null
     };
+  },
+  methods:{
+
   },
 
   mounted() {
@@ -33,13 +36,11 @@ export default {
     let prod = this.$route.params.prod_id
     if (this.$store.state.productStore.posts.length === 0){
       const  main = async () => {
-
         const response = await fetch(  `http://localhost:8080/suppliers/${supp}/products/${prod}`
             , {
               method: 'GET',
             });
         this.info = await response.json();
-
         this.info.forEach((item)=>{
           console.log(item)
         })
@@ -50,7 +51,7 @@ export default {
       console.log(this.info)
 
       for (let i in this.info) {
-         if (this.info[i].ID == prod && this.info[i].externalSuppId == supp){
+         if (this.info[i].ID === Number(prod) && this.info[i].externalSuppId === Number(supp)){
             this.info = this.info[i]
            break
          }

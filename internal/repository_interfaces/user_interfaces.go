@@ -42,11 +42,12 @@ type OrderProductRepositoryInterface interface {
 }
 type OrderRepositoryInterface interface {
 	InsertToOrders(mo models.Order) (int, error)
-	UpdateOrdersByID(mo *models.Order) error
+	UpdateOrdersByID(mo *models.RequestCardPay) error
 	UpdateOrdersByUserID(mo *models.Order) error
 	GetOrderByID(id int) (models.Order, error)
 	GetOrderByUserIDNotPaidNotCompleted(userID int) (models.Order, error)
 	DeleteOrderByUserID(userID int) error
+	GetOldOrdersByUserID(UserID int) ([]models.OldOrders, error)
 }
 
 type UserContactRepositoryInterface interface {

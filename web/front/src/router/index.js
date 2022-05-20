@@ -12,6 +12,13 @@ import suppliersList from "../views/SuppliersList";
 import HomePageView from "../views/HomePageView";
 import productCategory from "../views/ProductCategoryList";
 import productSupplier from "../views/ProductSupplierList";
+import buy from "../views/BuyView"
+import checkout from "../views/CheckoutList"
+import backShopping from "../views/BackShoppingList";
+import pay from "../views/PayList";
+import cardMethod from "../views/CardMethodList";
+import oldOrdersList from "../views/OldOrdersList";
+import oldOrdersUserList from "../views/OldOrdersUserList";
 // import axios from "axios"
 
 Vue.use(VueRouter);
@@ -74,7 +81,7 @@ const routes = [
   },
 
   {
-    path: "/suppliers/:supp_id/products/:prod_id",
+      path: "/suppliers/:supp_id/products/:prod_id",
     name: "productsSpecificSupp",
     component: productSpec,
   },
@@ -93,6 +100,47 @@ const routes = [
     name: "cart",
     component: cart,
   },
+  {
+    path: "/buy",
+    name: "buy",
+    component: buy,
+  },
+  {
+    path: '/checkout',
+    name: 'checkout',
+    component: checkout,
+  },
+  {
+    path: "/back-to-shopping",
+    name: "back-to-shopping",
+    component: backShopping,
+  },
+  {
+    path: "/pay",
+    name: "pay",
+    component: pay,
+  },
+  // {
+  //   path: "/cash-method",
+  //   name: "cash-method",
+  //   component: cashMethod,
+  // },
+  {
+    path: "/card-method",
+    name: "card-method",
+    component: cardMethod,
+  },
+  {
+    path: "/old-orders",
+    name: "old-orders",
+    component: oldOrdersList,
+  },
+  {
+    path: "/old-orders/:user_id",
+    name: "old-orders",
+    component: oldOrdersUserList,
+  },
+
 
 ];
 

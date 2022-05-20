@@ -14,7 +14,6 @@ import (
 func (a AuthController) Login(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case "POST":
-		w.Header().Add("Access-Control-Allow-Origin", "*")
 		req := new(models.LoginRequest)
 		if err := json.NewDecoder(r.Body).Decode(&req); err != nil { //берем тело запроса декодим и декодим в тело запроса
 			http.Error(w, err.Error(), http.StatusBadRequest)
@@ -100,7 +99,6 @@ func (a AuthController) Login(w http.ResponseWriter, r *http.Request) {
 func (a AuthController) Logout(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case "GET":
-		w.Header().Add("Access-Control-Allow-Origin", "*")
 
 		tokenString := services.GetTokenFromBearerString(r.Header.Get("Authorization"))
 		cfg := a.ConfigController.Config
@@ -120,7 +118,6 @@ func (a AuthController) Logout(w http.ResponseWriter, r *http.Request) {
 func (a AuthController) Registration(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case "POST":
-		w.Header().Add("Access-Control-Allow-Origin", "*")
 
 		req := new(models.RegistrationRequest)
 		if err := json.NewDecoder(r.Body).Decode(&req); err != nil {

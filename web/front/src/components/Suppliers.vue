@@ -1,22 +1,32 @@
 <template>
-      <div class="supplier">
-        <div class="img-name-supp">
-          <h3>{{ supplierName }}</h3>
+  <div>
+    <div v-if="$route.path===`/suppliers`"
+        class="supplier">
+      <div class="img-name-supp">
+        <h3>{{ supplierName }}</h3>
 
-          <div :title="'Move to : ' + supplierName"
-               @click="$router.push(`/products&supplier=${id}`)"
-          >
-            <img :src="image" :alt="'supp img'">
-          </div>
-        </div>
-        <div class="type-hours-cont">
-          <div class="type-hours corinthina-25">
-            <h6>Category: {{ nameOfType }}</h6>
-            <p>Working hours: </p>
-            <p> {{ opening }} - {{closing}}</p>
-          </div>
+        <div :title="'Move to : ' + replaceAndTitle(supplierName)"
+             @click="$router.push(`/products&supplier=${id}`)"
+        >
+          <img :src="image" :alt="'supp img'">
         </div>
       </div>
+      <div class="type-hours-cont">
+        <div class="type-hours corinthina-25">
+          <h6>Category: {{ replaceAndTitle(nameOfType) }}</h6>
+          <p>Working hours: </p>
+          <p> {{ opening }} - {{closing}}</p>
+        </div>
+      </div>
+    </div>
+    <div v-else @click="$router.push(`/products&supplier=${id}`)" class="supplier-sort">
+      <ul>
+        <li>
+          {{supplierName}}
+        </li>
+      </ul>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -31,12 +41,33 @@ export default {
     closing:String,
     image:String,
     externalID:Number
-  }
+  },
+  methods:{
+    replaceAndTitle(str){
+      str=str.replace("_", " ")
+      str = str[0].toUpperCase() + str.substring(1)
+      return str
+    },
+  },
 
 }
 </script>
 
 <style scoped>
+.supplier-sort{
+  display: flex;
+  justify-content: space-between;
+}
+.supplier-sort{
+}
+.supplier-sort ul{
+  margin: 0;
+
+}
+.supplier-sort li{
+  cursor: pointer;
+  margin: 5px;
+}
 .supplier{
   display: block;
   background-color: aquamarine;

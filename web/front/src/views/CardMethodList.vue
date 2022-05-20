@@ -1,18 +1,14 @@
 <template>
   <div>
-    <homehome></homehome>
+    <card-method>
+
+    </card-method>
   </div>
 </template>
 
 <script>
 export default {
-  name: "HomePageView",
-  components: {},
-  methods:{
-
-  },
-  mounted() {
-  }
+  name: "CardMethodList"
 }
 </script>
 

@@ -1,15 +1,19 @@
 <template>
-  <registration></registration>
+  <main>
+
+  </main>
 </template>
 
 <script>
 export default {
-  name: "RegistrationView",
-  components:{},
+  name: "OldOrders",
+  props:{
+  },
+  data(){
+    return{}
+  },
   methods:{
 
-  },
-  mounted() {
   }
 }
 </script>

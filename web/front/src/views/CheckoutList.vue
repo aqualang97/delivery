@@ -1,17 +1,22 @@
 <template>
-  <registration></registration>
+  <div>
+    <checkout>
+
+    </checkout>
+  </div>
 </template>
 
 <script>
 export default {
-  name: "RegistrationView",
+  name: "ConfirmList",
   components:{},
-  methods:{
-
-  },
+  props:{},
+  methods:{},
   mounted() {
+
   }
 }
+
 </script>
 
 <style scoped>

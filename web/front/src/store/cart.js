@@ -7,6 +7,9 @@ const state = {
     loaded : false
 }
 const mutations = {
+    // addProdFromLocal(state, product){
+    //     state.productCart.push(product)
+    // },
     addProdToCart(state, product){
         product.quantity += 1
         state.productCart.push(product);
@@ -16,6 +19,16 @@ const mutations = {
     },
     clearCart(state){
         state.productCart = []
+    },
+    inputLocalToState(state, local){
+        let newState = []
+        for (let product in local){
+            newState.push(local[product])
+            console.log("+")
+        }
+        state.productCart = newState
+        console.log("+++")
+
     },
     plusNumProd(state, product){
         //state().productCart[product].quantity = product[newQuantity]

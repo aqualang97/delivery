@@ -8,18 +8,14 @@
     </div>
     <div class="about-container">
       <div class="about-txt corinthina-25">
-        <h3>Welcome to the CraftShack family. We’ve been waiting for you.</h3>
-        <p> You’re about to join hundreds of thousands of craft beer, wine, and spirit enthusiasts from around the globe; people who have a genuine passion for all things booze. </p>
-        <p> Here in our family, we do things a little differently. </p>
-        <p> Once you order from us, you’re in the family for life. Seriously. And when family members have problems, we solve them. Something wrong with your order? Did a new brew not live up to your expectations? Call us. Email us. Bang on our door. A real person will respond immediately and make things right. At CraftShack, family matters, and we haven't spent a decade building relationships for this to change anytime soon.</p>
+
+
       </div>
     </div>
     <div class="about-container reverce">
       <div class="about-txt corinthina-25">
-        <h3>Welcome to the CraftShack family. We’ve been waiting for you.</h3>
-        <p> You’re about to join hundreds of thousands of craft beer, wine, and spirit enthusiasts from around the globe; people who have a genuine passion for all things booze. </p>
-        <p> Here in our family, we do things a little differently. </p>
-        <p> Once you order from us, you’re in the family for life. Seriously. And when family members have problems, we solve them. Something wrong with your order? Did a new brew not live up to your expectations? Call us. Email us. Bang on our door. A real person will respond immediately and make things right. At CraftShack, family matters, and we haven't spent a decade building relationships for this to change anytime soon.</p>
+
+
       </div>
     </div>
     <div class="learn-more-container">

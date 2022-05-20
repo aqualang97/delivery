@@ -55,6 +55,7 @@ export default {
       loginReg:"",
       passwordReg:"",
       confirmPasswordReg:"",
+      emptyStorage:[],
     }
   },
   methods:{
@@ -77,6 +78,9 @@ export default {
         return
 
       }
+      // localStorage.clear()
+      // this.$store.commit('cart/clearCart');
+
       localStorage.setItem('user', "")
       let resp = await fetch("http://localhost:8080/registration",{
         method: "POST",
@@ -90,9 +94,13 @@ export default {
       let data = await resp.json()
       console.log(data)
       alert("Successful registration")
-      localStorage.setItem('user', JSON.stringify(data))
+      // localStorage.setItem('user', JSON.stringify(data))
+      // localStorage.setItem("user_order", JSON.stringify([]))
+
       await this.$router.push("/cart")
       // console.log((await Promise.resolve(resp.text())).toString()
+
+
     }
   }
 }

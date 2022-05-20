@@ -15,3 +15,14 @@ type OrderProducts struct {
 	UpdatedAt        *time.Time
 	//UserId    int
 }
+
+type ProductFromCart struct {
+	ProductId        int     `json:"product_id"`
+	PurchasePrice    float32 `json:"purchase_price"`
+	NumbersOfProduct int     `json:"quantity"`
+}
+type RequestOrderProducts struct {
+	ContactData   UserContactData   `json:"contact_data"`
+	Cart          []ProductFromCart `json:"cart"`
+	PaymentMethod string            `json:"payment_method"`
+}

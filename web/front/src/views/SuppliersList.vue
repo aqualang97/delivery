@@ -17,6 +17,7 @@
 </template>
 
 <script>
+
 export default {
   name: "SuppliersList",
   elem:'supp',
@@ -24,6 +25,9 @@ export default {
     return {
       info: null
     };
+  },
+  methods:{
+
   },
   mounted() {
     const  main = async () => {
@@ -46,5 +50,9 @@ export default {
 </script>
 
 <style scoped>
-
+.supplier-sort{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
 </style>

@@ -3,8 +3,8 @@
 
     <product-category
         v-for="(prod) in prodCat"
-        :key="prod.name"
-        :prod-name="prod.name"
+        :key="prod.ID"
+        :prodName="prod.name"
         :id-prod="prod.ID"
         :external-prod-id="prod.id"
         :price="prod.price"
@@ -22,15 +22,20 @@
 export default {
   name: "ProductCategoryList",
   components: {},
-
+  props:{},
   data() {
     return {
       info: null,
       prodCat: []
     };
   },
+  methods:{
+
+  },
   mounted() {
+
     //this.info = this.$route.params.cat_id
+
     let cat = this.$route.params.cat_id
 
     console.log(this.$store.state.productStore.posts.length)
@@ -53,10 +58,11 @@ export default {
 
       console.log("else")
       this.info = this.$store.state.productStore.posts
-//      console.log(this.info)
+      console.log(this.info)
 
       for (let i in this.info) {
-        if (this.info[i].categoryNum == cat){
+        console.log(typeof cat)
+        if (this.info[i].categoryNum === Number(cat)){
           this.prodCat.push(this.info[i])
           console.log(this.prodCat)
         }
