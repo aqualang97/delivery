@@ -78,6 +78,7 @@ export default {
         console.log(obj.user_id)
         console.log(obj.access_token)
         console.log(obj.refresh_token)
+        return true
       }
     },
 

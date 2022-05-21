@@ -13,23 +13,15 @@ export default {
 
       let usr = localStorage.getItem('user')
       let access = JSON.parse(usr).access_token
+      console.log(access)
 
       let resp = await fetch("http://localhost:8080/logout",{
-        method: "GET",
-        mode:"cors",
-        headers: {"Authorization": `Bearer ${access}`},
+        method: "POST",
+        body: JSON.stringify({access_token:access}),
       })
-      console.log(access)
-      console.log(access)
-      console.log(access)
-      console.log(access)
-      console.log(access)
-      console.log(resp.status)
-      console.log(resp.status)
-      console.log(resp.status)
-      console.log(resp.status)
-      console.log(resp.status)
+
       if (resp.status===200){
+        localStorage.clear()
         alert("success")
         await this.$router.push("/sign-in")
       }

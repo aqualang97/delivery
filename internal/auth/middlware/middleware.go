@@ -57,6 +57,8 @@ func (m Middleware) RequireAuthentication(next http.Handler) http.Handler {
 func (m Middleware) CORS(next http.Handler) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Add("Access-Control-Allow-Origin", "*")
+		log.Println("pass")
 		next.ServeHTTP(w, r)
+
 	}
 }

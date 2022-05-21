@@ -62,7 +62,7 @@ export default {
       this.getOrders()
     }else {
       alert("oops")
-      this.$router.push("/all-products")
+      this.$router.push("/all-productsv")
 
     }
 

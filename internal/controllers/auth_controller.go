@@ -98,11 +98,19 @@ func (a AuthController) Login(w http.ResponseWriter, r *http.Request) {
 
 func (a AuthController) Logout(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
-	case "GET":
-
-		tokenString := services.GetTokenFromBearerString(r.Header.Get("Authorization"))
+	case "POST":
+		//tokenString := services.GetTokenFromBearerString(r.Header.Get("Authorization"))
+		req := new(models.UserRequestPairTokens)
+		log.Println(r.Body)
+		if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
+		log.Println(req.AccessToken)
+		log.Println(req.AccessToken)
+		log.Println(req.AccessToken)
 		cfg := a.ConfigController.Config
-		claims, err := services.Claims(tokenString, cfg.AccessSecret)
+		claims, err := services.Claims(req.AccessToken, cfg.AccessSecret)
 		if err != nil {
 			cfg.Logger.Error("Auth err", err)
 			return

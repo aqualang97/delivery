@@ -20,13 +20,23 @@
 <!--              <p>1234567</p>-->
 <!--            </div>-->
             <div>
-              <button type="button" name="add-to-cart" :id="`add-prod${idProd}`" @click="addToCart(idProd)" >Add!</button>
+              <div v-if="$store.state.cart.productCart.length !==0">
+                <div v-if="notInArray(idProd)">
+                  <button type="button" name="add-to-cart" :id="`add-prod${idProd}`" @click="addToCart(idProd)" >Add!</button>
+                </div>
+              </div>
+              <div v-else>
+                <button type="button" name="add-to-cart" :id="`add-prod${idProd}`" @click="addToCart(idProd)" >Add!</button>
+              </div>
               <div v-for="j in $store.state.cart.productCart" :key="j.idProd">
-                <div v-if="j.idProd === idProd" >
+                <div v-if="j.idProd === idProd">
+<!--                  {{test(j.idProd, idProd)}}-->
+<!--                  {{console.log(j.idProd)}}-->
                   <button type="button" name="plus-to-cart" :id="`plus-prod${idProd}`" @click="plusToCart(idProd)">+</button>
                   <p>{{j.quantity}}</p>
-                  <button type="button" name="minus-from-cart" :id="`munus-prod${idProd}`" @click="minusFromCart(idProd)">-</button>
+                  <button type="button" name="minus-from-cart" :id="`minus-prod${idProd}`" @click="minusFromCart(idProd)">-</button>
                 </div>
+
               </div>
             </div>
 
@@ -57,13 +67,15 @@
 </template>
 
 <script>
-
 export default {
 
   name: "Product",
   title:{
     type: String,
     required: true,
+
+  },
+  components:{
 
   },
   props:{
@@ -77,22 +89,34 @@ export default {
     suppId:Number,
     externalSuppId:Number,
     ingredients:[],
-    quantityInCart:Number
+    quantityInCart:Number,
+    listId:[],
   },
 
   data(){
     return{
       quantity:0,
-
-
     }
   },
   mounted() {
-
-
   },
   methods: {
+    // test(j, idProd){
+    //   console.log("j.idProd", j,"\nidProd", idProd)
+    // },
 
+    notInArray(idProd){
+      console.log("++++++++++++++", this.listId, idProd)
+      for(let id in  this.listId){
+        console.log("id",id)
+        if(this.listId[id] === idProd){
+          console.log("id",id)
+          return false
+        }
+      }
+
+      return true
+    },
     // add() {
     //   this.$emit(
     //       'plus', 'minus'
@@ -124,21 +148,17 @@ export default {
       elem.parentNode.removeChild(elem);
 
       let j = this.$store.state.cart.productCart
-      console.log(j.length)
       if (j.length === 0) {
         this.$store.commit('cart/addProdToCart', prod)
-        console.log(j)
 
       } else {
         for (let i in j) {
           if (j[i].idProd === prodIdAdd) {
             this.$store.commit('cart/plusNumProd', i)
-            console.log(j)
             return
           }
         }
         this.$store.commit('cart/addProdToCart', prod)
-        console.log(j)
 
       }
 
@@ -161,7 +181,6 @@ export default {
           this.$store.commit('cart/plusNumProd', i);
           let newQuantity = this.$store.state.cart.productCart[i].quantity
           this.totalPosition = (newQuantity * this.price).toFixed(2)
-          console.log(j);
           return
         }
       }
@@ -173,8 +192,7 @@ export default {
           this.$store.commit('cart/minusNumProd', i);
           let newQuantity = this.$store.state.cart.productCart[i].quantity
           this.totalPosition = (newQuantity * this.price).toFixed(2)
-          console.log(this.$store.state.cart.productCart[i].quantity)
-          console.log(j)
+          // console.log(this.$store.state.cart.productCart[i].quantity)
           return
         }
       }

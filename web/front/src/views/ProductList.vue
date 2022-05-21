@@ -21,6 +21,7 @@
     <div>
       <div>
         <product
+            :list-id="idList"
             v-for="(prod) in $store.state.productStore.posts"
             :key="prod.ID"
             :prod-name="prod.name"
@@ -60,6 +61,7 @@ export default {
       refresh_token:"",
       type:String(),
       categories:null,
+      idList:[]
     };
   },
   methods:{
@@ -78,13 +80,29 @@ export default {
     minus(numProdCart){
       return numProdCart-=1
     },
+    listOfId(){
+      let lst = []
+      if (this.$store.state.cart.productCart.length!==0){
+        for (let j in this.$store.state.cart.productCart){
+          lst.push(this.$store.state.cart.productCart[j].idProd)
+        }
+
+        return lst
+      }else {
+        return []
+      }
+    },
 
 
   },
   mounted() {
-
     if (this.$store.state.productStore.posts.length === 0){
       this.getProdList()
+    }
+    if(this.$store.state.cart.productCart.length !==0){
+      this.idList = this.listOfId()
+      console.log("this.idList",this.idList)
+
     }
     // if (this.$store.state.cart.productCart.length !==0){
     //   for(let p in this.$store.state.cart.productCart.length){

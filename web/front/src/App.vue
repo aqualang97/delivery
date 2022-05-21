@@ -18,7 +18,21 @@
     <router-view />
   </div>
 </template>
+<script>
+// import CartView from "./views/CartView";
+export default {
+  data(){
+    // return{
+    //   logged:null
+    // }
+  },
+  mounted() {
+    // this.logged = CartView.methods.isLogin()
 
+  }
+}
+
+</script>
 <style lang="scss">
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
