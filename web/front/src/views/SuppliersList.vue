@@ -1,7 +1,7 @@
 <template>
   <div>
 
-    <suppliers
+    <suppliers class="supplier-sort"
         v-for="(supp) in info"
         :key="supp.name"
         :id="supp.ID"
@@ -55,4 +55,8 @@ export default {
   flex-direction: row;
   justify-content: space-between;
 }
+/*.supplier-sort :hover .supplier-sort{*/
+/*  height: auto;*/
+/*  transition: max-height 0.25s ease-in;*/
+/*}*/
 </style>

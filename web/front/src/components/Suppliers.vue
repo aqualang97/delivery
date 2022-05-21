@@ -62,7 +62,6 @@ export default {
 
 .supplier-sort ul{
   margin: 0;
-
 }
 .supplier-sort li{
   cursor: pointer;

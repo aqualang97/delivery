@@ -20,7 +20,7 @@
 <!--              <p>1234567</p>-->
 <!--            </div>-->
             <div>
-              <div v-if="$store.state.cart.productCart.length !==0">
+              <div v-if="$store.state.cart.productCart.length !==0 ">
                 <div v-if="notInArray(idProd)">
                   <button type="button" name="add-to-cart" :id="`add-prod${idProd}`" @click="addToCart(idProd)" >Add!</button>
                 </div>

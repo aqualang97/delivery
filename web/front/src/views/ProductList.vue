@@ -9,13 +9,16 @@
 <!--      </option>-->
 <!--    </select>-->
     <div class="sorted">
-      <div class="categories">
-        <p>Categories</p>
-        <categories-list class="categories-cont"/>
+      <div>
+        <p v-if="showCat===false" class="categories" @click="showCat=true">Categories</p>
+        <p v-else @click="showCat=false" class="categories">Categories</p>
+        <categories-list v-if="showCat" class="categories-cont"/>
       </div>
-      <div class="supplier">
-        <p>Suppliers</p>
-        <suppliers-list class="supplier-cont"/>
+<!--      <div class="supplier">-->
+      <div>
+        <p v-if="showSupp===false" @click="showSupp = true" class="supplier">Suppliers</p>
+        <p v-else @click="showSupp = false" class="supplier">Suppliers</p>
+        <suppliers-list v-if="showSupp" class="supplier-cont"/>
       </div>
     </div>
     <div>
@@ -61,7 +64,9 @@ export default {
       refresh_token:"",
       type:String(),
       categories:null,
-      idList:[]
+      idList:[],
+      showSupp:false,
+      showCat:false,
     };
   },
   methods:{
