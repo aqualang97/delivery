@@ -1,23 +1,27 @@
 <template>
-  <div>
+  <div class="supplier-cont">
     <div v-if="$route.path===`/suppliers`"
-        class="supplier">
-      <div class="img-name-supp">
-        <h3>{{ supplierName }}</h3>
+        class="supplier-wrap">
+      <div class="supplier">
+        <div class="img-name-supp">
+          <h3>{{ supplierName }}</h3>
 
-        <div :title="'Move to : ' + replaceAndTitle(supplierName)"
-             @click="$router.push(`/products&supplier=${id}`)"
-        >
-          <img :src="image" :alt="'supp img'">
+          <div :title="'Move to : ' + replaceAndTitle(supplierName)"
+               @click="$router.push(`/products&supplier=${id}`)"
+          >
+            <img :src="image" :alt="'supp img'">
+          </div>
         </div>
-      </div>
-      <div class="type-hours-cont">
-        <div class="type-hours corinthina-25">
-          <h6>Category: {{ replaceAndTitle(nameOfType) }}</h6>
-          <p>Working hours: </p>
-          <p> {{ opening }} - {{closing}}</p>
+        <div class="type-hours-cont">
+          <div class="type-hours corinthina-25">
+            <h6>Category: {{ replaceAndTitle(nameOfType) }}</h6>
+            <p>Working hours: </p>
+            <p> {{ opening }} - {{closing}}</p>
+          </div>
         </div>
+
       </div>
+
     </div>
     <div v-else @click="$router.push(`/products&supplier=${id}`)" class="supplier-sort">
       <ul>
@@ -54,6 +58,10 @@ export default {
 </script>
 
 <style scoped>
+.supplier-cont{
+  display: block;
+  background-color: aquamarine;
+}
 .supplier-sort{
   display: flex;
   justify-content: space-between;
@@ -69,23 +77,26 @@ export default {
   padding: 5px;
 
 }
-.supplier{
-  display: block;
-  background-color: aquamarine;
+.supplier-cont .supplier-wrap{
+
   padding: 30px 150px 30px 0;
+
+}
+.supplier-wrap .supplier{
   display: flex;
 
-  //padding-left: 20px;
-  //padding-right: 250px;
+  padding-left: 20px;
+  padding-right: 250px;
   flex-direction: row;
-  justify-content: center;
+  justify-content: end;
+
 }
-.supplier .img-name-supp{
+.supplier-cont .supplier-wrap .supplier .img-name-supp{
   flex-direction: column;
   padding-right: 50px;
 }
 
-.supplier .img-name-supp img{
+.supplier-wrap .supplier .img-name-supp img{
   cursor: pointer;
   max-width: 300px;
   display: block;

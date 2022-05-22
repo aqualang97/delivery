@@ -1,66 +1,55 @@
-<template >
+<template>
 
   <div class="product-light-list">
     <div class="product-light-elem" >
-      <div class="product">
-        <div class="img-name-prod">
-          <h3>{{ prodName }}</h3>
-          <div :title="'Ingredients: ' + ingredients"
-               @click="$router.push(`/suppliers/${suppId}/products/${idProd}`)"
-          >
-            <img :src="imgLink" :alt="prodName">
+      <div class="product-container">
+        <div class="prod-info">
+          <div class="img-name-prod">
+            <h3 class="fredoka-34">{{ prodName }}</h3>
+            <div :title="'Ingredients: ' + ingredients"
+                 @click="$router.push(`/suppliers/${suppId}/products/${idProd}`)">
+              <img :src="imgLink" :alt="prodName" class="comfortaa-22">
             </div>
-        </div>
-
-        <div class="name-price-cart">
-          <div class="name-price corinthina-25">
-            <h6>Category: {{ replaceAndTitle(type) }}</h6>
-            <p>Price: {{ price }}$</p>
-<!--            <div v-if="$store.state.cart.productCart.length===0">-->
-<!--              <p>1234567</p>-->
-<!--            </div>-->
-            <div>
-              <div v-if="$store.state.cart.productCart.length !==0 ">
-                <div v-if="notInArray(idProd)">
-                  <button type="button" name="add-to-cart" :id="`add-prod${idProd}`" @click="addToCart(idProd)" >Add!</button>
-                </div>
-              </div>
-              <div v-else>
-                <button type="button" name="add-to-cart" :id="`add-prod${idProd}`" @click="addToCart(idProd)" >Add!</button>
-              </div>
-              <div v-for="j in $store.state.cart.productCart" :key="j.idProd">
-                <div v-if="j.idProd === idProd">
-<!--                  {{test(j.idProd, idProd)}}-->
-<!--                  {{console.log(j.idProd)}}-->
-                  <button type="button" name="plus-to-cart" :id="`plus-prod${idProd}`" @click="plusToCart(idProd)">+</button>
-                  <p>{{j.quantity}}</p>
-                  <button type="button" name="minus-from-cart" :id="`minus-prod${idProd}`" @click="minusFromCart(idProd)">-</button>
-                </div>
-
-              </div>
-            </div>
-
-<!--            <div v-if="clickedAdd===false" class="btn-add-to-cart">-->
-<!--              <div  class="">-->
-<!--                <button  v-on:click="clickedAdd = true" type="button" name="add-to-cart" :id="`prod${idProd}`" @click="addToCart(idProd)" >Add!</button>-->
-<!--                &lt;!&ndash;                <div v-for="i in $store.state.cart.productCart">&ndash;&gt;-->
-<!--&lt;!&ndash;                    <p v-if="i.idProd ===idProd">{{i.idProd}}</p>&ndash;&gt;-->
-<!--&lt;!&ndash;                </div>&ndash;&gt;-->
-<!--              </div>-->
-<!--            </div>-->
-<!--            <div v-else>-->
-<!--              <div v-for="i in $store.state.cart.productCart" :key=i.idProd>-->
-<!--                <div v-if="i.quantity === 0 && idProd===i.idProd">-->
-<!--                    <button  v-on:click="clickedAdd = false" type="button" name="add-to-cart" :id="`prod${idProd}`" @click="addToCart(idProd)" >Add!</button>-->
-<!--                </div>-->
-<!--                <div v-else>-->
-<!--                    <p v-if="i.idProd === idProd">In cart!</p>-->
-<!--                </div>-->
-
-<!--              </div>-->
-<!--            </div>-->
           </div>
         </div>
+        <div class="category-price-cont">
+          <div class="name-price-cart">
+            <div class="name-price fredoka-26">
+              <h6 class="comfortaa-26">Category: {{ replaceAndTitle(type) }}</h6>
+              <p>Price: {{ price }}$</p>
+              <div class="fredoka-34">
+                <div class="btn-add-to-cart">
+                  <div v-if="$store.state.cart.productCart.length !==0 ">
+                    <div v-if="notInArray(idProd)">
+                      <button type="button" name="add-to-cart" :id="`add-prod${idProd}`" @click="addToCart(idProd)"
+                              class="fredoka-26">Add!</button>
+                    </div>
+                  </div>
+                  <div v-else>
+                    <button type="button" name="add-to-cart" :id="`add-prod${idProd}`" @click="addToCart(idProd)"
+                            class="fredoka-26">Add!</button>
+                  </div>
+                </div>
+                <div class="plus-minus-cont fredoka-30">
+                  <div v-for="j in $store.state.cart.productCart" :key="j.idProd">
+                    <div v-if="j.idProd === idProd">
+                      <button type="button" name="plus-to-cart" :id="`plus-prod${idProd}`" @click="plusToCart(idProd)"
+                      class="fredoka-30 fix-btn-padding" >+</button>
+                      <p>{{j.quantity}}</p>
+                      <button type="button" name="minus-from-cart" :id="`minus-prod${idProd}`"
+                              @click="minusFromCart(idProd)" class="fredoka-30 fix-btn-padding">-</button>
+                    </div>
+                  </div>
+
+                </div>
+
+
+              </div>
+            </div>
+          </div>
+        </div>
+
+
       </div>
     </div>
   </div>
@@ -215,34 +204,88 @@ export default {
   //src: url("/home/yurii/delivery/web/shop/fonts/Corinthia-Regular.ttf");
   font-weight: 400;
 }
+
+@font-face {
+  font-family: "Comfortaa";
+  src :url("../../../fonts/comfortaa/Comfortaa-VariableFont_wght.ttf");
+  font-weight: 400;
+}
+@font-face {
+  font-family: "Fredoka";
+  src :url("../../../fonts/fredoka/FredokaOne-Regular.ttf");
+  font-weight: 400;
+}
+
+.fredoka-26{
+  font-family: "Fredoka",serif;
+  font-size: 26px;
+}
+
+.fredoka-30{
+  font-family: "Fredoka",serif;
+  font-weight: normal;
+  font-size: 30px;
+}
+.fredoka-34{
+  font-family: "Fredoka",serif;
+  font-weight: normal;
+  font-size: 34px;
+}
+.comfortaa-26{
+  font-family: "Comfortaa",serif;
+  font-size: 26px;
+}.comfortaa-22{
+  font-family: "Comfortaa",serif;
+  font-size: 22px;
+}
 .product-light-list{
-  display: block;
-  background-color: aquamarine;
+  display: flex;
+  background-color: #FEE440;
+  justify-content: space-around;
+  padding-top: 40px;
+  min-width: 1440px;
+
 }
 
 .product-light-elem{
-  padding: 30px 150px 30px 0;
+  /*padding: 30px 150px 30px 0;*/
+  border: 4px dotted #FF865E;
+  border-radius: 35px;
+  padding-left: 70px;
+  padding-right: 70px;
+  background-color: #FCEA60;
 
 }
-.product-light-elem .product{
+.product-light-list .product-light-elem .product-container{
   display: flex;
 
   padding-left: 20px;
-  padding-right: 250px;
+  /*padding-right: 250px;*/
   flex-direction: row;
-  justify-content: center;
+  /*justify-content: end;*/
+  min-height: 350px;
+
 }
-.product-light-list .product .img-name-prod{
-  flex-direction: column;
-  padding-right: 50px;
+.product-light-list .product-light-elem .product-container .prod-info{
+  min-width: 600px;
 }
-.product-light-elem .product img{
+
+.product-light-list  .product-light-elem .product-container .prod-info .img-name-prod h3{
+  display: flex;
+}
+.product-light-list  .product-light-elem .product-container .prod-info .img-name-prod img{
   cursor: pointer;
   max-width: 300px;
   display: block;
   margin-left: auto;
   margin-right: auto;
   float: left;
+  padding-bottom: 15px;
+}
+
+.product-light-list  .product-light-elem .product-container .category-price-cont{
+  min-width: 300px;
+  max-width: 300px;
 }
 
 .name-price-cart{
@@ -262,22 +305,54 @@ export default {
 }
 .name-price-cart .name-price h3,.name-price-cart .name-price p{
   margin: 0;
-  padding-bottom: 30px;
 }
 .name-price-cart .name-price .btn-add-to-cart{
-  padding-right: 10px;
+  /*padding-right: 10px;*/
+  display: flex;
+  justify-content: space-around;
+  padding-top: 20px;
 }
-.name-price-cart .name-price button{
+.name-price-cart .name-price .btn-add-to-cart button{
 
-  background-color: #cf1ad5;
+  background-color: #FF865E;
   color: #1a1f1c;
-  width: 50px;
-  height: 30px;
-  border-radius: 4px;
+  width: 100px;
+  height: 50px;
+
+  border-width: 3px;
+  border-radius: 16px;
+  border-color: black;
+  float: right;
+
+}
+.name-price-cart .name-price .plus-minus-cont {
+  display: flex;
+  justify-content: center;
+  position: static;
+
+}
+.name-price-cart .name-price .plus-minus-cont p{
+  /*padding: 0;*/
+}
+.name-price-cart .name-price .plus-minus-cont .fix-btn-padding{
+}
+.name-price-cart .name-price .plus-minus-cont button{
+  background-color: #FF865E;
+  color: #1a1f1c;
+  width: 100px;
+  height: 50px;
+
+  border-width: 3px;
+  border-radius: 16px;
+  border-color: black;
   float: right;
 
 }
 
+.name-price-cart .name-price .plus-minus-cont button p{
+  padding: 0;
+  margin: 0;
+}
 /*.name-price-cart .cart{*/
 /*}*/
 

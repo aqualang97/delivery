@@ -67,6 +67,7 @@ export default {
       idList:[],
       showSupp:false,
       showCat:false,
+
     };
   },
   methods:{
@@ -106,8 +107,6 @@ export default {
     }
     if(this.$store.state.cart.productCart.length !==0){
       this.idList = this.listOfId()
-      console.log("this.idList",this.idList)
-
     }
     // if (this.$store.state.cart.productCart.length !==0){
     //   for(let p in this.$store.state.cart.productCart.length){
@@ -143,6 +142,7 @@ export default {
   display: flex;
   justify-content: space-around;
   padding-bottom: 25px;
+  background-color: #A2D2FF;
 }
 .sorted .categories{
   border: #f28ec1 1px dashed;

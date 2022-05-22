@@ -1,7 +1,7 @@
 <template>
   <div>
     <product-spec-supp
-
+        :list-id="idList"
         :prodName="info.name"
         :idProd="info.ID"
         :externalProdId="info.id"
@@ -24,16 +24,32 @@ export default {
     return {
       suppID:Number,
       prodID:Number,
-      info: null
+      info: null,
+      idList:[],
+
     };
   },
   methods:{
+    listOfId(){
+      let lst = []
+      if (this.$store.state.cart.productCart.length!==0){
+        for (let j in this.$store.state.cart.productCart){
+          lst.push(this.$store.state.cart.productCart[j].idProd)
+        }
 
+        return lst
+      }else {
+        return []
+      }
+    },
   },
 
   mounted() {
     let supp = this.$route.params.supp_id
     let prod = this.$route.params.prod_id
+    if(this.$store.state.cart.productCart.length !==0){
+      this.idList = this.listOfId()
+    }
     if (this.$store.state.productStore.posts.length === 0){
       const  main = async () => {
         const response = await fetch(  `http://localhost:8080/suppliers/${supp}/products/${prod}`

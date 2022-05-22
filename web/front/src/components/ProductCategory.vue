@@ -16,13 +16,23 @@
             <h6>Category: {{ replaceAndTitle(type) }}</h6>
             <p>Price: {{ price }}$</p>
             <div class="btn-add-to-cart">
-              <button type="button" name="add-to-cart" :id="`prod${idProd}`" @click="addToCart(idProd)" >Add!</button>
-              <div v-for="j in $store.state.cart.productCart" :key="j.idProd">
-                <div v-if="j.idProd === idProd" >
-                  <button type="button" name="plus-to-cart" :id="`prod${idProd}`" @click="plusToCart(idProd)">+</button>
-                  <p>{{j.quantity}}</p>
-                  <button type="button" name="minus-from-cart" :id="`prod${idProd}`" @click="minusFromCart(idProd)">-</button>
+              <div v-if="$store.state.cart.productCart.length !==0 ">
+                <div v-if="notInArray(idProd)">
+                  <button type="button" name="add-to-cart" :id="`add-prod${idProd}`" @click="addToCart(idProd)" >Add!</button>
                 </div>
+              </div>
+              <div v-else>
+                <button type="button" name="add-to-cart" :id="`add-prod${idProd}`" @click="addToCart(idProd)" >Add!</button>
+              </div>
+              <div v-for="j in $store.state.cart.productCart" :key="j.idProd">
+                <div v-if="j.idProd === idProd">
+                  <!--                  {{test(j.idProd, idProd)}}-->
+                  <!--                  {{console.log(j.idProd)}}-->
+                  <button type="button" name="plus-to-cart" :id="`plus-prod${idProd}`" @click="plusToCart(idProd)">+</button>
+                  <p>{{j.quantity}}</p>
+                  <button type="button" name="minus-from-cart" :id="`minus-prod${idProd}`" @click="minusFromCart(idProd)">-</button>
+                </div>
+
               </div>
             </div>
           </div>
@@ -50,14 +60,30 @@ export default {
     suppId:Number,
     externalSuppId:Number,
     ingredients:[],
-    quantityInCart:Number
+    quantityInCart:Number,
+    listId:[],
+
   },
   data(){
     return{
       quantity:0,
+
+
     }
   },
   methods:{
+    notInArray(idProd){
+      console.log("++++++++++++++", this.listId, idProd)
+      for(let id in  this.listId){
+        console.log("id",id)
+        if(this.listId[id] === idProd){
+          console.log("id",id)
+          return false
+        }
+      }
+
+      return true
+    },
     addToCart(prodIdAdd) {
       const prod = {
         idProd: this.idProd,
@@ -73,7 +99,7 @@ export default {
 
         quantity: this.quantity,
       }
-      let elem = document.getElementById(`prod${this.idProd}`)
+      let elem = document.getElementById(`add-prod${this.idProd}`)
       elem.parentNode.removeChild(elem);
 
       let j = this.$store.state.cart.productCart
@@ -164,7 +190,7 @@ export default {
   padding-left: 20px;
   padding-right: 250px;
   flex-direction: row;
-  justify-content: center;
+  justify-content: end;
 }
 .product-light-list .product .img-name-prod{
   flex-direction: column;
@@ -201,7 +227,7 @@ export default {
 .name-price-cart .name-price .btn-add-to-cart{
   padding-right: 10px;
 }
-.name-price-cart .name-price button{
+.name-price-cart .name-price .btn-add-to-cart button{
 
   background-color: #cf1ad5;
   color: #1a1f1c;

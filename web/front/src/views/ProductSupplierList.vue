@@ -1,7 +1,8 @@
 <template>
   <div>
     <product-supplier
-          v-for="(prod) in info"
+        :list-id="idList"
+        v-for="(prod) in info"
           :key="prod.name"
           :prodName="prod.name"
           :idProd="prod.ID"
@@ -25,14 +26,32 @@ export default {
   data() {
     return {
       info: null,
-      prodCat: []
+      prodCat: [],
+      idList:[],
+
+
     };
   },
   methods:{
+    listOfId(){
+      let lst = []
+      if (this.$store.state.cart.productCart.length!==0){
+        for (let j in this.$store.state.cart.productCart){
+          lst.push(this.$store.state.cart.productCart[j].idProd)
+        }
+
+        return lst
+      }else {
+        return []
+      }
+    },
   },
   mounted() {
     //this.info = this.$route.params.cat_id
     let supp = this.$route.params.supp_id
+    if(this.$store.state.cart.productCart.length !==0){
+      this.idList = this.listOfId()
+    }
     if (this.$store.state.productStore.posts.length === 0){
       const  main = async () => {
 
