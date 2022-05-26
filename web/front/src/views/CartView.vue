@@ -16,7 +16,7 @@
   <div class="total">
     <div class="total-txt corinthina-40">
       <h2>Total payment:</h2>
-      <h2>{{ total }} $</h2>
+      <h2>{{ total.toFixed(2) }} $</h2>
     </div>
     <div class="buy">
       <button type="button" name="button"
@@ -38,8 +38,8 @@ export default {
   components: {
   },
   methods:{
-    async checkLogin(){
-      await this.$store.dispatch('auth/isLogin')
+    checkLogin(){
+      this.$store.dispatch('auth/isLogin')
       console.log(this.$store.state.auth.logged)
       this.isLogin = this.$store.state.auth.logged
       console.log("OOUL", this.isLogin)

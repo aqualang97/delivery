@@ -16,7 +16,7 @@
       </ul>
       <button type="button" name="button" @click="login">Login</button>
       <div class="return-forgot">
-        <button type="button" name="button" class="btn-bg-return-colour">Return to main</button>
+        <button type="button" name="button" class="btn-bg-return-colour" @click="returnToMain">Return to main</button>
         <button type="button" name="button" class="btn-bg-forgot-colour">Forgot password?</button>
       </div>
     </form>
@@ -36,6 +36,9 @@ export default {
     }
   },
   methods:{
+    returnToMain(){
+      this.$router.push("/")
+    },
     async login(){
       localStorage.setItem('user', "")
       // localStorage.clear()

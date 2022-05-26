@@ -23,7 +23,7 @@
         <div class="name-price corinthina-25">
           <h6>Category: {{ type }}</h6>
           <p>Price: {{ price }}$</p>
-          <p>Sum: {{totalPosition}}</p>
+          <p>Sum: {{totalPosition.toFixed(2)}}</p>
         </div>
       </div>
     </div>

@@ -3,18 +3,18 @@
     <div id="nav">
 
 <!--      <router-link to="/">Home</router-link> |-->
-      <router-link  to="/homehome">Home |</router-link>
-      <router-link to="/about">About |</router-link>
-      <router-link to="/example">example</router-link> |
-      <router-link to="/all-products">products |</router-link>
+      <router-link  to="/">Home</router-link>
+      <router-link to="/about">About</router-link>
+<!--      <router-link to="/example">example</router-link> |-->
+      <router-link to="/all-products">Products</router-link>
 
-      <router-link to="/cart">Cart |</router-link>
-      <router-link to="/categories">Categories |</router-link>
-      <router-link to="/suppliers">Suppliers |</router-link>
-      <router-link v-if="this.isLogin"  to="/old-orders">Old Orders |</router-link>
-      <router-link v-if="this.isLogin"  to="/logout">Logout </router-link>
-      <router-link v-if="!this.isLogin" to="/sign-in">Sign In |</router-link>
-      <router-link v-if="!this.isLogin" to="/sign-up">Sign Up </router-link>
+      <router-link to="/cart">Cart</router-link>
+      <router-link to="/categories">Categories</router-link>
+      <router-link to="/suppliers">Suppliers</router-link>
+      <router-link v-if="this.isLogin"  to="/old-orders">Old Orders</router-link>
+      <router-link v-if="this.isLogin"  to="/logout">Logout</router-link>
+      <router-link v-if="!this.isLogin" to="/sign-in">Sign In</router-link>
+      <router-link v-if="!this.isLogin" to="/sign-up">Sign Up</router-link>
     </div>
     <router-view />
   </div>
@@ -74,5 +74,9 @@ export default {
       color: #42b983;
     }
   }
+}
+#nav a{
+  padding-left: 10px;
+  padding-right: 10px;
 }
 </style>

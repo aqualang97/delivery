@@ -45,7 +45,6 @@ export default {
     }
   },
   methods:{
-
     async pay(){
       console.log(this.card)
       let simulation = {

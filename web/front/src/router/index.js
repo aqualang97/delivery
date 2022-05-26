@@ -1,7 +1,7 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
-import Home from "../views/Home.vue";
-import example from "../views/example";
+// import Home from "../views/Home.vue";
+// import example from "../views/example";
 import products from "../views/ProductList"
 import login from "../views/LoginView"
 import registration from "../views/RegistrationView"
@@ -25,14 +25,10 @@ import logoutVue from "../views/LogoutVue";
 Vue.use(VueRouter);
 
 const routes = [
+
   {
     path: "/",
     name: "Home",
-    component: Home,
-  },
-  {
-    path: "/homehome",
-    name: "HomeHome",
     component: HomePageView,
   },
   {
@@ -44,16 +40,16 @@ const routes = [
     component: () =>
       import(/* webpackChunkName: "about" */ "../views/About.vue"),
   },
-  {
-    path: "/example",
-    name: "example",
-    component: example,
-  },
-  {
-    path: "/example/:id/prod/:idd",
-    name: "example",
-    component: example,
-  },
+  // {
+  //   path: "/example",
+  //   name: "example",
+  //   component: example,
+  // },
+  // {
+  //   path: "/example/:id/prod/:idd",
+  //   name: "example",
+  //   component: example,
+  // },
   {
     path: "/all-products",
     name: "products",
