@@ -26,10 +26,23 @@ export default {
       prodID:Number,
       info: null,
       idList:[],
-
+      isLogin:false,
     };
   },
   methods:{
+    checkLogin(){
+      this.$store.dispatch('auth/isLogin')
+      console.log(this.$store.state.auth.logged)
+      this.isLogin = this.$store.state.auth.logged
+      console.log("tytyty", this.isLogin)
+
+      if(this.isLogin){
+        console.log("tytyty", this.isLogin)
+        this.$store.dispatch('auth/refresh')
+        // this.$router.push("/sign-in")
+      }
+    },
+
     listOfId(){
       let lst = []
       if (this.$store.state.cart.productCart.length!==0){
@@ -45,6 +58,7 @@ export default {
   },
 
   mounted() {
+    this.checkLogin()
     let supp = this.$route.params.supp_id
     let prod = this.$route.params.prod_id
     if(this.$store.state.cart.productCart.length !==0){

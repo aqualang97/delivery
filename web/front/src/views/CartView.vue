@@ -20,7 +20,7 @@
     </div>
     <div class="buy">
       <button type="button" name="button"
-              @click="$router.push(`/buy`)&&isLogin()">
+              @click="$router.push(`/buy`)&&checkLogin()">
         Buy
       </button>
       <button type="button" name="button"
@@ -38,49 +38,54 @@ export default {
   components: {
   },
   methods:{
-
+    async checkLogin(){
+      await this.$store.dispatch('auth/isLogin')
+      console.log(this.$store.state.auth.logged)
+      this.isLogin = this.$store.state.auth.logged
+      console.log("OOUL", this.isLogin)
+    },
     async clear(){
       localStorage.removeItem("user_order")
       this.$store.commit('cart/clearCart');
       await document.location.reload()
     },
 
-    async isLogin(){
-      let usr = localStorage.getItem('user')
-      console.log(usr)
-      if(usr===null){
-        alert("You are not login, access denied")
-        await this.$router.push("/sign-in")
-
-      }
-      else{
-        const obj = JSON.parse(usr)
-        let resp = await fetch("http://localhost:8080/refresh",{
-          method: "POST",
-          body: JSON.stringify({refresh_token:obj.refresh_token})
-        })
-
-        if (resp.status !== 200){
-          await this.$router.push("/sign-in")
-
-          alert(resp.statusText)
-          // await new Promise(r => setTimeout(r, 500));
-          console.log(resp.status)
-          return
-        }
-        let data = await resp.json()
-        console.log(data)
-        // alert("access is allowed)")
-
-        localStorage.setItem('user', JSON.stringify(data))
-
-
-        console.log(obj.user_id)
-        console.log(obj.access_token)
-        console.log(obj.refresh_token)
-        return true
-      }
-    },
+    // async isLogin(){
+    //   let usr = localStorage.getItem('user')
+    //   console.log(usr)
+    //   if(usr===null){
+    //     alert("You are not login, access denied")
+    //     await this.$router.push("/sign-in")
+    //
+    //   }
+    //   else{
+    //     const obj = JSON.parse(usr)
+    //     let resp = await fetch("http://localhost:8080/refresh",{
+    //       method: "POST",
+    //       body: JSON.stringify({refresh_token:obj.refresh_token})
+    //     })
+    //
+    //     if (resp.status !== 200){
+    //       await this.$router.push("/sign-in")
+    //
+    //       alert(resp.statusText)
+    //       // await new Promise(r => setTimeout(r, 500));
+    //       console.log(resp.status)
+    //       return
+    //     }
+    //     let data = await resp.json()
+    //     console.log(data)
+    //     // alert("access is allowed)")
+    //
+    //     localStorage.setItem('user', JSON.stringify(data))
+    //
+    //
+    //     console.log(obj.user_id)
+    //     console.log(obj.access_token)
+    //     console.log(obj.refresh_token)
+    //     return true
+    //   }
+    // },
 
     ifUpdPage(){
       console.log("upd")
@@ -110,10 +115,6 @@ export default {
     },
     fromLocal(){
       let localCart = JSON.parse(localStorage.getItem("user_order"))
-      console.log("localCart")
-      console.log("localCart")
-      console.log("localCart")
-      console.log("localCart")
       console.log(localCart)
       console.log(localCart.length)
       this.$store.commit('cart/inputLocalToState', localCart);

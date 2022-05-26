@@ -20,9 +20,22 @@ export default {
     };
   },
   methods:{
+    checkLogin(){
+      this.$store.dispatch('auth/isLogin')
+      console.log(this.$store.state.auth.logged)
+      this.isLogin = this.$store.state.auth.logged
+      console.log("tytyty", this.isLogin)
+
+      if(this.isLogin){
+        console.log("tytyty", this.isLogin)
+        this.$store.dispatch('auth/refresh')
+        // this.$router.push("/sign-in")
+      }
+    },
 
   },
   mounted() {
+    this.checkLogin()
     const  main = async () => {
       const response = await fetch("http://localhost:8080/categories", {
         method: 'GET',

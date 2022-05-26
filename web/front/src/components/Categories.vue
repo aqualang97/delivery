@@ -5,8 +5,6 @@
     <div>
       <div
            @click="$router.push(`/products&category=${catId}`)"
-
-
       >
         <div v-if="$route.path===`/categories`"
              class="categories-container categories category-name"

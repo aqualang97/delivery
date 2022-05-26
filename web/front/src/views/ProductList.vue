@@ -22,7 +22,7 @@
       </div>
     </div>
     <div>
-      <div>
+      <div class="prod-list-cont">
         <product
             :list-id="idList"
             v-for="(prod) in $store.state.productStore.posts"
@@ -33,6 +33,7 @@
             :price="prod.price"
             :img-link="prod.image"
             :type="prod.type"
+            :id-cat="prod.categoryNum"
             :supp-id="prod.supplierId"
             :external-supp-id="prod.externalSuppId"
             :ingredients="prod.ingredients">
@@ -67,6 +68,7 @@ export default {
       idList:[],
       showSupp:false,
       showCat:false,
+      isLogin:false
 
     };
   },
@@ -74,10 +76,19 @@ export default {
 
     async getProdList(){
       await this.$store.dispatch('productStore/fetch')
-      console.log(this.$store.state.productStore.posts.length)
+
     },
-    refreshToken(token){
-      return token
+    async checkLogin(){
+      await this.$store.dispatch('auth/isLogin')
+      console.log(this.$store.state.auth.logged)
+      this.isLogin = this.$store.state.auth.logged
+      console.log("tytyty", this.isLogin)
+
+      if(this.isLogin){
+        console.log("tytyty", this.isLogin)
+        await this.$store.dispatch('auth/refresh')
+        // this.$router.push("/sign-in")
+      }
     },
 
     plus(numProdCart){
@@ -102,9 +113,13 @@ export default {
 
   },
   mounted() {
+    console.log(123)
+    this.checkLogin()
+
     if (this.$store.state.productStore.posts.length === 0){
       this.getProdList()
     }
+    console.log(this.$store.state.productStore.posts)
     if(this.$store.state.cart.productCart.length !==0){
       this.idList = this.listOfId()
     }
@@ -142,6 +157,7 @@ export default {
   display: flex;
   justify-content: space-around;
   padding-bottom: 25px;
+  max-width: 1400px;
   background-color: #A2D2FF;
 }
 .sorted .categories{
@@ -160,6 +176,10 @@ export default {
 }
 .sorted .supplier .supplier-cont{
 
+}
+.prod-list-cont{
+  display: flex;
+  flex-wrap: wrap;
 }
 
 

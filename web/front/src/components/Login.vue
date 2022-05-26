@@ -43,6 +43,9 @@ export default {
 
       let resp = await fetch("http://localhost:8080/login",{
         method: "POST",
+
+
+
         body: JSON.stringify({email:this.emailInput, password:this.passwordInput})
       })
       if (resp.status !== 200){
@@ -54,7 +57,9 @@ export default {
       console.log(data)
       alert("Successful authorization")
       localStorage.setItem('user', JSON.stringify(data))
-        await this.$router.push("/cart")
+      await this.$router.push("/cart")
+      await document.location.reload()
+
       // for (let index in await resp.json()){
       //   console.log(index)
       // }

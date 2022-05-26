@@ -13,18 +13,20 @@ import (
 )
 
 func (u UserController) Profile(w http.ResponseWriter, r *http.Request) {
+	//allowedHeaders := "Accept, Content-Type, Content-Length, Accept-Encoding, Authorization, X-CSRF-Token"
+
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+
 	switch r.Method {
 	case "GET":
+		log.Println("Profile start")
+		log.Println(r.Header.Get("Authorization"))
 		tokenString := services.GetTokenFromBearerString(r.Header.Get("Authorization"))
+		log.Println(tokenString)
 		cfg := u.ConfigController.Config
 
 		claims, _ := services.Claims(tokenString, cfg.AccessSecret)
 		user, err := u.UserRepository.GetUserById(claims.ID)
-		log.Println(err)
-		log.Println(err)
-		log.Println(err)
-		log.Println(err)
-
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusUnauthorized)
 			return
@@ -37,6 +39,8 @@ func (u UserController) Profile(w http.ResponseWriter, r *http.Request) {
 
 		w.WriteHeader(http.StatusOK)
 		json.NewEncoder(w).Encode(resp)
+		log.Println("profile end", claims.ID)
+
 	default:
 		http.Error(w, "Only GET method is allowed", http.StatusMethodNotAllowed)
 	}
@@ -45,19 +49,19 @@ func (u UserController) Profile(w http.ResponseWriter, r *http.Request) {
 func (u UserController) Refresh(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case "POST":
+		log.Println("ref start")
 
 		req := new(models.UserRequestPairTokens)
 		if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+			log.Println(err)
+			log.Println(err)
 			log.Println(err)
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
 		}
 		cfg := u.ConfigController.Config
+		refreshTokenString := services.GetTokenFromBearerString(req.RefreshToken)
 
-		refreshTokenString := req.RefreshToken
-		fmt.Println(refreshTokenString)
-		fmt.Println(refreshTokenString)
-		fmt.Println(refreshTokenString)
 		//accessTokenString := req.AccessToken
 		//claims, err := repositories.ValidateToken(refreshTokenString, RefreshSecret)
 		_, err := services.ValidateToken(refreshTokenString, cfg.RefreshSecret)
@@ -130,6 +134,7 @@ func (u UserController) Refresh(w http.ResponseWriter, r *http.Request) {
 		w.Write(data)
 		//json.NewEncoder(w).Encode(newAccessTokenString)
 		//json.NewEncoder(w).Encode(newRefreshTokenString)
+		log.Println("refresh end", claims.ID)
 	default:
 		http.Error(w, "Only POST method is allowed", http.StatusMethodNotAllowed)
 	}

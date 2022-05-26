@@ -5,19 +5,24 @@
       <div class="product-container">
         <div class="prod-info">
           <div class="img-name-prod">
-            <h3 class="fredoka-34">{{ prodName }}</h3>
             <div :title="'Ingredients: ' + ingredients"
                  @click="$router.push(`/suppliers/${suppId}/products/${idProd}`)">
               <img :src="imgLink" :alt="prodName" class="comfortaa-22">
             </div>
+            <h3 class="fredoka-38 prod-name">{{ prodName }}</h3>
+
           </div>
         </div>
         <div class="category-price-cont">
           <div class="name-price-cart">
             <div class="name-price fredoka-26">
-              <h6 class="comfortaa-26">Category: {{ replaceAndTitle(type) }}</h6>
-              <p>Price: {{ price }}$</p>
-              <div class="fredoka-34">
+              <div class="category">
+                <h6 class="comfortaa-22">Category:</h6>
+                <h6 class="category-route comfortaa-26"  @click="$router.push(`/products&category=${idCat}`)"
+                >{{replaceAndTitle(type) }}</h6>
+              </div>
+              <p class="fredoka-38">Price: {{ price }}$</p>
+              <div class="fredoka-34 add-plus-minus">
                 <div class="btn-add-to-cart">
                   <div v-if="$store.state.cart.productCart.length !==0 ">
                     <div v-if="notInArray(idProd)">
@@ -31,7 +36,7 @@
                   </div>
                 </div>
                 <div class="plus-minus-cont fredoka-30">
-                  <div v-for="j in $store.state.cart.productCart" :key="j.idProd">
+                  <div v-for="j in $store.state.cart.productCart" :key="j.idProd" class="plus-minus-wrap">
                     <div v-if="j.idProd === idProd">
                       <button type="button" name="plus-to-cart" :id="`plus-prod${idProd}`" @click="plusToCart(idProd)"
                       class="fredoka-30 fix-btn-padding" >+</button>
@@ -73,8 +78,8 @@ export default {
     prodName:String,
     price:Number,
     imgLink:String,
-    type:String,
-
+    type:String,//name of category
+    idCat:Number,
     suppId:Number,
     externalSuppId:Number,
     ingredients:[],
@@ -95,15 +100,11 @@ export default {
     // },
 
     notInArray(idProd){
-      console.log("++++++++++++++", this.listId, idProd)
       for(let id in  this.listId){
-        console.log("id",id)
         if(this.listId[id] === idProd){
-          console.log("id",id)
           return false
         }
       }
-
       return true
     },
     // add() {
@@ -148,7 +149,6 @@ export default {
           }
         }
         this.$store.commit('cart/addProdToCart', prod)
-
       }
 
 
@@ -186,6 +186,7 @@ export default {
         }
       }
     },
+
     replaceAndTitle(str){
       str=str.replace("_", " ")
       str = str[0].toUpperCase() + str.substring(1)
@@ -230,6 +231,10 @@ export default {
   font-family: "Fredoka",serif;
   font-weight: normal;
   font-size: 34px;
+}.fredoka-38{
+  font-family: "Fredoka",serif;
+  font-weight: normal;
+  font-size: 38px;
 }
 .comfortaa-26{
   font-family: "Comfortaa",serif;
@@ -243,7 +248,8 @@ export default {
   background-color: #FEE440;
   justify-content: space-around;
   padding-top: 40px;
-  min-width: 1440px;
+  min-width: 700px;
+  max-width: 1440px;
 
 }
 
@@ -251,51 +257,87 @@ export default {
   /*padding: 30px 150px 30px 0;*/
   border: 4px dotted #FF865E;
   border-radius: 35px;
-  padding-left: 70px;
-  padding-right: 70px;
+  /*padding-left: 70px;*/
+  /*padding-right: 70px;*/
   background-color: #FCEA60;
+  min-height: 800px;
+
 
 }
 .product-light-list .product-light-elem .product-container{
   display: flex;
 
-  padding-left: 20px;
+  /*padding-left: 20px;*/
   /*padding-right: 250px;*/
-  flex-direction: row;
   /*justify-content: end;*/
-  min-height: 350px;
+  flex-direction: column;
+  min-width: 680px;
+  min-height: 715px;
 
 }
 .product-light-list .product-light-elem .product-container .prod-info{
-  min-width: 600px;
+  min-width: 350px;
+}
+.product-light-list  .product-light-elem .product-container .prod-info .img-name-prod{
+  display: flex;
+  flex-direction: column;
+  min-height: 520px;
 }
 
 .product-light-list  .product-light-elem .product-container .prod-info .img-name-prod h3{
   display: flex;
 }
+
+.product-light-list  .product-light-elem .product-container .prod-info .img-name-prod .prod-name{
+  /*width: 300px;*/
+  margin: 0;
+  justify-content: center;
+  max-width: 680px;
+}
 .product-light-list  .product-light-elem .product-container .prod-info .img-name-prod img{
   cursor: pointer;
-  max-width: 300px;
+  max-width: 620px;
+  /*max-height: 415px;*/
   display: block;
-  margin-left: auto;
-  margin-right: auto;
+  /*margin-left: auto;*/
+  /*margin-right: auto;*/
   float: left;
-  padding-bottom: 15px;
+  /*padding-bottom: 15px;*/
+  margin: 30px;
+
 }
 
 .product-light-list  .product-light-elem .product-container .category-price-cont{
-  min-width: 300px;
-  max-width: 300px;
 }
 
 .name-price-cart{
-  padding-top: 40px;
-  padding-left: 50px;
+  /*padding-top: 40px;*/
+  /*padding-left: 50px;*/
 
 }
 .name-price-cart .name-price{
+  display: flex;
+  flex-direction: column;
+}
+.name-price-cart .name-price .add-plus-minus{
+  display: flex;
+  justify-content: center;
+}
+
+.name-price-cart .name-price .category{
+  display: flex;
+  margin-left: 15px;
+  margin-top: 20px;
 
 }
+.name-price-cart .name-price .category .category-route{
+  cursor: pointer;
+  color: #FF865E;
+}
+
+/*.name-price-cart .name-price .category .category-route :hover .category-route {*/
+/*  color: red;*/
+/*}*/
 .name-price-cart .name-price h3{
 
 }
@@ -309,8 +351,9 @@ export default {
 .name-price-cart .name-price .btn-add-to-cart{
   /*padding-right: 10px;*/
   display: flex;
-  justify-content: space-around;
+  /*justify-content: space-around;*/
   padding-top: 20px;
+
 }
 .name-price-cart .name-price .btn-add-to-cart button{
 
@@ -323,14 +366,20 @@ export default {
   border-radius: 16px;
   border-color: black;
   float: right;
+  cursor: pointer;
+
 
 }
 .name-price-cart .name-price .plus-minus-cont {
   display: flex;
-  justify-content: center;
-  position: static;
-
+  /*justify-content: center;*/
+  /*position: static;*/
 }
+.name-price-cart .name-price .plus-minus-cont .plus-minus-wrap{
+  display: flex;
+  flex-wrap: wrap;
+}
+
 .name-price-cart .name-price .plus-minus-cont p{
   /*padding: 0;*/
 }
@@ -346,6 +395,7 @@ export default {
   border-radius: 16px;
   border-color: black;
   float: right;
+  cursor: pointer;
 
 }
 

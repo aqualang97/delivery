@@ -52,7 +52,9 @@ func CompareHashTokenDBAndRequest(hashTokenDB, tokenReq string) bool {
 	}
 	return true
 }
+
 func GetTokenFromBearerString(bearerString string) string {
+	log.Println(bearerString)
 	if bearerString == "" {
 		return ""
 	}

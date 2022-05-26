@@ -9,27 +9,19 @@
 export default {
   name: "LogoutVue",
   methods:{
-    async logout(){
-
-      let usr = localStorage.getItem('user')
-      let access = JSON.parse(usr).access_token
-      console.log(access)
-
-      let resp = await fetch("http://localhost:8080/logout",{
-        method: "POST",
-        body: JSON.stringify({access_token:access}),
-      })
-
-      if (resp.status===200){
-        localStorage.clear()
-        alert("success")
-        await this.$router.push("/sign-in")
-      }
-
+    logout(){
+      this.$store.dispatch('auth/logout')
     }
   },
   mounted() {
     this.logout()
+    let logout = this.$store.state.auth.logged
+    if (!logout){
+      alert("You are not login, access denied")
+      this.$router.push("/sign-in")
+
+
+    }
   }
 }
 </script>

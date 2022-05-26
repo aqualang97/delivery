@@ -101,20 +101,37 @@ func (a AuthController) Logout(w http.ResponseWriter, r *http.Request) {
 	case "POST":
 		//tokenString := services.GetTokenFromBearerString(r.Header.Get("Authorization"))
 		req := new(models.UserRequestPairTokens)
-		log.Println(r.Body)
 		if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
 		}
-		log.Println(req.AccessToken)
-		log.Println(req.AccessToken)
-		log.Println(req.AccessToken)
+		tokenString := services.GetTokenFromBearerString(req.AccessToken)
+		_, err := services.ValidateToken(tokenString, a.ConfigController.Config.AccessSecret)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusUnauthorized)
+			log.Println(err)
+			log.Println(err)
+			log.Println(err)
+			return
+		}
 		cfg := a.ConfigController.Config
-		claims, err := services.Claims(req.AccessToken, cfg.AccessSecret)
+		claims, err := services.Claims(tokenString, a.ConfigController.Config.AccessSecret)
 		if err != nil {
 			cfg.Logger.Error("Auth err", err)
 			return
 		}
+		exist, _ := a.UserAccessTokenRepository.IsExistAccess(claims.ID) //expired="false" учтен при селекте существования
+		if !exist {
+			http.Error(w, "invalid token", http.StatusUnauthorized)
+			return
+		}
+		tokenHash, _ := a.UserAccessTokenRepository.GetAccessTokenByUserID(claims.ID)
+		equal := services.CompareHashTokenDBAndRequest(tokenHash, tokenString)
+		if !equal {
+			http.Error(w, "invalid token", http.StatusUnauthorized)
+			return
+		}
+
 		//user, err := hp.UserRepository.GetUserById(claims.ID)
 		err = a.UserRefreshTokenRepository.ExpiredRefreshToken(claims.ID)
 		if err != nil {

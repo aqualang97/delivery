@@ -6,11 +6,18 @@ import (
 	"net/http"
 )
 
+//type MyRouter struct {
+//	C   *controllers.Controllers
+//	mux *http.ServeMux
+//}
+
 func Router(
 	c *controllers.Controllers,
 	mux *http.ServeMux,
 ) {
+
 	m := middlware.NewMiddleware(c)
+	m.CORS(m.RequireAuthentication(mux))
 	//Menu
 	mux.HandleFunc("/", c.Menu.Home)
 	mux.HandleFunc("/suppliers", m.CORS(http.HandlerFunc(c.Menu.Suppliers)))
@@ -25,7 +32,7 @@ func Router(
 	mux.Handle("/logout", m.CORS(http.HandlerFunc(c.Auth.Logout)))
 
 	//User
-	mux.Handle("/profile", m.RequireAuthentication(http.HandlerFunc(c.User.Profile)))
+	mux.Handle("/profile", m.CORS(m.RequireAuthentication(http.HandlerFunc(c.User.Profile))))
 	mux.HandleFunc("/refresh", m.CORS(http.HandlerFunc(c.User.Refresh)))
 
 	//Cart
@@ -33,4 +40,8 @@ func Router(
 	mux.HandleFunc("/card_pay", m.CORS(http.HandlerFunc(c.User.SimulationCardPay)))
 	mux.HandleFunc("/confirm", m.CORS(http.HandlerFunc(c.User.AddProductsFromCart)))
 	mux.HandleFunc("/old-orders/", m.CORS(http.HandlerFunc(c.User.GetOldOrders)))
+}
+func settingsHeader(w http.ResponseWriter) {
+	w.Header().Add("Access-Control-Allow-Origin", "*")
+
 }

@@ -16,7 +16,6 @@
 </template>
 
 <script>
-import cartView from "./CartView";
 export default {
   name: "OldOrdersUserList",
   components: {},
@@ -32,13 +31,21 @@ export default {
       user_order:null,
       // name:String(),
       // category:String(),
-       image:String(),
+      image:String(),
+      isLogin:false,
       // quantity:Number(),
       // purchase_price:Number(),
 
     }
   },
   methods:{
+    async checkLogin(){
+      await this.$store.dispatch('auth/isLogin')
+      console.log(this.$store.state.auth.logged)
+      this.isLogin = this.$store.state.auth.logged
+      console.log("OOUL", this.isLogin)
+    },
+
     async getOrders(){
       let user_id_route = this.$route.params.user_id
       this.user_id = parseInt(user_id_route)
@@ -53,20 +60,29 @@ export default {
       // }
     }
   },
+
   mounted() {
-    cartView.methods.isLogin()
-    let usr = localStorage.getItem("user")
-    this.user_id = JSON.parse(usr).user_id
-    let id = this.$route.params.user_id
-    if (parseInt(id) === this.user_id){
-      this.getOrders()
-    }else {
+    this.checkLogin()
+    this.isLogin = this.$store.state.auth.logged
+    console.log(this.isLogin, "UList")
+    if(!this.isLogin){
       alert("oops")
       this.$router.push("/all-products")
+    }else{
+      let usr = localStorage.getItem("user")
+      this.user_id = JSON.parse(usr).user_id
+      let id = this.$route.params.user_id
+      if (parseInt(id) === this.user_id){
+        this.getOrders()
+      }else {
+        alert("oops")
+        this.$router.push("/all-products")
 
+      }
     }
 
-    }
+
+  }
 }
 </script>
 

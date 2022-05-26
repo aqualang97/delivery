@@ -60,6 +60,7 @@ export default {
   },
   methods:{
     async confirm() {
+
       // console.log(typeof this.phone )
       // console.log(typeof (this.firstName) !== "string" )
       // console.log( typeof(this.lastName) !== "string")
@@ -119,14 +120,16 @@ export default {
         if (resp.status === 200) {
           let orderId = await resp.json()
           if (this.paymentMethod === "Cash") {
-            await this.$router.push("/pay")
             localStorage.setItem('user_pay_method', "Cash")
             localStorage.setItem('user_last_order_id', JSON.stringify(orderId))
+            await this.$router.push("/pay")
+
           }
           else if (this.paymentMethod === "Online payment") {
-            await this.$router.push("/card-method")
             localStorage.setItem('user_pay_method', "Card")
             localStorage.setItem('user_last_order_id', JSON.stringify(orderId))
+            await this.$router.push("/card-method")
+
 
           }
         }
