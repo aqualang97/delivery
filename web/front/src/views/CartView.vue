@@ -14,21 +14,27 @@
 
   ></cart>
   <div class="total">
-    <div class="total-txt corinthina-40">
-      <h2>Total payment:</h2>
-      <h2>{{ total.toFixed(2) }} $</h2>
+    <div v-if="this.$store.state.cart.productCart.length===0">
+      <p>Cart is empty</p>
     </div>
-    <div class="buy">
-      <button type="button" name="button"
-              @click="$router.push(`/buy`)&&checkLogin()">
-        Buy
-      </button>
-      <button type="button" name="button"
-              @click="clear">
-        Clear cart
-      </button>
+    <div v-else >
+      <div class="total-txt corinthina-40">
+        <h2>Total payment:</h2>
+        <h2>{{ total.toFixed(2) }} $</h2>
+      </div>
+      <div class="buy">
+        <button type="button" name="button"
+                @click="$router.push(`/buy`)&&checkLogin()">
+          Buy
+        </button>
+        <button type="button" name="button"
+                @click="clear">
+          Clear cart
+        </button>
+      </div>
     </div>
   </div>
+
 </div>
 </template>
 

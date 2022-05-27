@@ -296,7 +296,7 @@ export default {
 }
 .product-light-list  .product-light-elem .product-container .prod-info .img-name-prod img{
   cursor: pointer;
-  max-width: 620px;
+  max-width: 450px;
   /*max-height: 415px;*/
   display: block;
   /*margin-left: auto;*/

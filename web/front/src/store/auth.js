@@ -48,12 +48,15 @@ const actions = {
                 }
             })
             if (resp.status !== 200){
-                alert(resp.statusText)
+                // alert(resp.statusText)
                 state.logged = false
+                // document.location.reload()
+            }else{
+                console.log("login pass")
+                state.logged = true
+                console.log(state.logged)
             }
-            console.log("login pass")
-            state.logged = true
-            console.log(state.logged)
+
         }
     },
     async refresh(){
@@ -78,16 +81,18 @@ const actions = {
             if (resp.status !== 200){
                 // await this.$router.push("/sign-in")
                 alert(resp.statusText)
-                return
+
+            }else {
+                let data = await resp.json()
+                console.log(data)
+                state.user = {
+                    user_id:obj.user_id,
+                    access: obj.access_token,
+                    refresh: obj.refresh_token
+                }
+                localStorage.setItem('user', JSON.stringify(data))
             }
-            let data = await resp.json()
-            console.log(data)
-            state.user = {
-                user_id:obj.user_id,
-                access: obj.access_token,
-                refresh: obj.refresh_token
-            }
-            localStorage.setItem('user', JSON.stringify(data))
+
         }
     },
 

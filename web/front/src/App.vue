@@ -25,6 +25,7 @@ export default {
   data(){
     return{
       isLogin:false,
+      isReload:false,
     }
   },
   methods:{
@@ -46,6 +47,17 @@ export default {
     // this.logged = CartView.methods.isLogin()
     this.checkLogin()
     this.isLogin = this.$store.state.auth.logged
+    let isr = localStorage.getItem('isReload')
+    console.log('reload',isr===null)
+    if(isr===null){
+      localStorage.setItem('isReload', 'true')
+      document.location.reload()
+    }else if(Boolean(isr)===false){
+      localStorage.setItem('isReload', 'true')
+      document.location.reload()
+
+    }
+
     console.log("APP", this.isLogin)
     console.log("APP", this.isLogin)
     console.log("APP", this.isLogin)

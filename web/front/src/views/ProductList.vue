@@ -21,7 +21,7 @@
         <suppliers-list v-if="showSupp" class="supplier-cont"/>
       </div>
     </div>
-    <div>
+    <div class="main-prod-list">
       <div class="prod-list-cont">
         <product
             :list-id="idList"
@@ -157,7 +157,8 @@ export default {
   display: flex;
   justify-content: space-around;
   padding-bottom: 25px;
-  max-width: 1400px;
+  min-width: 700px;
+  max-width: 1440px;
   background-color: #A2D2FF;
 }
 .sorted .categories{
@@ -177,9 +178,14 @@ export default {
 .sorted .supplier .supplier-cont{
 
 }
-.prod-list-cont{
+.main-prod-list{
+  min-width: 700px;
+  max-width: 1440px;
+}
+.main-prod-list .prod-list-cont{
   display: flex;
   flex-wrap: wrap;
+
 }
 
 
