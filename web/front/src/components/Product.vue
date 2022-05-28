@@ -5,11 +5,14 @@
       <div class="product-container">
         <div class="prod-info">
           <div class="img-name-prod">
-            <div :title="'Ingredients: ' + ingredients"
+            <div class="img-ingredients" :title="'Ingredients: ' + ingredients"
                  @click="$router.push(`/suppliers/${suppId}/products/${idProd}`)">
               <img :src="imgLink" :alt="prodName" class="comfortaa-22">
             </div>
-            <h3 class="fredoka-38 prod-name">{{ prodName }}</h3>
+            <div class="name">
+              <h3 class="fredoka-38 prod-name">{{ prodName }}</h3>
+            </div>
+
 
           </div>
         </div>
@@ -27,12 +30,12 @@
                   <div v-if="$store.state.cart.productCart.length !==0 ">
                     <div v-if="notInArray(idProd)">
                       <button type="button" name="add-to-cart" :id="`add-prod${idProd}`" @click="addToCart(idProd)"
-                              class="fredoka-26">Add!</button>
+                              class="fredoka-26">Add to cart</button>
                     </div>
                   </div>
                   <div v-else>
                     <button type="button" name="add-to-cart" :id="`add-prod${idProd}`" @click="addToCart(idProd)"
-                            class="fredoka-26">Add!</button>
+                            class="fredoka-26">Add to cart</button>
                   </div>
                 </div>
                 <div class="plus-minus-cont fredoka-30">
@@ -238,8 +241,10 @@ export default {
 }
 .comfortaa-26{
   font-family: "Comfortaa",serif;
+
   font-size: 26px;
-}.comfortaa-22{
+}
+.comfortaa-22{
   font-family: "Comfortaa",serif;
   font-size: 22px;
 }
@@ -248,19 +253,17 @@ export default {
   background-color: #FEE440;
   justify-content: space-around;
   padding-top: 40px;
-  min-width: 700px;
-  max-width: 1440px;
-
+  width: 440px;
 }
 
 .product-light-elem{
   /*padding: 30px 150px 30px 0;*/
-  border: 4px dotted #FF865E;
+  /*border: 4px dotted #FF865E;*/
   border-radius: 35px;
   /*padding-left: 70px;*/
   /*padding-right: 70px;*/
-  background-color: #FCEA60;
-  min-height: 800px;
+  background-color: #feef7d;
+  min-height: 760px;
 
 
 }
@@ -271,39 +274,47 @@ export default {
   /*padding-right: 250px;*/
   /*justify-content: end;*/
   flex-direction: column;
-  min-width: 680px;
+  min-width: 400px;
   min-height: 715px;
 
 }
 .product-light-list .product-light-elem .product-container .prod-info{
   min-width: 350px;
 }
+
 .product-light-list  .product-light-elem .product-container .prod-info .img-name-prod{
   display: flex;
   flex-direction: column;
-  min-height: 520px;
+  min-height: 450px;
 }
 
 .product-light-list  .product-light-elem .product-container .prod-info .img-name-prod h3{
   display: flex;
 }
-
-.product-light-list  .product-light-elem .product-container .prod-info .img-name-prod .prod-name{
+.product-light-list  .product-light-elem .product-container .prod-info .img-name-prod .img-ingredients{
+  display: flex;
+  justify-content: center;
+}
+.product-light-list  .product-light-elem .product-container .prod-info .img-name-prod .name{
+  display: flex;
+  justify-content: center;
+}
+.product-light-list  .product-light-elem .product-container .prod-info .img-name-prod .name .prod-name{
   /*width: 300px;*/
   margin: 0;
-  justify-content: center;
-  max-width: 680px;
+  max-width: 350px;
 }
 .product-light-list  .product-light-elem .product-container .prod-info .img-name-prod img{
   cursor: pointer;
-  max-width: 450px;
-  /*max-height: 415px;*/
+  max-width: 350px;
+  max-height: 250px;
   display: block;
   /*margin-left: auto;*/
   /*margin-right: auto;*/
-  float: left;
+  /*float: left;*/
   /*padding-bottom: 15px;*/
   margin: 30px;
+  justify-content: center;
 
 }
 
@@ -322,6 +333,7 @@ export default {
 .name-price-cart .name-price .add-plus-minus{
   display: flex;
   justify-content: center;
+  padding-top: 15px;
 }
 
 .name-price-cart .name-price .category{
@@ -359,18 +371,18 @@ export default {
 
   background-color: #FF865E;
   color: #1a1f1c;
-  width: 100px;
+  width: 220px;
   height: 50px;
 
-  border-width: 3px;
-  border-radius: 16px;
-  border-color: black;
+  border-width: 0;
+  border-radius: 30px;
+  /*border-color: black;*/
   float: right;
   cursor: pointer;
 }
-.name-price-cart .name-price .btn-add-to-cart button:hover button{
-  background-color: #f28ec1;
-}
+/*.name-price-cart .name-price .btn-add-to-cart button:hover button{*/
+/*  background-color: #f28ec1;*/
+/*}*/
 
 .name-price-cart .name-price .plus-minus-cont {
   display: flex;
@@ -393,9 +405,9 @@ export default {
   width: 100px;
   height: 50px;
 
-  border-width: 3px;
-  border-radius: 16px;
-  border-color: black;
+  border-width: 0;
+  border-radius: 30px;
+  /*border-color: black;*/
   float: right;
   cursor: pointer;
 

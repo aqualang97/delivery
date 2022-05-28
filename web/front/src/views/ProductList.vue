@@ -9,13 +9,13 @@
 <!--      </option>-->
 <!--    </select>-->
     <div class="sorted">
-      <div>
+      <div class="comfortaa-26">
         <p v-if="showCat===false" class="categories" @click="showCat=true">Categories</p>
         <p v-else @click="showCat=false" class="categories">Categories</p>
         <categories-list v-if="showCat" class="categories-cont"/>
       </div>
 <!--      <div class="supplier">-->
-      <div>
+      <div class="comfortaa-26">
         <p v-if="showSupp===false" @click="showSupp = true" class="supplier">Suppliers</p>
         <p v-else @click="showSupp = false" class="supplier">Suppliers</p>
         <suppliers-list v-if="showSupp" class="supplier-cont"/>
@@ -153,24 +153,44 @@ export default {
 </script>
 
 <style scoped>
+@font-face {
+  font-family: "Fredoka";
+  src :url("../../../fonts/fredoka/FredokaOne-Regular.ttf");
+  font-weight: 400;
+}
+@font-face {
+  font-family: "Comfortaa";
+  src :url("../../../fonts/comfortaa/Comfortaa-VariableFont_wght.ttf");
+  font-weight: 400;
+}
+.comfortaa-26{
+  font-family: "Comfortaa",serif;
+  font-weight: bold;
+  font-size: 26px;
+}
 .sorted{
   display: flex;
-  justify-content: space-around;
-  padding-bottom: 25px;
-  min-width: 700px;
-  max-width: 1440px;
+  justify-content: space-between;
+
   background-color: #A2D2FF;
+  text-align: center;
+  padding: 20px 70px;
 }
 .sorted .categories{
-  border: #f28ec1 1px dashed;
-  border-radius: 9px;
+  border-radius: 30px;
   margin: 0;
-
+  background-color: #c6e1ff;
+  width: 400px;
+  height: 40px;
+  padding-top: 15px;
 }
 .sorted .supplier{
-  border: #f28ec1 1px dashed;
-  border-radius: 9px;
+  border-radius: 30px;
   margin: 0;
+  background-color: #c6e1ff;
+  width: 400px;
+  height: 40px;
+  padding-top: 15px;
 }
 .sorted .categories .categories-cont{
 
@@ -179,13 +199,13 @@ export default {
 
 }
 .main-prod-list{
-  min-width: 700px;
-  max-width: 1440px;
+  background-color: #FEE440;
+
 }
 .main-prod-list .prod-list-cont{
   display: flex;
   flex-wrap: wrap;
-
+  justify-content: center;
 }
 
 

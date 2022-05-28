@@ -1,9 +1,10 @@
 <template>
   <div id="app">
-    <div id="nav">
+    <div id="nav" class="comfortaa-22">
 
 <!--      <router-link to="/">Home</router-link> |-->
-      <router-link  to="/">Home</router-link>
+      <router-link  to="/">Home
+      </router-link>
       <router-link to="/about">About</router-link>
 <!--      <router-link to="/example">example</router-link> |-->
       <router-link to="/all-products">Products</router-link>
@@ -74,21 +75,45 @@ export default {
   text-align: center;
   color: #2c3e50;
 }
+@font-face {
+  font-family: "Comfortaa";
+  src :url("../../fonts/comfortaa/Comfortaa-VariableFont_wght.ttf");
+  font-weight: 400;
+}
+@font-face {
+  font-family: "Fredoka";
+  src :url("../../fonts/fredoka/FredokaOne-Regular.ttf");
+  font-weight: 400;
+}
+
+.comfortaa-22{
+  font-family: "Comfortaa",serif;
+  font-size: 22px;
+  text-decoration: unset;
+}
 
 #nav {
   padding: 30px;
-
+  display:flex;
+  justify-content: space-evenly;
   a {
     font-weight: bold;
     color: #2c3e50;
 
     &.router-link-exact-active {
-      color: #42b983;
-    }
+
+       margin-top: 3px;
+       /*text-decoration: underline dotted;*/
+       border-bottom: 3px #FF865E dotted;
+
+       color: #FF865E;
+     }
   }
 }
 #nav a{
-  padding-left: 10px;
-  padding-right: 10px;
+
+}
+a:-webkit-any-link{
+  text-decoration: none;
 }
 </style>

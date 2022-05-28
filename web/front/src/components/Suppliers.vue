@@ -65,6 +65,7 @@ export default {
 .supplier-sort{
   display: flex;
   justify-content: space-between;
+  background-color: #A2D2FF;
 }
 
 
