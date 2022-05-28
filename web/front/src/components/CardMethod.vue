@@ -3,26 +3,26 @@
     <form>
       <div class="card-num">
         <label for="card">Card number</label>
-        <input v-model="card" type="number" id="card" name="u_card"
+        <input minlength="16" maxlength="16" v-model="card" type="text" id="card" name="u_card"
                placeholder="xxxx-xxxx-xxxx-xxxx" pattern="[1-9]|[0-9]{15}" value="" required>
       </div>
       <div class="month-year">
         <div class="month">
           <label for="month">Month</label>
-          <input v-model="month" type="number" id="month" name="u_month"
-                 placeholder="mm" pattern="[1-9][0-9]" value="" required>
+          <input v-model="month" type="text" id="month" name="u_month"
+                 placeholder="mm" pattern="[1-9][0-9]" minlength="2" maxlength="2" value="" required>
         </div>
         <div class="year">
           <label  for="year">Year</label>
-          <input v-model="year" type="number" id="year" name="u_year"
-                 placeholder="yy" pattern="[0-9][0-9]"  value="" required>
+          <input v-model="year" type="text" id="year" name="u_year"
+                 placeholder="yy" pattern="[0-9][0-9]" minlength="2" maxlength="2" value="" required>
         </div>
 
       </div>
       <div class="cvv">
         <label for="cvv">CVV</label>
-        <input v-model="cvv" type="number" id="cvv" name="cvv"
-               placeholder="CVV" pattern="[1-9][0-9][0-9]" maxlength="3" value="" required>
+        <input v-model="cvv" type="text" id="cvv" name="cvv"
+               placeholder="CVV" pattern="[1-9][0-9][0-9]" minlength="3" maxlength="3" value="" required>
       </div>
       <button type="button" name="button"  @click="pay">Pay</button>
     </form>
@@ -37,10 +37,10 @@ export default {
   },
   data(){
     return{
-      cvv:Number,
-      card:Number,
-      month:Number,
-      year:Number,
+      cvv:String(),
+      card:String(),
+      month:String(),
+      year:String(),
 
     }
   },
@@ -78,13 +78,13 @@ export default {
 }
 .card-pay-container .month-year .month{}
 .card-pay-container .month-year .month input{
-  width:50px;
-  height:30px;
+  /*width:50px;*/
+  /*height:30px;*/
 }
 .card-pay-container .month-year .year{}
 .card-pay-container .month-year .year input{
-  width:50px;
-  height:30px;
+  /*width:50px;*/
+  /*height:30px;*/
 }
 .card-pay-container .cvv{}
 </style>

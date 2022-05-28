@@ -367,9 +367,11 @@ export default {
   border-color: black;
   float: right;
   cursor: pointer;
-
-
 }
+.name-price-cart .name-price .btn-add-to-cart button:hover button{
+  background-color: #f28ec1;
+}
+
 .name-price-cart .name-price .plus-minus-cont {
   display: flex;
   /*justify-content: center;*/
@@ -398,6 +400,7 @@ export default {
   cursor: pointer;
 
 }
+
 
 .name-price-cart .name-price .plus-minus-cont button p{
   padding: 0;
