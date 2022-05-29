@@ -3,12 +3,14 @@
   <div >
 
     <div>
-      <div
-           @click="$router.push(`/products&category=${catId}`)"
-      >
-        <div v-if="$route.path===`/categories`"
-             class="categories-container categories category-name"
-        >{{replaceAndTitle(categoryName)}}</div>
+      <div @click="$router.push(`/products&category=${catId}`)" class="main-cat-cont">
+        <div v-if="$route.path===`/categories`" class="categories-container fredoka-38">
+          {{replaceAndTitle(categoryName)}}
+        </div>
+
+
+
+
         <div class="categories-sort" v-else>
           <ul>
             <li>
@@ -28,7 +30,7 @@ export default {
   props:{
     categoryName:String,
     catId:Number,
-
+    sourceIcon:String,
   },
   methods:{
     replaceAndTitle(str){
@@ -41,14 +43,31 @@ export default {
 </script>
 
 <style scoped>
-.categories-container{
-  background-color: #f6c101;
+@font-face {
+  font-family: "Fredoka";
+  src :url("../../../fonts/fredoka/FredokaOne-Regular.ttf");
+  font-weight: 400;
+}
+.fredoka-38{
+   font-family: "Fredoka",serif;
+   font-weight: normal;
+   font-size: 38px;
+ }
+.main-cat-cont{
+  padding-top: 20px;
+  padding-bottom: 20px;
+}
+.main-cat-cont .categories-container{
+  background-color: #ffbda4;
   display: flex;
+  flex-direction: row;
   justify-content: center;
+  padding: 30px;
+  margin: 20px;
+  border-radius: 50px;
+
 }
-.categories-container .categories{
-  font-size: 25px;
-}
+
 .categories-sort{
   margin: 0;
   display: flex;

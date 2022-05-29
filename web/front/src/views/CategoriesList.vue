@@ -1,5 +1,17 @@
 <template>
-  <div>
+  <div v-if="$route.path===`/categories`" class="main-cat-list">
+    <div class="cat-cont">
+      <categories
+          v-for="(category) in categoriesList"
+          :key="category.name"
+          :category-name="category.name"
+          :cat-id="category.id"
+          :source-icon="`../../../pic/categories/`+ category.id + `.png`"
+      >
+      </categories>
+    </div>
+  </div>
+  <div v-else>
     <categories
         v-for="(category) in categoriesList"
         :key="category.name"
@@ -50,5 +62,14 @@ export default {
 </script>
 
 <style scoped>
+.main-cat-list{
+  background-color: #FF865E;
+
+}
+.main-cat-list .cat-cont{
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+}
 
 </style>

@@ -1,7 +1,7 @@
 <template>
-  <main class="login-form-container">
+  <main class="reg-form-container">
     <form class="corinthina-40" action="index.html" method="post">
-      <ul>
+      <ul class="fredoka-26">
         <li>
           <label for="emailReg">E-mail</label>
           <input v-model="emailReg" type="email" id="emailReg" name="user_mail_reg"
@@ -35,11 +35,19 @@
 <!--                 placeholder="Enter phone" value="" class="corinthina-25" required>-->
 <!--        </li>-->
       </ul>
-      <button type="button" name="button" @click="registration">Registration</button>
-      <div class="return-forgot">
-        <button type="button" name="button" class="btn-bg-return-colour">Return to main</button>
-      </div>
     </form>
+    <div class="reg-return-cont">
+      <div class="reg-return">
+        <div  class="reg">
+          <button type="button" name="button" @click="registration" class="fredoka-26">Registration</button>
+        </div>
+        <div>
+          <button type="button" name="button" @click="$router.push(`/`)" class="fredoka-26">Return to main</button>
+        </div>
+      </div>
+
+
+    </div>
   </main>
 </template>
 
@@ -108,14 +116,31 @@ export default {
 
 
 <style scoped>
-header, main, footer{
-  max-width: 1440px;
+
+@font-face {
+  font-family: "Fredoka";
+  src :url("../../../fonts/fredoka/FredokaOne-Regular.ttf");
+  font-weight: 400;
 }
 
+.fredoka-26{
+  font-family: "Fredoka",serif;
+  font-size: 26px;
+}
 
-.login-form-container{
+header, main, footer{
+}
 
-  background-color: #FADADD;
+::-webkit-input-placeholder {
+  color: #b0bfd2;
+  font-family: Comfortaa;
+  font-size: 22px;
+  font-weight: bold;
+  padding-left: 20px;
+}
+.reg-form-container{
+
+  background-color: #A2D2FF;
 }
 /*.ubuntu-25{
   font-size: 25px;
@@ -123,58 +148,64 @@ header, main, footer{
 .ubuntu-15{
   font-size: 15px;
 }*/
-.login-form-container form{
+.reg-form-container form{
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 100px 250px 100px 250px;
+  padding: 60px 250px 0 250px;
 }
 
-.login-form-container form ul{
+.reg-form-container form ul{
   padding-left: 0;
-  width: 100%;
+  width: 700px;
 
 }
-.login-form-container form ul li{
+.reg-form-container form ul li{
   list-style-type: none;
   display: flex;
   flex-direction: column;
   padding-bottom: 20px;
-  color: #26938e;
+  color: #2c3e50;
+}
+.reg-form-container form ul li label{
+  padding-bottom: 20px;
 }
 
-.login-form-container form ul li input{
-  height: 30px;
-  border-radius: 8px;
-}
-
-.login-form-container button{
-  background-color: #c9ffb6;
-  color: black;
-  border-radius: 8px;
-  width: 100%;
+.reg-form-container form ul li input{
   height: 50px;
-  font-family: "Corinthia";
-  font-size: 30px;
-
+  border-radius: 30px;
+  border: 4px solid #FF865E;
 }
-
-.login-form-container .return-forgot{
+.reg-return-cont{
   display: flex;
-  justify-content: space-between;
-  margin: 0;
-  width: 100%;
-  padding-top: 50px;
+  justify-content: space-around;
+}
+.reg-return{
+  padding-bottom: 50px;
+}
+.reg-return-cont .reg-return .reg{
+  padding-bottom: 100px;
+}
+.reg-return-cont .reg-return button{
+  background-color: #FF865E;
+  color: #2c3e50;
+  width: 300px;
+  height: 50px;
+
+  border-width: 0;
+  border-radius: 30px;
+  /*border-color: black;*/
+  float: right;
+  cursor: pointer;
 
 }
-.return-forgot button{
-  height: 40px;
-  width: 100%;
+
+input[type~=email],input[type~=text], input[type~=password]{
+  color: #2c3e50;
+  font-family: Comfortaa;
+  font-size: 22px;
+  font-weight: bold;
+  padding-left: 20px;
 
 }
-.return-forgot .btn-bg-return-colour{
-}
-.return-forgot .btn-bg-forgot-colour{
-}
-
 </style>

@@ -1,20 +1,22 @@
 <template>
-  <div>
-
-    <product-category
-        :list-id="idList"
-        v-for="(prod) in prodCat"
-        :key="prod.ID"
-        :prodName="prod.name"
-        :id-prod="prod.ID"
-        :external-prod-id="prod.id"
-        :price="prod.price"
-        :img-link="prod.image"
-        :type="prod.type"
-        :supp-id="prod.supplierId"
-        :external-supp-id="prod.externalSuppId"
-        :ingredients="prod.ingredients"
-    ></product-category>
+  <div class="main-prod-list">
+    <div class="prod-list-cont">
+      <product-category
+          :list-id="idList"
+          v-for="(prod) in prodCat"
+          :key="prod.ID"
+          :prodName="prod.name"
+          :id-prod="prod.ID"
+          :external-prod-id="prod.id"
+          :price="prod.price"
+          :img-link="prod.image"
+          :type="prod.type"
+          :id-cat="prod.categoryNum"
+          :supp-id="prod.supplierId"
+          :external-supp-id="prod.externalSuppId"
+          :ingredients="prod.ingredients"
+      ></product-category>
+    </div>
   </div>
 
 </template>
@@ -101,5 +103,14 @@ export default {
 </script>
 
 <style scoped>
+.main-prod-list{
+  background-color: #FEE440;
+
+}
+.main-prod-list .prod-list-cont{
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
 
 </style>

@@ -1,19 +1,16 @@
 <template>
-
   <div class="product-light-list">
     <div class="product-light-elem" >
       <div class="product-container">
         <div class="prod-info">
           <div class="img-name-prod">
-            <div class="img-ingredients" :title="'Ingredients: ' + ingredients"
+            <div class="img-ingredients comfortaa-22" :title="'Ingredients: ' + ingredients"
                  @click="$router.push(`/suppliers/${suppId}/products/${idProd}`)">
-              <img :src="imgLink" :alt="prodName" class="comfortaa-22">
+              <img :src="imgLink" :alt="prodName" >
             </div>
             <div class="name">
               <h3 class="fredoka-38 prod-name">{{ prodName }}</h3>
             </div>
-
-
           </div>
         </div>
         <div class="category-price-cont">
@@ -48,16 +45,11 @@
                               @click="minusFromCart(idProd)" class="fredoka-30 fix-btn-padding">-</button>
                     </div>
                   </div>
-
                 </div>
-
-
               </div>
             </div>
           </div>
         </div>
-
-
       </div>
     </div>
   </div>
@@ -130,7 +122,7 @@ export default {
         price: this.price,
         imgLink: this.imgLink,
         type: this.type,
-
+        idCat:this.idCat,
         suppId: this.suppId,
         externalSuppId: this.externalSuppId,
         ingredients: this.ingredients,
@@ -249,6 +241,7 @@ export default {
   font-size: 22px;
 }
 .product-light-list{
+
   display: flex;
   background-color: #FEE440;
   justify-content: space-around;
@@ -294,6 +287,7 @@ export default {
 .product-light-list  .product-light-elem .product-container .prod-info .img-name-prod .img-ingredients{
   display: flex;
   justify-content: center;
+
 }
 .product-light-list  .product-light-elem .product-container .prod-info .img-name-prod .name{
   display: flex;
@@ -370,7 +364,7 @@ export default {
 .name-price-cart .name-price .btn-add-to-cart button{
 
   background-color: #FF865E;
-  color: #1a1f1c;
+  color: #2c3e50;
   width: 220px;
   height: 50px;
 
@@ -401,7 +395,7 @@ export default {
 }
 .name-price-cart .name-price .plus-minus-cont button{
   background-color: #FF865E;
-  color: #1a1f1c;
+  color: #2c3e50;
   width: 100px;
   height: 50px;
 

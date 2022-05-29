@@ -1,8 +1,9 @@
 <template>
-  <div>
-    <product-supplier
-        :list-id="idList"
-        v-for="(prod) in info"
+  <div class="main-prod-list">
+    <div class="prod-list-cont">
+      <product-supplier
+          :list-id="idList"
+          v-for="(prod) in info"
           :key="prod.name"
           :prodName="prod.name"
           :idProd="prod.ID"
@@ -10,10 +11,12 @@
           :price="prod.price"
           :imgLink="prod.image"
           :type="prod.type"
+          :id-cat="prod.categoryNum"
           :suppId="prod.supplierId"
-          :externalSuppId="prod.externalSuppId">
-    </product-supplier>
-
+          :ingredients="prod.ingredients">
+        :externalSuppId="prod.externalSuppId">
+      </product-supplier>
+    </div>
   </div>
 
 </template>
@@ -113,5 +116,15 @@ export default {
 </script>
 
 <style scoped>
+.main-prod-list{
+  background-color: #FEE440;
+
+}
+.main-prod-list .prod-list-cont{
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
 
 </style>

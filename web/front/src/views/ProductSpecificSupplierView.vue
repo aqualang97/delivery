@@ -1,18 +1,21 @@
 <template>
-  <div>
-    <product-spec-supp
-        :list-id="idList"
-        :prodName="info.name"
-        :idProd="info.ID"
-        :externalProdId="info.id"
-        :price="info.price"
-        :imgLink="info.image"
-        :type="info.type"
-        :suppId="info.supplierId"
-        :externalSuppId="info.externalSuppId"
-        :ingredients="info.ingredients"
-    >
-    </product-spec-supp>
+  <div class="main-prod-list">
+    <div class="prod-list-cont">
+      <product-spec-supp
+          :list-id="idList"
+          :prodName="info.name"
+          :idProd="info.ID"
+          :externalProdId="info.id"
+          :price="info.price"
+          :imgLink="info.image"
+          :type="info.type"
+          :id-cat="info.categoryNum"
+          :suppId="info.supplierId"
+          :externalSuppId="info.externalSuppId"
+          :ingredients="info.ingredients"
+      >
+      </product-spec-supp>
+    </div>
   </div>
 </template>
 
@@ -24,7 +27,7 @@ export default {
     return {
       suppID:Number,
       prodID:Number,
-      info: null,
+      info: [],
       idList:[],
       isLogin:false,
     };
@@ -71,9 +74,6 @@ export default {
               method: 'GET',
             });
         this.info = await response.json();
-        this.info.forEach((item)=>{
-          console.log(item)
-        })
       }
       main()
     }else {
@@ -97,5 +97,13 @@ export default {
 </script>
 
 <style scoped>
+.main-prod-list{
+  background-color: #FEE440;
+
+}
+.main-prod-list .prod-list-cont{
+  display: flex;
+  justify-content: center;
+}
 
 </style>

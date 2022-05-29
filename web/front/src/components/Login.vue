@@ -1,7 +1,7 @@
 <template>
 
   <main class="login-form-container">
-    <form class="corinthina-40" action="index.html" method="post">
+    <form class="fredoka-26" action="index.html" method="post">
       <ul>
         <li>
           <label for="email">E-mail</label>
@@ -14,12 +14,26 @@
                  placeholder="Enter password" value="" class="corinthina-25" required>
         </li>
       </ul>
-      <button type="button" name="button" @click="login">Login</button>
-      <div class="return-forgot">
-        <button type="button" name="button" class="btn-bg-return-colour" @click="returnToMain">Return to main</button>
-        <button type="button" name="button" class="btn-bg-forgot-colour">Forgot password?</button>
-      </div>
+
     </form>
+    <div class="login-return-cont">
+      <div class="login-return">
+        <div class="login">
+          <button type="button" name="button" @click="login" class="fredoka-26">Login</button>
+
+        </div>
+        <div class="return-forgot">
+          <div class="return">
+            <button type="button" name="button" class="fredoka-26" @click="returnToMain">Return to main</button>
+          </div>
+          <div class="forgot">
+            <button type="button" name="button" class="fredoka-26">Forgot password?</button>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
   </main>
 </template>
 
@@ -78,11 +92,21 @@ export default {
 /*  max-width: 1440px;*/
 /*}*/
 
+@font-face {
+  font-family: "Fredoka";
+  src :url("../../../fonts/fredoka/FredokaOne-Regular.ttf");
+  font-weight: 400;
+}
+
+.fredoka-26{
+  font-family: "Fredoka",serif;
+  font-size: 26px;
+}
 
 .login-form-container{
   display: block;
 
-  background-color: #FADADD;
+  background-color: #A2D2FF;
 }
 /*.ubuntu-25{
   font-size: 25px;
@@ -99,7 +123,6 @@ export default {
 
 .login-form-container form ul{
   padding-left: 0px;
-  width: 100%;
 
 }
 .login-form-container form ul li{
@@ -115,31 +138,112 @@ export default {
   border-radius: 8px;
 }
 
-.login-form-container button{
-  background-color: #c9ffb6;
-  color: black;
-  border-radius: 8px;
-  width: 100%;
+
+::-webkit-input-placeholder {
+  color: #b0bfd2;
+  font-family: Comfortaa;
+  font-size: 22px;
+  font-weight: bold;
+  padding-left: 20px;
+}
+.login-form-container{
+
+  background-color: #A2D2FF;
+}
+/*.ubuntu-25{
+  font-size: 25px;
+}
+.ubuntu-15{
+  font-size: 15px;
+}*/
+.login-form-container form{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 60px 250px 0 250px;
+}
+
+.login-form-container form ul{
+  padding-left: 0;
+  width: 700px;
+
+}
+.login-form-container form ul li{
+  list-style-type: none;
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 20px;
+  color: #2c3e50;
+}
+.login-form-container form ul li label{
+  padding-bottom: 20px;
+}
+
+.login-form-container form ul li input{
   height: 50px;
-  font-family: "Corinthia";
-  font-size: 30px;
+  border-radius: 30px;
+  border: 4px solid #FF865E;
+}
+.login-return-cont{
+  display: flex;
+  justify-content: space-around;
+}
+.login-return{
+  padding-bottom: 50px;
+}
+.login-return-cont .login-return .login{
+  display: flex;
+  justify-content: center;
+}
+.login-return-cont .login-return button{
+  background-color: #FEE440;
+  color: #2c3e50;
+  width: 300px;
+  height: 50px;
+  border: 4px dotted #FF865E;
+  border-radius: 30px;
+  /*border-color: black;*/
+  float: right;
+  cursor: pointer;
 
 }
 
-.login-form-container .return-forgot{
+input[type~=email],input[type~=text], input[type~=password]{
+  color: #2c3e50;
+  font-family: Comfortaa;
+  font-size: 22px;
+  font-weight: bold;
+  padding-left: 20px;
+
+}
+.login-form-container .login-return-cont .return-forgot{
   display: flex;
-  justify-content: space-between;
+  justify-content: space-around;
   margin: 0;
-  width: 100%;
   padding-top: 50px;
 }
+.login-form-container .login-return-cont .return-forgot button{
+  background-color: #FF865E;
+  color: #2c3e50;
+  width: 300px;
+  height: 50px;
+
+  border-width: 0;
+  border-radius: 30px;
+  /*border-color: black;*/
+  float: right;
+  cursor: pointer;
+
+}
+
+.login-form-container .login-return-cont .return-forgot .return, .login-form-container .login-return-cont .return-forgot .forgot{
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
 .return-forgot button{
   height: 40px;
-  width: 40%;
-}
-.return-forgot .btn-bg-return-colour{
-}
-.return-forgot .btn-bg-forgot-colour{
+
 }
 
 </style>

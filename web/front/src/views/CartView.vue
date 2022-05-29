@@ -1,36 +1,51 @@
 <template>
 <div>
-  <cart
-      v-for="i in cartList"
-      :key="i.idProd"
-      :id-prod="i.idProd"
-      :prod-name="i.prodName"
-      :price="i.price"
-      :ingredients="i.ingredients"
-      :img-link="i.imgLink"
-      :type="i.type"
-      :quantity="i.quantity"
+  <div class="cart-prod-cont">
+    <div class="cart-responsive">
+      <cart
+          v-for="i in cartList"
+          :key="i.idProd"
+          :id-prod="i.idProd"
+          :prod-name="i.prodName"
+          :price="i.price"
+          :ingredients="i.ingredients"
+          :img-link="i.imgLink"
+          :type="i.type"
+          :quantity="i.quantity"
+          :id-cat="i.idCat"
+          :supp-id="i.suppId"
 
 
-  ></cart>
+
+      ></cart>
+    </div>
+  </div>
+
   <div class="total">
     <div v-if="this.$store.state.cart.productCart.length===0">
-      <p>Cart is empty</p>
+      <img src="../../../pic/empty-cart.png">
     </div>
-    <div v-else >
-      <div class="total-txt corinthina-40">
-        <h2>Total payment:</h2>
-        <h2>{{ total.toFixed(2) }} $</h2>
+    <div v-else class="total-not-empty" >
+      <div class="total-txt ">
+        <h2 class="fredoka-28">Total payment:</h2>
+        <h2 class="fredoka-44">{{ total.toFixed(2) }} $</h2>
       </div>
-      <div class="buy">
-        <button type="button" name="button"
-                @click="$router.push(`/buy`)&&checkLogin()">
-          Buy
-        </button>
-        <button type="button" name="button"
-                @click="clear">
-          Clear cart
-        </button>
+      <div class="buy-clear" >
+        <div class="btn-buy">
+          <button class="fredoka-34" type="button" name="button"
+                  @click="$router.push(`/buy`)&&checkLogin()">
+            Buy
+          </button>
+        </div>
+
+        <div class="btn-clear">
+          <button class="fredoka-34" type="button" name="button"
+                  @click="clear">
+            Clear cart
+          </button>
+        </div>
+
+
       </div>
     </div>
   </div>
@@ -155,36 +170,87 @@ export default {
 </script>
 
 <style scoped>
+
+
+
+@font-face {
+  font-family: "Fredoka";
+  src :url("../../../fonts/fredoka/FredokaOne-Regular.ttf");
+  font-weight: 400;
+}
+
+.fredoka-44{
+  font-family: "Fredoka",serif;
+  font-weight: normal;
+  font-size: 44px;
+}
+.fredoka-34{
+  font-family: "Fredoka",serif;
+  font-weight: normal;
+  font-size: 34px;
+}
+.fredoka-28{
+  font-family: "Fredoka",serif;
+  font-weight: normal;
+  font-size: 29px;
+}
 .total{
-  background-color: #FADADD;
+  background-color: #c6e1ff;
   padding-top: 50px;
   padding-bottom: 50px;
   display: flex;
-  text-align: center;
+  justify-content: center;
 }
-.total-txt{
-  width: 50%;
+.total img{
+  opacity: 0.3;
+}
+.total .total-not-empty{
+
+}
+.total .total-not-empty .total-txt{
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
 }
 
-.total-txt h2, .total-txt h6{
+.total .total-not-empty .total-txt h2, .total-not-empty .total-txt h6{
   margin: 0;
+  font-weight: normal;
+  padding-bottom: 25px;
 }
-.total .buy{
-  width: 40%;
+
+.total .buy-clear{
   display: flex;
   justify-content: flex-end;
   align-items: center;
+
 }
-.total .buy button{
-  font-family: "Corinthia",serif;
-  font-size: 25px;
-  color: brown;
-  border-radius: 4px;
+
+.total .buy-clear .btn-clear{
+  padding-right: 25px;
+  padding-left: 25px;
+}
+.total .buy-clear .btn-buy{
+  padding-right: 25px;
+  padding-right: 25px;
+}
+.total .buy-clear button{
+  background-color: #FF865E;
+  color: #2c3e50;
+  width: 400px;
   height: 50px;
-  background-color: #c9ffb6;
-  width: 50%;
+  border-width: 0;
+  border-radius: 30px;
+  /*border-color: black;*/
+  float: right;
+  cursor: pointer;
+}
+.cart-prod-cont{
+  background-color: #A2D2FF;
+}
+.cart-prod-cont .cart-responsive{
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
 }
 </style>

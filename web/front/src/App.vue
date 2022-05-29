@@ -9,13 +9,14 @@
 <!--      <router-link to="/example">example</router-link> |-->
       <router-link to="/all-products">Products</router-link>
 
-      <router-link to="/cart">Cart</router-link>
       <router-link to="/categories">Categories</router-link>
       <router-link to="/suppliers">Suppliers</router-link>
       <router-link v-if="this.isLogin"  to="/old-orders">Old Orders</router-link>
       <router-link v-if="this.isLogin"  to="/logout">Logout</router-link>
       <router-link v-if="!this.isLogin" to="/sign-in">Sign In</router-link>
       <router-link v-if="!this.isLogin" to="/sign-up">Sign Up</router-link>
+      <router-link to="/cart">Cart</router-link>
+
     </div>
     <router-view />
   </div>
@@ -105,7 +106,6 @@ export default {
        margin-top: 3px;
        /*text-decoration: underline dotted;*/
        border-bottom: 3px #FF865E dotted;
-
        color: #FF865E;
      }
   }

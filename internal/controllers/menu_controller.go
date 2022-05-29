@@ -73,6 +73,12 @@ func (rp MenuController) SupplierAndProdWithID(w http.ResponseWriter, r *http.Re
 		//supp := rp.SupplierRepository.GetSupplierByID()
 		path := r.URL.Path
 		parts := strings.Split(path, "/")
+		log.Println(len(parts))
+		log.Println(parts)
+		log.Println(parts)
+		log.Println(parts)
+		log.Println(parts)
+		log.Println(parts)
 		if len(parts) >= 3 && len(parts) <= 6 {
 			strSuppID := parts[2]
 			if suppID, err := strconv.Atoi(strSuppID); err == nil {
