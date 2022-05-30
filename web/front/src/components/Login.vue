@@ -103,40 +103,6 @@ export default {
   font-size: 26px;
 }
 
-.login-form-container{
-  display: block;
-
-  background-color: #A2D2FF;
-}
-/*.ubuntu-25{
-  font-size: 25px;
-}
-.ubuntu-15{
-  font-size: 15px;
-}*/
-.login-form-container form{
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 100px 250px 100px 250px;
-}
-
-.login-form-container form ul{
-  padding-left: 0px;
-
-}
-.login-form-container form ul li{
-  list-style-type: none;
-  display: flex;
-  flex-direction: column;
-  padding-bottom: 20px;
-  color: #26938e;
-}
-
-.login-form-container form ul li input{
-  height: 30px;
-  border-radius: 8px;
-}
 
 
 ::-webkit-input-placeholder {
@@ -197,6 +163,7 @@ export default {
 }
 .login-return-cont .login-return button{
   background-color: #FEE440;
+
   color: #2c3e50;
   width: 300px;
   height: 50px;
@@ -223,12 +190,12 @@ input[type~=email],input[type~=text], input[type~=password]{
   padding-top: 50px;
 }
 .login-form-container .login-return-cont .return-forgot button{
-  background-color: #FF865E;
+  background-color: #FEE440;
   color: #2c3e50;
   width: 300px;
   height: 50px;
+  border: 4px dotted #FF865E;
 
-  border-width: 0;
   border-radius: 30px;
   /*border-color: black;*/
   float: right;

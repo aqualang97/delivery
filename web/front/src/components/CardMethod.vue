@@ -1,31 +1,36 @@
 <template>
-  <main class="card-pay-container">
-    <form>
-      <div class="card-num">
+  <main class="pay-form-container">
+    <form class="fredoka-26">
+      <div class="inputs">
         <label for="card">Card number</label>
         <input minlength="16" maxlength="16" v-model="card" type="text" id="card" name="u_card"
                placeholder="xxxx-xxxx-xxxx-xxxx" pattern="[1-9]|[0-9]{15}" value="" required>
       </div>
-      <div class="month-year">
-        <div class="month">
+      <div>
+        <div class="inputs">
           <label for="month">Month</label>
           <input v-model="month" type="text" id="month" name="u_month"
                  placeholder="mm" pattern="[1-9][0-9]" minlength="2" maxlength="2" value="" required>
         </div>
-        <div class="year">
+        <div class="inputs">
           <label  for="year">Year</label>
           <input v-model="year" type="text" id="year" name="u_year"
                  placeholder="yy" pattern="[0-9][0-9]" minlength="2" maxlength="2" value="" required>
         </div>
 
       </div>
-      <div class="cvv">
+      <div class="inputs">
         <label for="cvv">CVV</label>
         <input v-model="cvv" type="text" id="cvv" name="cvv"
                placeholder="CVV" pattern="[1-9][0-9][0-9]" minlength="3" maxlength="3" value="" required>
       </div>
-      <button type="button" name="button"  @click="pay">Pay</button>
     </form>
+    <div class="pay-btn">
+      <div class="pay">
+        <button type="button" name="button"  @click="pay" class="fredoka-26">Pay</button>
+
+      </div>
+    </div>
   </main>
 </template>
 
@@ -68,23 +73,73 @@ export default {
 </script>
 
 <style scoped>
-.card-pay-container{
-  display: flex;
-  flex-direction: column;
+@font-face {
+  font-family: "Fredoka";
+  src :url("../../../fonts/fredoka/FredokaOne-Regular.ttf");
+  font-weight: 400;
 }
-.card-pay-container .card-num{}
-.card-pay-container .month-year{
+
+.fredoka-26{
+  font-family: "Fredoka",serif;
+  font-size: 26px;
+}
+
+.pay-form-container{
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  background-color: #A2D2FF;
+}
+
+.pay-form-container form{
+  padding: 60px 250px;
+}
+
+
+.pay-form-container label{
+  padding-bottom: 20px;
+  padding-right: 20px;
+}
+
+.pay-form-container input{
+  height: 50px;
+  border-radius: 30px;
+  border: 4px solid #FF865E;
 
 }
-.card-pay-container .month-year .month{}
-.card-pay-container .month-year .month input{
-  /*width:50px;*/
-  /*height:30px;*/
+.pay-form-container .inputs{
+  padding-top: 10px;
+  padding-bottom: 10px;
+  display: flex;
+  justify-content: flex-end;
 }
-.card-pay-container .month-year .year{}
-.card-pay-container .month-year .year input{
-  /*width:50px;*/
-  /*height:30px;*/
+
+.pay-btn{
+  padding-bottom: 50px;
 }
-.card-pay-container .cvv{}
+.pay-btn .pay{
+  display: flex;
+  justify-content: center;
+}
+.pay-btn button{
+  background-color: #FEE440;
+  color: #2c3e50;
+  width: 300px;
+  height: 50px;
+  border: 4px dotted #FF865E;
+  border-radius: 30px;
+  /*border-color: black;*/
+  float: right;
+  cursor: pointer;
+
+}
+
+input[type~=text]{
+  color: #2c3e50;
+  font-family: Comfortaa;
+  font-size: 22px;
+  font-weight: bold;
+  padding-left: 20px;
+
+}
 </style>

@@ -1,6 +1,6 @@
 <template>
   <main class="buy-form-container">
-    <form class="corinthina-40" action="index.html" method="post">
+    <form class="fredoka-26" action="index.html" method="post">
       <ul>
         <li>
           <label for="first-name">First Name</label>
@@ -24,21 +24,32 @@
         </li>
         <li>
           <label for="paymentMethod">Payment method</label>
-          <div>
-            <input type="radio" id="cash_method" name="user_payment_method"
-                   class="corinthina-25" v-model="paymentMethod" value="Cash">
-            <label for="cash_method">Cash</label>
-            <input type="radio" id="online_method" name="user_payment_method"
-                   class="corinthina-25" v-model="paymentMethod" value="Online payment">
-            <label for="online_method">Online payment</label>
+          <div class="radio-cont">
+            <div class="radio">
+              <input type="radio" id="cash_method" name="user_payment_method"
+                     class="corinthina-25" v-model="paymentMethod" value="Cash">
+              <label for="cash_method">Cash</label>
+            </div>
+            <div class="radio">
+              <input type="radio" id="online_method" name="user_payment_method"
+                     class="corinthina-25" v-model="paymentMethod" value="Online payment">
+              <label for="online_method">Online payment</label>
+            </div>
+
           </div>
 
 
         </li>
-        <button type="button" name="button" @click="confirm">Confirm</button>
 
       </ul>
     </form>
+    <div class="buy-btn-cont">
+      <div class="buy-btn">
+        <div class="buy">
+          <button type="button" name="button" @click="confirm" class="fredoka-26">Confirm</button>
+        </div>
+      </div>
+    </div>
   </main>
 </template>
 
@@ -140,21 +151,33 @@ export default {
 </script>
 
 <style scoped>
+@font-face {
+  font-family: "Fredoka";
+  src :url("../../../fonts/fredoka/FredokaOne-Regular.ttf");
+  font-weight: 400;
+}
+
+.fredoka-26{
+  font-family: "Fredoka",serif;
+  font-size: 26px;
+}
+
 .buy-form-container{
   display: block;
 
-  background-color: #FADADD;
+  background-color: #A2D2FF;
 }
+
 .buy-form-container form{
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 100px 250px 100px 250px;
+  padding: 60px 250px 0 250px;
 }
 
 .buy-form-container form ul{
-  padding-left: 0px;
-  width: 100%;
+  padding-left: 0;
+  width: 700px;
 
 }
 .buy-form-container form ul li{
@@ -162,23 +185,57 @@ export default {
   display: flex;
   flex-direction: column;
   padding-bottom: 20px;
-  color: #26938e;
+  color: #2c3e50;
+}
+.buy-form-container form ul li label{
+  padding-bottom: 20px;
 }
 
 .buy-form-container form ul li input{
-  height: 30px;
-  border-radius: 8px;
-}
-
-.buy-form-container button{
-  background-color: #c9ffb6;
-  color: black;
-  border-radius: 8px;
-  width: 100%;
   height: 50px;
-  font-family: "Corinthia";
-  font-size: 30px;
+  border-radius: 30px;
+  border: 4px solid #FF865E;
+}
+.buy-btn-cont{
+  display: flex;
+  justify-content: space-around;
+}
+.buy-btn-cont .buy-btn{
+  padding-bottom: 50px;
+}
+.buy-btn-cont .buy-btn .buy{
+  display: flex;
+  justify-content: center;
+}
+.buy-btn-cont .buy-btn button{
+  background-color: #FEE440;
+  color: #2c3e50;
+  width: 300px;
+  height: 50px;
+  border: 4px dotted #FF865E;
+  border-radius: 30px;
+  /*border-color: black;*/
+  float: right;
+  cursor: pointer;
 
 }
 
+input[type~=number],input[type~=text]{
+  color: #2c3e50;
+  font-family: Comfortaa;
+  font-size: 22px;
+  font-weight: bold;
+  padding-left: 20px;
+
+}
+.buy-form-container .radio-cont{
+  display: flex;
+  justify-content: space-between;
+}
+.buy-form-container .radio-cont .radio{
+}
+input[type~=radio]{
+  width: 100px;
+
+}
 </style>

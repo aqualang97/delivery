@@ -2,25 +2,8 @@
   <main>
     <div class="promo-container corinthina-30">
       <div class="promo-txt">
-        <h1>Promo for new customers!</h1>
-        <p>Gift certificate when buying a set from 500 UAH</p>
-      </div>
-    </div>
-    <div class="about-container">
-      <div class="about-txt corinthina-25">
-
-
-      </div>
-    </div>
-    <div class="about-container reverce">
-      <div class="about-txt corinthina-25">
-
-
-      </div>
-    </div>
-    <div class="learn-more-container">
-      <div class="learn-more corinthina-25">
-
+        <h1 class="fredoka-38">Promo for new customers!</h1>
+        <p class="comfortaa-26">Gift certificate when buying a set from 500 UAH</p>
       </div>
     </div>
   </main>
@@ -34,143 +17,34 @@ export default {
 
 <style scoped>
 
-.logo-about-prod-container{
-  display: flex;
-  width: 30%;
-  justify-content: inherit;
-  padding-top: 20px;
-  padding-left: 20px;
+@font-face {
+  font-family: "Comfortaa";
+  src :url("../../../fonts/comfortaa/Comfortaa-VariableFont_wght.ttf");
+  font-weight: 400;
 }
+@font-face {
+  font-family: "Fredoka";
+  src :url("../../../fonts/fredoka/FredokaOne-Regular.ttf");
+  font-weight: 400;
+}
+.fredoka-38{
+  font-family: "Fredoka",serif;
+  font-weight: normal;
+  font-size: 38px;
+}
+.comfortaa-26{
+  font-family: "Comfortaa",serif;
 
-.logo-about-prod-container img{
-  width: 160%;
-  margin: 0;
+  font-size: 26px;
 }
-
-.login-cart-container{
-  display: flex;
-  width: 30%;
-  justify-content: inherit;
-  padding-top: 20px;
-  padding-right: 20px;
-}
-
-
-.logo-about-prod-container a, .login-cart-container a {
-  margin: 0;
-  text-decoration: none;
-  color: black;
-
-}
-
-.corinthina-30{
-  font-family: "Corinthia";
-  font-size: 30px;
-}
-.corinthina-40{
-  font-family: "Corinthia";
-  font-size: 40px;
-}
-.corinthina-25{
-  font-family: "Corinthia";
-  font-size: 25px;
-}
-
-.corinthina-15{
-  font-family: "Corinthia";
-  font-size: 15px;
-}
-
-
-.promo-container, .about-container{
-  display: flex;
-  width: 100%;
-  background-color: #FADADD;
-  margin: 0;
-  padding-top: 50px;
-}
-.promo-container .promo-txt, .about-container .about-txt{
-  width: 100%;
-  padding: 50px 0 0 25px;
-
-}
-.promo-container .promo-img img, .about-container .about-img img{
-  width: 100%;
-  position: static;
-  margin: 0;
-}
-
-.about-txt h3, .about-txt p{
-  padding: 0 50px 0 50px;
-}
-
-.reverce{
-  flex-direction: row-reverse;
-}
-
-.learn-more-container{
-  display: flex;
-  flex-direction: column;
-  padding: 30px 300px;
-  background-color: #FADADD;
-
-}
-.learn-more{
-  justify-content: center;
-  text-align: center;
-}
-.different-beers-btn {
-  display: flex;
-  justify-content: space-between;
-}
-.different-beers-btn button{
-  font-family: "Corinthia";
-  font-size: 25px;
-  color: white;
-  border-radius: 8px;
-  height: 50px;
-  width: 15%;
-}
-
-.light{
-  background-color: #f6c101;
-}
-
-.dark{
-  background-color: #290e05;
-}
-
-.unfiltered{
-  background-color: #f28ec1;
-}
-
-.craft{
-  background-color: #b84b3b;
-}
-
-footer{
-  background-color: #c9ffb6;
-  color: black;
-  display: flex;
-  flex-direction: row;
-  padding-top: 25px;
-}
-.sotial-networks{
-  display: flex;
-  flex-direction: column;
-  text-align: center;
-  width: 50%;
-}
-.networks-img{
-  display: flex;
-  justify-content: space-evenly;
-}
-.copyrights{
-  display: flex;
-  align-items: self-end;
-  width: 100%;
-  justify-content: end;
-  padding-right: 25px;
-}
+ .promo-container{
+   min-height: 1000px;
+   background-color: #FEE440;
+ }
+ .promo-container .promo-txt{
+   display: flex;
+   flex-direction: column;
+   justify-content: space-around;
+ }
 
 </style>

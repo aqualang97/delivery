@@ -98,17 +98,21 @@ export default {
         alert((await Promise.resolve(resp.text())).toString())
         this.emailReg = this.loginReg = this.passwordReg = this.confirmPasswordReg = ""
       }
+      if(this.validEmail(this.emailReg)){
+        let data = await resp.json()
+        console.log(data)
+        alert("Successful registration")
+        await this.$router.push("/cart")
+      }else {
+        alert("Check spelling")
+      }
 
-      let data = await resp.json()
-      console.log(data)
-      alert("Successful registration")
-      // localStorage.setItem('user', JSON.stringify(data))
-      // localStorage.setItem("user_order", JSON.stringify([]))
-
-      await this.$router.push("/cart")
-      // console.log((await Promise.resolve(resp.text())).toString()
 
 
+    },
+    validEmail(email) {
+      let re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@(([[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+      return re.test(email);
     }
   }
 }
@@ -187,12 +191,12 @@ header, main, footer{
   padding-bottom: 100px;
 }
 .reg-return-cont .reg-return button{
-  background-color: #FF865E;
+  background-color: #FEE440;
   color: #2c3e50;
   width: 300px;
   height: 50px;
 
-  border-width: 0;
+  border: 4px dotted #FF865E;
   border-radius: 30px;
   /*border-color: black;*/
   float: right;

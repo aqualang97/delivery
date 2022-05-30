@@ -31,15 +31,15 @@ const routes = [
     name: "Home",
     component: HomePageView,
   },
-  {
-    path: "/about",
-    name: "About",
-    // router level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this router
-    // which is lazy-loaded when the router is visited.
-    component: () =>
-      import(/* webpackChunkName: "about" */ "../views/About.vue"),
-  },
+  // {
+  //   path: "/about",
+  //   name: "About",
+  //   // router level code-splitting
+  //   // this generates a separate chunk (about.[hash].js) for this router
+  //   // which is lazy-loaded when the router is visited.
+  //   component: () =>
+  //     import(/* webpackChunkName: "about" */ "../views/About.vue"),
+  // },
   // {
   //   path: "/example",
   //   name: "example",
@@ -134,7 +134,7 @@ const routes = [
   },
   {
     path: "/old-orders/:user_id",
-    name: "old-orders",
+    name: "old-orders-user",
     component: oldOrdersUserList,
   },
   {

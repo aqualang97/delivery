@@ -235,11 +235,11 @@ export default {
   padding-right: 25px;
 }
 .total .buy-clear button{
-  background-color: #FF865E;
+  background-color: #FEE440;
   color: #2c3e50;
   width: 400px;
   height: 50px;
-  border-width: 0;
+  border: 4px dotted #FF865E;
   border-radius: 30px;
   /*border-color: black;*/
   float: right;

@@ -207,12 +207,12 @@ export default {
   font-size: 30pt;
 }
 .plus-minus-cont button{
-  background-color: #FF865E;
+  background-color: #FEE440;
   color: #2c3e50;
   width: 100px;
   height: 50px;
 
-  border-width: 0;
+  border: 4px dotted #FF865E;
   border-radius: 30px;
   /*border-color: black;*/
   float: right;

@@ -196,12 +196,6 @@ export default {
 <style scoped>
 
 @font-face {
-  font-family: "Corinthia";
-  //src: url("/home/yurii/delivery/web/shop/fonts/Corinthia-Regular.ttf");
-  font-weight: 400;
-}
-
-@font-face {
   font-family: "Comfortaa";
   src :url("../../../fonts/comfortaa/Comfortaa-VariableFont_wght.ttf");
   font-weight: 400;
@@ -338,8 +332,8 @@ export default {
 }
 .name-price-cart .name-price .category .category-route{
   cursor: pointer;
-  color: #FF865E;
-}
+  display: flex;
+  flex-direction: column;}
 
 /*.name-price-cart .name-price .category .category-route :hover .category-route {*/
 /*  color: red;*/
