@@ -7,3 +7,8 @@ type ProductsIngredients struct {
 	IngredientID int
 	CreatedAt    *time.Time
 }
+type ProductsIngredientsName struct {
+	ProductId  int
+	Ingredient string
+	CreatedAt  *time.Time
+}

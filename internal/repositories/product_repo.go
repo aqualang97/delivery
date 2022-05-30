@@ -16,42 +16,40 @@ type ProductDBRepository struct {
 
 func (p ProductDBRepository) GetProductByID(id int) (models.Position, error) {
 	var product models.Position
-	var piProductID int
 	var ingredient string
 	var listIngr []string
+
 	err := p.conn.QueryRow(
 		"SELECT p.id, p.name, s.id, s.name, p.category, pc.id, p.external_id, pc.name, ps.price, ps.image FROM products AS p LEFT JOIN products_categories pc on pc.id = p.category left join products_suppliers ps on p.id = ps.product_id left join suppliers s on ps.supplier_id = s.id  WHERE p.id=? and p.external_id=ps.external_product_id",
 		id).Scan(&product.ID, &product.Name, &product.SupplierId, &product.SupplierName, &product.CategoryNum, &product.CategoryNum, &product.ExternalID, &product.Type, &product.Price, &product.Image)
 	if err != nil {
 		log.Println(err)
+		return product, err
 	}
 
 	rowsI, err := p.conn.Query(
-		"SELECT pi.product_id, i.name FROM products_ingredients as pi LEFT JOIN ingredients i on i.id = pi.ingredient_id ORDER BY product_id")
+		"SELECT i.name FROM ingredients as i LEFT JOIN products_ingredients as pi on i.id = pi.ingredient_id  WHERE pi.product_id=?", product.ID)
 	if err != nil {
 		p.logger.Error("GetListOfProdBySupplier \n", err)
 	}
 	defer rowsI.Close()
 	for rowsI.Next() {
-		err := rowsI.Scan(&piProductID, &ingredient)
+		err := rowsI.Scan(&ingredient)
 		if err != nil {
 			log.Println(err)
 			return product, err
 		}
-		if piProductID != product.ID {
-			break
-		}
 		listIngr = append(listIngr, ingredient)
 	}
+
 	product.Ingredients = listIngr
 	return product, err
 }
 func (p ProductDBRepository) GetListOfProdInCategory(catID int) []models.Position {
 	var product models.Position
 	var listProd []models.Position
-	var piProductID int
-	var ingredient string
-	var listIngr []string
+	var ingredientName models.ProductsIngredientsName
+	var ingredientNameList []models.ProductsIngredientsName
 	rowsI, err := p.conn.Query(
 		"SELECT pi.product_id, i.name FROM products_ingredients as pi LEFT JOIN ingredients i on i.id = pi.ingredient_id ORDER BY product_id")
 	if err != nil {
@@ -68,27 +66,30 @@ func (p ProductDBRepository) GetListOfProdInCategory(catID int) []models.Positio
 	for rows.Next() {
 		err := rows.Scan(&product.ID, &product.Name, &product.Type, &product.CategoryNum, &product.ExternalID, &product.SupplierName, &product.Price, &product.Image, &product.SupplierId, &product.ExternalSuppId)
 		if err != nil {
-			log.Println(err)
-			log.Println(err)
-			log.Println(err)
+
+			return listProd
+		}
+		listProd = append(listProd, product)
+
+	}
+	for rowsI.Next() {
+		err := rowsI.Scan(&ingredientName.ProductId, &ingredientName.Ingredient)
+		if err != nil {
 			log.Println(err)
 			return listProd
 		}
-		fmt.Println(product)
-		for rowsI.Next() {
-			err := rowsI.Scan(&piProductID, &ingredient)
-			if err != nil {
-				log.Println(err)
-				return listProd
+		ingredientNameList = append(ingredientNameList, ingredientName)
+	}
+	for i, _ := range ingredientNameList {
+		for j, _ := range listProd {
+			if ingredientNameList[i].ProductId == listProd[j].ID {
+				log.Println(ingredientNameList[i].ProductId, listProd[j].ID)
+
+				listProd[j].Ingredients = append(listProd[j].Ingredients, ingredientNameList[i].Ingredient)
+			} else {
+				continue
 			}
-			if piProductID != product.ID {
-				break
-			}
-			listIngr = append(listIngr, ingredient)
 		}
-		product.Ingredients = listIngr
-		listProd = append(listProd, product)
-		listIngr = nil
 
 	}
 	return listProd
@@ -96,9 +97,8 @@ func (p ProductDBRepository) GetListOfProdInCategory(catID int) []models.Positio
 func (p ProductDBRepository) GetListOfProdBySupplier(suppID int) []models.Position {
 	var product models.Position
 	var listProd []models.Position
-	var piProductID int
-	var ingredient string
-	var listIngr []string
+	var ingredientName models.ProductsIngredientsName
+	var ingredientNameList []models.ProductsIngredientsName
 	rowsI, err := p.conn.Query(
 		"SELECT pi.product_id, i.name FROM products_ingredients as pi LEFT JOIN ingredients i on i.id = pi.ingredient_id ORDER BY product_id")
 	if err != nil {
@@ -120,22 +120,29 @@ func (p ProductDBRepository) GetListOfProdBySupplier(suppID int) []models.Positi
 			return listProd
 		}
 		fmt.Println(product)
-		for rowsI.Next() {
-			err := rowsI.Scan(&piProductID, &ingredient)
-			if err != nil {
-				log.Println(err)
-				return listProd
-			}
-			if piProductID != product.ID {
-				break
-			}
-			listIngr = append(listIngr, ingredient)
-		}
-		product.Ingredients = listIngr
 		listProd = append(listProd, product)
-		listIngr = nil
+	}
+	for rowsI.Next() {
+		err := rowsI.Scan(&ingredientName.ProductId, &ingredientName.Ingredient)
+		if err != nil {
+			log.Println(err)
+			return listProd
+		}
+		ingredientNameList = append(ingredientNameList, ingredientName)
+	}
+	for i, _ := range ingredientNameList {
+		for j, _ := range listProd {
+			if ingredientNameList[i].ProductId == listProd[j].ID {
+				log.Println(ingredientNameList[i].ProductId, listProd[j].ID)
+
+				listProd[j].Ingredients = append(listProd[j].Ingredients, ingredientNameList[i].Ingredient)
+			} else {
+				continue
+			}
+		}
 
 	}
+
 	return listProd
 }
 func (p ProductDBRepository) GetAllProducts() []models.Position {
