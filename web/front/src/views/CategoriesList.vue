@@ -64,12 +64,10 @@ export default {
 <style scoped>
 .main-cat-list{
   background-color: #FF865E;
-
 }
 .main-cat-list .cat-cont{
   display: flex;
   flex-wrap: wrap;
-  justify-content: space-around;
+  justify-content: center;
 }
-
 </style>

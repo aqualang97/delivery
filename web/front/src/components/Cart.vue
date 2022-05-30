@@ -195,7 +195,7 @@ export default {
 }
 .cart-container .product .img-name-prod img{
   cursor: pointer;
-  max-width: 400px;
+  max-width: 350px;
   display: block;
   margin-left: auto;
   margin-right: auto;

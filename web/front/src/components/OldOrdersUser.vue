@@ -114,7 +114,7 @@ export default {
 }
 
 .product-light-elem{
-  border-top: #FF865E solid 2px;
+  border-top: #FF865E dotted 3px;
   padding: 30px 0 30px 0;
   display: flex;
   flex-direction: column;

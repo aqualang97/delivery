@@ -178,6 +178,7 @@ export default {
 input[type~=email],input[type~=text], input[type~=password]{
   color: #2c3e50;
   font-family: Comfortaa;
+
   font-size: 22px;
   font-weight: bold;
   padding-left: 20px;
