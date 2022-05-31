@@ -316,7 +316,9 @@ export default {
 .name-price-cart .name-price .category .category-route{
   cursor: pointer;
   display: flex;
-  flex-direction: column;}
+  flex-direction: column;
+  color: #FF865E;
+}
 
 /*.name-price-cart .name-price .category .category-route :hover .category-route {*/
 /*  color: red;*/
