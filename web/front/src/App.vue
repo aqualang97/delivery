@@ -15,7 +15,14 @@
       <router-link v-if="this.isLogin"  to="/logout">Logout</router-link>
       <router-link v-if="!this.isLogin" to="/sign-in">Sign In</router-link>
       <router-link v-if="!this.isLogin" to="/sign-up">Sign Up</router-link>
-      <router-link to="/cart">Cart</router-link>
+      <router-link v-if="this.$store.state.cart.productCart.length===0" to="/cart">
+        Cart
+        <img src="../../pic/empty-cart-icon.png">
+      </router-link>
+      <router-link v-else to="/cart">
+        Cart
+        <img src="../../pic/not-empty-cart-icon.png">
+      </router-link>
 
     </div>
     <router-view />
@@ -94,16 +101,18 @@ export default {
 }
 
 #nav {
+  min-height: 60px;
   padding: 30px;
   display:flex;
   justify-content: space-evenly;
   a {
     font-weight: bold;
     color: #2c3e50;
-
+    display: flex;
+    align-items: center;
     &.router-link-exact-active {
 
-       margin-top: 3px;
+       margin-top: 4px;
        /*text-decoration: underline dotted;*/
        border-bottom: 3px #FF865E dotted;
        color: #FF865E;

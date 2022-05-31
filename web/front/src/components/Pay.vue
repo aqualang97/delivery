@@ -7,10 +7,10 @@
     </div>
     <div>
       <div v-if="msg==='Card'">
-        <img src="../../../pic/card-method.png">
+        <img src="../../../pic/card.png">
       </div>
       <div v-else-if="msg==='Cash'">
-        <img src="../../../pic/cash-method.png">
+        <img src="../../../pic/cash.png">
       </div>
       <div v-else-if="msg==='Status: completed'">
         <img src="../../../pic/completed.png">
