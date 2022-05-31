@@ -37,7 +37,10 @@ const actions = {
         //     products.commit('setPosts', response.data)
         //
         // )
-    }
+    },
+    // abc(){
+    //     console.log("abc")
+    // }
 }
 
 const getters = {

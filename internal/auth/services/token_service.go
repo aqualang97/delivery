@@ -52,12 +52,14 @@ func CompareHashTokenDBAndRequest(hashTokenDB, tokenReq string) bool {
 	}
 	return true
 }
+
 func GetTokenFromBearerString(bearerString string) string {
+	log.Println(bearerString)
 	if bearerString == "" {
 		return ""
 	}
 
-	parts := strings.Split(bearerString, "Bearer")
+	parts := strings.Split(bearerString, "Bearer ")
 	if len(parts) != 2 {
 		return ""
 	}

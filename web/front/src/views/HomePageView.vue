@@ -1,14 +1,19 @@
 <template>
   <div>
-    <homehome></homehome>
+    <home-page></home-page>
   </div>
 </template>
 
 <script>
+import HomePage from "../components/HomePage";
 export default {
   name: "HomePageView",
-  components: {}
+  components: {HomePage},
+  methods:{
 
+  },
+  mounted() {
+  }
 }
 </script>
 

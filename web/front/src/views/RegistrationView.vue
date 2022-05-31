@@ -4,7 +4,13 @@
 
 <script>
 export default {
-  name: "RegistrationView"
+  name: "RegistrationView",
+  components:{},
+  methods:{
+
+  },
+  mounted() {
+  }
 }
 </script>
 

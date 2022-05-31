@@ -32,11 +32,25 @@ func (s *Server) Start() error {
 
 	controller := controllers.NewController(s.cfg, myLogger, conn, TX)
 	mux := http.NewServeMux()
-	router.Router(controller, mux)
 
+	//mux.HandleFunc("/profile", muxCORS)
+	router.Router(controller, mux)
 	s.cfg.Logger.InfoConsole("Start listen...")
 	log.Fatal(http.ListenAndServe(s.cfg.Port, mux)) //слушаем порт 8080 для входящих запросов
 
 	return err
 
 }
+
+//func muxCORS(w http.ResponseWriter, r *http.Request) {
+//	allowedHeaders := "Accept, Content-Type, Content-Length, Accept-Encoding, Authorization, X-CSRF-Token"
+//	w.Header().Set("Access-Control-Allow-Origin", "*")
+//	w.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
+//	w.Header().Set("Access-Control-Allow-Headers", allowedHeaders)
+//	w.Header().Set("Access-Control-Expose-Headers", "Authorization")
+//	log.Println("pass")
+//	log.Println("___")
+//	log.Println(w.Header())
+//	log.Println("___")
+//
+//}

@@ -19,6 +19,25 @@ func NewUserRepo(conn *sql.DB, TX *sql.Tx, logger *logger.Logger) *UserDBReposit
 	return &UserDBRepository{conn: conn, TX: TX, logger: logger}
 }
 
+func (udbr UserDBRepository) IsExistUserByLogin(login string) (bool, error) {
+	var exist bool
+	err := udbr.conn.QueryRow("SELECT EXISTS(SELECT * FROM users WHERE login=? )", login).Scan(&exist)
+	if err != nil {
+		log.Println(err)
+		return false, err
+	}
+	return exist, err
+}
+
+func (udbr UserDBRepository) IsExistUserByEmail(email string) (bool, error) {
+	var exist bool
+	err := udbr.conn.QueryRow("SELECT EXISTS(SELECT * FROM users WHERE email=? )", email).Scan(&exist)
+	if err != nil {
+		log.Println(err)
+		return false, err
+	}
+	return exist, err
+}
 func (udbr UserDBRepository) GetUserById(id int) (models.User, error) {
 	var user models.User
 	err := udbr.conn.QueryRow(
@@ -43,6 +62,7 @@ func (udbr UserDBRepository) GetUserByEmail(email string) (*models.User, error) 
 	if err != nil {
 		return &user, err
 	}
+
 	return &user, nil
 }
 func (udbr UserDBRepository) GetUserByLogin(login string) (*models.User, error) {

@@ -1,41 +1,41 @@
 <template>
   <main class="cart-container">
-    <div class="your-cart">
-      <h1 class="corinthina-40">Your cart</h1>
-    </div>
-    <div class="products-in-cart">
-      <div class="prod corinthina-25">
-<!--        <img src={{imgLink}}" alt="prod">-->
-        <h3>Product Name</h3>
-        <p>Price</p>
+    <div class="product" :key="idProd" >
+      <div class="img-name-prod fredoka-38">
+        <h3>{{ prodName }}</h3>
+        <div :title="'Ingredients: ' + ingredients"
+             @click="$router.push(`/suppliers/${suppId}/products/${idProd}`)">
+          <img :src="imgLink" :alt="prodName" class="img-cart">
+        </div>
       </div>
-      <div class="numbers">
-        <div class="minus">
-          <p>-</p>
-        </div>
-        <div class="num-of-products corinthina-40">
-          <p></p>
-        </div>
-        <div class="plus">
-          <p>+</p>
+
+      <div class="name-price-cart">
+        <div class="name-price corinthina-25">
+          <h6 class="comfortaa-22">Category:</h6>
+          <h6 class="category-route comfortaa-26"  @click="$router.push(`/products&category=${idCat}`)"
+          >{{replaceAndTitle(type) }}</h6>
+          <p class="fredoka-34">Price: {{ price }}$</p>
+          <p class="fredoka-38">Sum: {{totalPosition.toFixed(2)}}</p>
+          <div class="plus-minus-cont fredoka-30 ">
+            <div class="minus">
+              <button class="fredoka-30" @click="minusProd(idProd)">-</button>
+            </div>
+            <div class="quantity corinthina-40">
+              <p>{{quantity}}</p>
+            </div>
+            <div class="plus">
+              <button class="fredoka-30" @click="plusProd(idProd)">+</button>
+            </div>
+          </div>
         </div>
       </div>
     </div>
 
-
-    <div class="total">
-      <div class="total-txt corinthina-40">
-        <h2>Total payment:</h2>
-        <h6>1000 UAH</h6>
-      </div>
-      <div class="buy">
-        <button type="button" name="button">Buy</button>
-      </div>
-    </div>
   </main>
 </template>
 
 <script>
+
 export default {
   name: "Cart",
   props:{
@@ -45,36 +45,191 @@ export default {
     price:Number,
     imgLink:String,
     type:String,
+    ingredients:[],
     quantity:Number,
-    total:Number
+    idCat:Number,
+    suppId:Number,
+  },
+  data(){
+    return{
+      totalPosition:this.price*this.quantity
+    }
+  },
+  methods:{
+    totalEmit(){
+      this.$emit(
+          'calcSum'
+      )
+    },
+    async plusProd(prodId){
+      let  j = this.$store.state.cart.productCart;
+      for (let i in j) {
+        if (j[i].idProd === prodId){
+          this.$store.commit('cart/plusNumProd', i);
+          let newQuantity = this.$store.state.cart.productCart[i].quantity
+          this.totalPosition = (newQuantity * this.price).toFixed(2)
+          localStorage.setItem('user_order', "")
+          localStorage.setItem('user_order', JSON.stringify(this.$store.state.cart.productCart))
+          await new Promise(r => setTimeout(r, 100));
+          document.location.reload();
+        }
+      }
+    },
+    replaceAndTitle(str){
+      str=str.replace("_", " ")
+      str = str[0].toUpperCase() + str.substring(1)
+      return str
+    },
+    async minusProd(prodId){
+      let  j = this.$store.state.cart.productCart;
+      for (let i in j) {
+        if (j[i].idProd === prodId){
+          this.$store.commit('cart/minusNumProd', i);
+          let newQuantity = this.$store.state.cart.productCart[i].quantity
+          this.totalPosition = (newQuantity * this.price).toFixed(2)
+          localStorage.setItem('user_order', "")
+          localStorage.setItem('user_order', JSON.stringify(this.$store.state.cart.productCart))
+          await new Promise(r => setTimeout(r, 100));
+          document.location.reload();
+        }
+      }
+    },
   }
 }
 </script>
 
 <style scoped>
+
+@font-face {
+  font-family: "Comfortaa";
+  src :url("../../../fonts/comfortaa/Comfortaa-VariableFont_wght.ttf");
+  font-weight: 400;
+}
+@font-face {
+  font-family: "Fredoka";
+  src :url("../../../fonts/fredoka/FredokaOne-Regular.ttf");
+  font-weight: 400;
+}
+
+.fredoka-26{
+  font-family: "Fredoka",serif;
+  font-size: 26px;
+}
+
+.fredoka-30{
+  font-family: "Fredoka",serif;
+  font-weight: normal;
+  font-size: 30px;
+}
+.fredoka-34{
+  font-family: "Fredoka",serif;
+  font-weight: normal;
+  font-size: 34px;
+}.fredoka-38{
+   font-family: "Fredoka",serif;
+   font-weight: normal;
+   font-size: 38px;
+ }
+.comfortaa-26{
+  font-family: "Comfortaa",serif;
+
+  font-size: 26px;
+}
+.comfortaa-22{
+  font-family: "Comfortaa",serif;
+  font-size: 22px;
+}
+
 .cart-container{
-  background-color: #FADADD;
+  background-color: #A2D2FF;
   padding-top: 50px;
   padding-bottom: 50px;
-}
-.your-cart{
-  text-align: center;
-  font-weight: bold;
+  display: flex;
 }
 
-.products-in-cart{
+
+
+.cart-container .product{
   display: flex;
-  width: 60%;
+  flex-direction: row;
+  justify-content: center;
+  border: 0;
+  border-radius: 30px;
+  background-color: #c6e1ff;
+  width: 900px;
+  height: 520px;
+}
+.cart-container .product .name-price-cart{}
+.cart-container .product .name-price-cart .name-price{
+  padding-top: 50px;
+}
+.cart-container .product .name-price-cart .name-price h6{
+  margin: 15px;
+}
+.cart-container .product .name-price-cart .name-price .category-route{
+  cursor: pointer;
+  color: #FF865E;
+}
+.cart-container .product .name-price-cart .name-price .plus-minus-cont{
+
+}
+.cart-container .product .name-price-cart .name-price .plus-minus-cont .plus{}
+.cart-container .product .name-price-cart .name-price .plus-minus-cont .minus{}
+.cart-container .product .name-price-cart .name-price .plus-minus-cont .quantity{}
+
+
+.cart-container .product .img-name-prod{
+
+  display: flex;
+  flex-direction: column;
+  width: 500px;
+  align-items: center;
+
+
+}
+.cart-container .product .img-name-prod h3{
+  font-weight: normal;
+}
+.cart-container .product .img-name-prod img{
+  cursor: pointer;
+  max-width: 300px;
+  display: block;
   margin-left: auto;
   margin-right: auto;
-  padding-bottom: 35px;
+  float: left;
+}
+.plus-minus-cont{
+  display: flex;
+  align-items: center;
+  font-size: 30pt;
+}
+.plus-minus-cont button{
+  background-color: #FEE440;
+  color: #2c3e50;
+  width: 100px;
+  height: 50px;
 
+  border: 4px dotted #FF865E;
+  border-radius: 30px;
+  /*border-color: black;*/
+  float: right;
+  cursor: pointer;
+}
+
+.plus-minus-cont .plus{
+  cursor: pointer;
+}
+.plus-minus-cont .minus{
+  cursor: pointer;
 
 }
-.prod{
-  padding-top: 30px;
-  border: 1px dashed #a9a9a9;
+.plus-minus-cont .quantity{
+
 }
+.img-cart{
+  max-width: 300px;
+}
+
 .prod img{
   width: 15%;
   display: block;
@@ -95,7 +250,6 @@ export default {
 }
 
 .plus, .minus{
-  width: 20%;
   margin: auto;
   padding-right: 20px;
   padding-left: 20px;
@@ -104,15 +258,6 @@ export default {
 }
 .numbers .plus img, .numbers .minus img{
   width: 100%;
-}
-
-.numbers{
-  display: flex;
-  padding-left: 50px;
-}
-.num-of-products{
-  display: flex;
-  align-items: center;
 }
 
 .total{

@@ -1,30 +1,11 @@
 <template>
   <main>
     <div class="promo-container corinthina-30">
-      <div class="promo-txt">
-        <h1>Promo for new customers!</h1>
-        <p>Gift certificate when buying a set from 500 UAH</p>
-      </div>
-    </div>
-    <div class="about-container">
-      <div class="about-txt corinthina-25">
-        <h3>Welcome to the CraftShack family. We’ve been waiting for you.</h3>
-        <p> You’re about to join hundreds of thousands of craft beer, wine, and spirit enthusiasts from around the globe; people who have a genuine passion for all things booze. </p>
-        <p> Here in our family, we do things a little differently. </p>
-        <p> Once you order from us, you’re in the family for life. Seriously. And when family members have problems, we solve them. Something wrong with your order? Did a new brew not live up to your expectations? Call us. Email us. Bang on our door. A real person will respond immediately and make things right. At CraftShack, family matters, and we haven't spent a decade building relationships for this to change anytime soon.</p>
-      </div>
-    </div>
-    <div class="about-container reverce">
-      <div class="about-txt corinthina-25">
-        <h3>Welcome to the CraftShack family. We’ve been waiting for you.</h3>
-        <p> You’re about to join hundreds of thousands of craft beer, wine, and spirit enthusiasts from around the globe; people who have a genuine passion for all things booze. </p>
-        <p> Here in our family, we do things a little differently. </p>
-        <p> Once you order from us, you’re in the family for life. Seriously. And when family members have problems, we solve them. Something wrong with your order? Did a new brew not live up to your expectations? Call us. Email us. Bang on our door. A real person will respond immediately and make things right. At CraftShack, family matters, and we haven't spent a decade building relationships for this to change anytime soon.</p>
-      </div>
-    </div>
-    <div class="learn-more-container">
-      <div class="learn-more corinthina-25">
-
+      <div class="img-text">
+        <div class="promo-txt">
+          <h1 class="fredoka-38">Promo for new customers!</h1>
+          <p class="comfortaa-26">Gift certificate when buying a set from 500 UAH</p>
+        </div>
       </div>
     </div>
   </main>
@@ -38,143 +19,54 @@ export default {
 
 <style scoped>
 
-.logo-about-prod-container{
-  display: flex;
-  width: 30%;
-  justify-content: inherit;
-  padding-top: 20px;
-  padding-left: 20px;
+@font-face {
+  font-family: "Comfortaa";
+  src :url("../../../fonts/comfortaa/Comfortaa-VariableFont_wght.ttf");
+  font-weight: 400;
 }
-
-.logo-about-prod-container img{
-  width: 160%;
-  margin: 0;
+@font-face {
+  font-family: "Fredoka";
+  src :url("../../../fonts/fredoka/FredokaOne-Regular.ttf");
+  font-weight: 400;
 }
-
-.login-cart-container{
-  display: flex;
-  width: 30%;
-  justify-content: inherit;
-  padding-top: 20px;
-  padding-right: 20px;
+.fredoka-38{
+  font-family: "Fredoka",serif;
+  font-weight: normal;
+  font-size: 38px;
 }
-
-
-.logo-about-prod-container a, .login-cart-container a {
-  margin: 0;
-  text-decoration: none;
-  color: black;
-
+.comfortaa-26{
+  font-family: "Comfortaa",serif;
+  font-size: 26px;
 }
-
-.corinthina-30{
-  font-family: "Corinthia";
-  font-size: 30px;
-}
-.corinthina-40{
-  font-family: "Corinthia";
-  font-size: 40px;
-}
-.corinthina-25{
-  font-family: "Corinthia";
-  font-size: 25px;
-}
-
-.corinthina-15{
-  font-family: "Corinthia";
-  font-size: 15px;
-}
-
-
-.promo-container, .about-container{
-  display: flex;
-  width: 100%;
-  background-color: #FADADD;
-  margin: 0;
-  padding-top: 50px;
-}
-.promo-container .promo-txt, .about-container .about-txt{
-  width: 100%;
-  padding: 50px 0 0 25px;
-
-}
-.promo-container .promo-img img, .about-container .about-img img{
-  width: 100%;
-  position: static;
-  margin: 0;
-}
-
-.about-txt h3, .about-txt p{
-  padding: 0 50px 0 50px;
-}
-
-.reverce{
-  flex-direction: row-reverse;
-}
-
-.learn-more-container{
+.promo-container{
+  background-color: #fcd534;
   display: flex;
   flex-direction: column;
-  padding: 30px 300px;
-  background-color: #FADADD;
+  align-items: center;
 
 }
-.learn-more{
-  justify-content: center;
-  text-align: center;
-}
-.different-beers-btn {
-  display: flex;
-  justify-content: space-between;
-}
-.different-beers-btn button{
-  font-family: "Corinthia";
-  font-size: 25px;
-  color: white;
-  border-radius: 8px;
-  height: 50px;
-  width: 15%;
-}
 
-.light{
-  background-color: #f6c101;
+.promo-container .img-text{
+  padding-top: 150px;
+  min-height: 850px;
+  background-image: url("../../../pic/home.jpg");
+  background-repeat:no-repeat;
+  min-width: 1440px;
 }
-
-.dark{
-  background-color: #290e05;
+@media screen and (max-width: 1440px){
+  .promo-container .img-text{
+    padding-top: 150px;
+    min-height: 850px;
+    background-image: url("../../../pic/home.jpg");
+    background-repeat:no-repeat;
+    min-width: 1px;
+  }
 }
-
-.unfiltered{
-  background-color: #f28ec1;
-}
-
-.craft{
-  background-color: #b84b3b;
-}
-
-footer{
-  background-color: #c9ffb6;
-  color: black;
-  display: flex;
-  flex-direction: row;
-  padding-top: 25px;
-}
-.sotial-networks{
+.promo-container .img-text .promo-txt{
   display: flex;
   flex-direction: column;
-  text-align: center;
-  width: 50%;
-}
-.networks-img{
-  display: flex;
-  justify-content: space-evenly;
-}
-.copyrights{
-  display: flex;
-  align-items: self-end;
-  width: 100%;
-  justify-content: end;
-  padding-right: 25px;
+  justify-content: space-around;
+
 }
 
 </style>

@@ -1,19 +1,22 @@
 <template>
-  <div>
-    <product-supplier
+  <div class="main-prod-list">
+    <div class="prod-list-cont">
+      <product-supplier
+          :list-id="idList"
           v-for="(prod) in info"
           :key="prod.name"
-          :prod-name="prod.name"
-          :id-prod="prod.ID"
-          :external-prod-id="prod.id"
+          :prodName="prod.name"
+          :idProd="prod.ID"
+          :externalProdId="prod.id"
           :price="prod.price"
-          :img-link="prod.image"
+          :imgLink="prod.image"
           :type="prod.type"
-          :supp-id="prod.supplierId"
-          :external-supp-id="prod.externalSuppId"
+          :id-cat="prod.categoryNum"
+          :suppId="prod.supplierId"
           :ingredients="prod.ingredients">
-    </product-supplier>
-
+        :externalSuppId="prod.externalSuppId">
+      </product-supplier>
+    </div>
   </div>
 
 </template>
@@ -26,13 +29,42 @@ export default {
   data() {
     return {
       info: null,
-      prodCat: null
+      prodCat: [],
+      idList:[],
+      isLogin:false,
+
     };
   },
-  mounted() {
+  methods:{
+    checkLogin(){
+      this.$store.dispatch('auth/isLogin')
+      this.isLogin = this.$store.state.auth.logged
 
+      if(this.isLogin){
+        this.$store.dispatch('auth/refresh')
+        // this.$router.push("/sign-in")
+      }
+    },
+    listOfId(){
+      let lst = []
+      if (this.$store.state.cart.productCart.length!==0){
+        for (let j in this.$store.state.cart.productCart){
+          lst.push(this.$store.state.cart.productCart[j].idProd)
+        }
+
+        return lst
+      }else {
+        return []
+      }
+    },
+  },
+  mounted() {
+    this.checkLogin()
     //this.info = this.$route.params.cat_id
     let supp = this.$route.params.supp_id
+    if(this.$store.state.cart.productCart.length !==0){
+      this.idList = this.listOfId()
+    }
     if (this.$store.state.productStore.posts.length === 0){
       const  main = async () => {
 
@@ -41,35 +73,36 @@ export default {
               method: 'GET',
             });
         this.info = await response.json();
-        console.log(this.info)
-        console.log(this.info)
-        console.log(this.info)
-        console.log(this.info)
-        for (let prod in this.info){
-          console.log(this.info[prod].name)
-        }
+
+
       }
       main()
     }else {
-      console.log("else")
-      this.info = this.$store.state.productStore.posts
-//      console.log(this.info)
-
-      for (let i in this.info) {
-        if (this.info[i].supplierId == supp){
-          this.prodCat.append(this.info[i])
-          this.info = this.prodCat
+      for (let i in this.$store.state.productStore.posts) {
+        if (this.$store.state.productStore.posts[i].supplierId === Number(supp)){
+          this.prodCat.push(this.$store.state.productStore.posts[i])
         }
       }
-      // console.log(this.prodCat, 123)
-
-
+      // for (let i of this.$store.state.productStore.posts) {
+      //
+      //
+      // }
+      this.info = this.prodCat
     }
-
   }
 }
 </script>
 
 <style scoped>
+.main-prod-list{
+  background-color: #FEE440;
+
+}
+.main-prod-list .prod-list-cont{
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
 
 </style>

@@ -38,7 +38,7 @@ func main() {
 			pool.Start(&wg, i, conn)
 		}(i)
 
-		wg.Add(2)
+		wg.Add(1)
 	}
 
 	for i := 1; i <= 7; i++ {

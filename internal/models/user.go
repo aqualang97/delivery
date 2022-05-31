@@ -14,8 +14,8 @@ type User struct {
 }
 
 type LoginRequest struct {
-	Email    string
-	Password string
+	Email    string `json:"email"`
+	Password string `json:"password"`
 }
 
 type RegistrationRequest struct {
@@ -31,6 +31,12 @@ type UserResponse struct {
 }
 
 type UserRequestPairTokens struct {
+	AccessToken  string `json:"access_token"`
+	RefreshToken string `json:"refresh_token"`
+}
+
+type UserResponsePairTokens struct {
+	UserID       int    `json:"user_id"`
 	AccessToken  string `json:"access_token"`
 	RefreshToken string `json:"refresh_token"`
 }

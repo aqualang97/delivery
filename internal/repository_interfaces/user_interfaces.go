@@ -5,6 +5,8 @@ import "delivery/internal/models"
 //go:generate mockgen -source=/home/yurii/delivery/internal/repository_interfaces/user_interfaces.go -destination=mocks/user.go
 
 type UserRepositoryInterface interface {
+	IsExistUserByLogin(login string) (bool, error)
+	IsExistUserByEmail(email string) (bool, error)
 	GetUserById(id int) (models.User, error)
 	GetUserByEmail(email string) (*models.User, error)
 	GetUserByLogin(login string) (*models.User, error)
@@ -40,11 +42,12 @@ type OrderProductRepositoryInterface interface {
 }
 type OrderRepositoryInterface interface {
 	InsertToOrders(mo models.Order) (int, error)
-	UpdateOrdersByID(mo *models.Order) error
+	UpdateOrdersByID(mo *models.RequestCardPay) error
 	UpdateOrdersByUserID(mo *models.Order) error
 	GetOrderByID(id int) (models.Order, error)
 	GetOrderByUserIDNotPaidNotCompleted(userID int) (models.Order, error)
 	DeleteOrderByUserID(userID int) error
+	GetOldOrdersByUserID(UserID int) ([]models.OldOrders, error)
 }
 
 type UserContactRepositoryInterface interface {

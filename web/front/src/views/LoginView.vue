@@ -1,7 +1,7 @@
 <template>
   <div>
     <login
-    ></login>
+    @send:="takeLogin"></login>
   </div>
 </template>
 
@@ -9,15 +9,12 @@
 export default {
   name: "LoginView",
   data(){
-    return{
-
-    }
+    return {email:"", password:""}
   },
-  // methods:{
-  //   takeLogin(){
-  //     this.val+=1
-  //   }
-  // }
+  methods:{
+    takeLogin(){
+    }
+  }
 }
 </script>
 
