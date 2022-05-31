@@ -38,12 +38,9 @@ export default {
   methods:{
     checkLogin(){
       this.$store.dispatch('auth/isLogin')
-      console.log(this.$store.state.auth.logged)
       this.isLogin = this.$store.state.auth.logged
-      console.log("tytyty", this.isLogin)
 
       if(this.isLogin){
-        console.log("tytyty", this.isLogin)
         this.$store.dispatch('auth/refresh')
         // this.$router.push("/sign-in")
       }
@@ -76,41 +73,22 @@ export default {
               method: 'GET',
             });
         this.info = await response.json();
-        console.log(this.info)
-        console.log(this.info)
-        console.log(this.info)
-        console.log(this.info)
-        for (let prod in this.info){
-          console.log(this.info[prod].name)
-        }
+
+
       }
       main()
     }else {
-      console.log("else")
-      console.log(supp)
-      console.log(this.$store.state.productStore.posts)
-
       for (let i in this.$store.state.productStore.posts) {
-        console.log(this.$store.state.productStore.posts[i].supplierId)
         if (this.$store.state.productStore.posts[i].supplierId === Number(supp)){
-          console.log(this.$store.state.productStore.posts[i])
           this.prodCat.push(this.$store.state.productStore.posts[i])
-
         }
       }
       // for (let i of this.$store.state.productStore.posts) {
-      //   console.log(i)
       //
       //
       // }
       this.info = this.prodCat
-
-      console.log(this.prodCat, 123)
-      // console.log(this.prodCat, 123)
-
-
     }
-
   }
 }
 </script>

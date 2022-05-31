@@ -11,14 +11,17 @@
       </categories>
     </div>
   </div>
-  <div v-else>
-    <categories
-        v-for="(category) in categoriesList"
-        :key="category.name"
-        :category-name="category.name"
-        :cat-id="category.id"
-    >
-    </categories>
+  <div v-else class="main-cat-sorted">
+    <div>
+      <categories class="cat-sort"
+          v-for="(category) in categoriesList"
+          :key="category.name"
+          :category-name="category.name"
+          :cat-id="category.id"
+      >
+      </categories>
+    </div>
+
   </div>
 </template>
 
@@ -34,12 +37,9 @@ export default {
   methods:{
     checkLogin(){
       this.$store.dispatch('auth/isLogin')
-      console.log(this.$store.state.auth.logged)
       this.isLogin = this.$store.state.auth.logged
-      console.log("tytyty", this.isLogin)
 
       if(this.isLogin){
-        console.log("tytyty", this.isLogin)
         this.$store.dispatch('auth/refresh')
         // this.$router.push("/sign-in")
       }
@@ -70,4 +70,14 @@ export default {
   flex-wrap: wrap;
   justify-content: center;
 }
+.main-cat-sorted{
+  background-color: #A2D2FF;
+
+}
+.main-cat-sorted .cat-sort{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
 </style>

@@ -35,12 +35,8 @@ export default {
   methods:{
     checkLogin(){
       this.$store.dispatch('auth/isLogin')
-      console.log(this.$store.state.auth.logged)
       this.isLogin = this.$store.state.auth.logged
-      console.log("tytyty", this.isLogin)
-
       if(this.isLogin){
-        console.log("tytyty", this.isLogin)
         this.$store.dispatch('auth/refresh')
         // this.$router.push("/sign-in")
       }
@@ -78,7 +74,6 @@ export default {
       main()
     }else {
       this.info = this.$store.state.productStore.posts
-      console.log(this.info)
 
       for (let i in this.info) {
          if (this.info[i].ID === Number(prod) && this.info[i].externalSuppId === Number(supp)){
@@ -86,7 +81,6 @@ export default {
            break
          }
           // if (this.info[i].ID === prod && this.info[i].externalSuppId ===supp){
-          //   console.log(this.info[i])
           // }
         }
 

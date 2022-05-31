@@ -37,12 +37,9 @@ export default {
   methods:{
     checkLogin(){
       this.$store.dispatch('auth/isLogin')
-      console.log(this.$store.state.auth.logged)
       this.isLogin = this.$store.state.auth.logged
-      console.log("tytyty", this.isLogin)
 
       if(this.isLogin){
-        console.log("tytyty", this.isLogin)
         this.$store.dispatch('auth/refresh')
         // this.$router.push("/sign-in")
       }
@@ -67,7 +64,6 @@ export default {
     if(this.$store.state.cart.productCart.length !==0){
       this.idList = this.listOfId()
     }
-    console.log(this.$store.state.productStore.posts.length)
     if (this.$store.state.productStore.posts.length === 0){
       const  main = async () => {
 
@@ -76,27 +72,16 @@ export default {
               method: 'GET',
             });
         this.prodCat = await response.json();
-        console.log(this.prodCat)
-        for (let prod in this.prodCat){
-          console.log(this.prodCat[prod].name)
-        }
+
       }
       main()
     }else {
-
-
-      console.log("else")
       this.info = this.$store.state.productStore.posts
-      console.log(this.info)
-
       for (let i in this.info) {
-        console.log(typeof cat)
         if (this.info[i].categoryNum === Number(cat)){
           this.prodCat.push(this.info[i])
-          console.log(this.prodCat)
         }
       }
-      // console.log(this.prodCat, 123)
     }
 }
 }

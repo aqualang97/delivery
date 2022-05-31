@@ -67,24 +67,16 @@ export default {
       })
       if (resp.status !== 200){
         alert(resp.statusText)
-        console.log(resp.status)
         return
       }
       let data = await resp.json()
-      console.log(data)
       alert("Successful authorization")
       localStorage.setItem('user', JSON.stringify(data))
       await this.$router.push("/cart")
       await document.location.reload()
-
-      // for (let index in await resp.json()){
-      //   console.log(index)
-      // }
-
-      // .then(()=> this.$router.push('Home')
-      // ).catch(err=>console.log(err))
-
-}}}
+    }
+  }
+}
 </script>
 
 <style scoped>

@@ -61,58 +61,15 @@ export default {
   methods:{
     checkLogin(){
       this.$store.dispatch('auth/isLogin')
-      console.log(this.$store.state.auth.logged)
       this.isLogin = this.$store.state.auth.logged
-      console.log("OOUL", this.isLogin)
     },
     async clear(){
       localStorage.removeItem("user_order")
       this.$store.commit('cart/clearCart');
       await document.location.reload()
     },
-
-    // async isLogin(){
-    //   let usr = localStorage.getItem('user')
-    //   console.log(usr)
-    //   if(usr===null){
-    //     alert("You are not login, access denied")
-    //     await this.$router.push("/sign-in")
-    //
-    //   }
-    //   else{
-    //     const obj = JSON.parse(usr)
-    //     let resp = await fetch("http://localhost:8080/refresh",{
-    //       method: "POST",
-    //       body: JSON.stringify({refresh_token:obj.refresh_token})
-    //     })
-    //
-    //     if (resp.status !== 200){
-    //       await this.$router.push("/sign-in")
-    //
-    //       alert(resp.statusText)
-    //       // await new Promise(r => setTimeout(r, 500));
-    //       console.log(resp.status)
-    //       return
-    //     }
-    //     let data = await resp.json()
-    //     console.log(data)
-    //     // alert("access is allowed)")
-    //
-    //     localStorage.setItem('user', JSON.stringify(data))
-    //
-    //
-    //     console.log(obj.user_id)
-    //     console.log(obj.access_token)
-    //     console.log(obj.refresh_token)
-    //     return true
-    //   }
-    // },
-
     ifUpdPage(){
-      console.log("upd")
       let localCart = JSON.parse(localStorage.getItem("user_order"))
-      console.log(localCart)
-      console.log("if pd", localCart)
       if (localCart!==null){
         if(localCart.length!==0&&this.$store.state.cart.productCart.length===0){
           this.$store.commit('cart/inputLocalToState', localCart);
@@ -121,10 +78,6 @@ export default {
     },
 
     toLocal(){
-      console.log("To localCart")
-
-      console.log(this.$store.state.cart.productCart)
-
       localStorage.setItem('user_order', "")
       localStorage.setItem('user_order', JSON.stringify(this.$store.state.cart.productCart))
     },
@@ -136,12 +89,7 @@ export default {
     },
     fromLocal(){
       let localCart = JSON.parse(localStorage.getItem("user_order"))
-      console.log(localCart)
-      console.log(localCart.length)
       this.$store.commit('cart/inputLocalToState', localCart);
-
-      console.log("localCart")
-      console.log("upd state", this.$store.state.cart.productCart)
     },
 
   },
@@ -160,7 +108,6 @@ export default {
 
     if (j.length !== 0){
       for (let i in j){
-        console.log(j[i].quantity);
         this.total += (j[i].quantity * j[i].price)
       }
     }

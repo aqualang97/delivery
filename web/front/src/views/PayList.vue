@@ -20,9 +20,7 @@ export default {
   methods:{
     async checkLogin(){
       await this.$store.dispatch('auth/isLogin')
-      console.log(this.$store.state.auth.logged)
       this.isLogin = this.$store.state.auth.logged
-      console.log("BYY", this.isLogin)
     },
 
     async successfulPaid(){
@@ -50,22 +48,17 @@ export default {
     },
     async checkMethod(){
       let method = localStorage.getItem("user_pay_method")
-      console.log(method)
       if (method==="Cash"){
         this.msg = "Cash"
-        console.log(this.msg)
-
         await this.successfulPaid()
       }
       else if (method==="Card"){
         this.msg = "Card"
-        console.log(this.msg)
 
         await this.successfulPaid()
       }
       else {
         this.msg = "Oops"
-        console.log(this.msg)
       }
     }
   },

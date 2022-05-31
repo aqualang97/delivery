@@ -136,11 +136,8 @@ export default {
   },
   methods:{
     notInArray(idProd){
-      console.log("++++++++++++++", this.listId, idProd)
       for(let id in  this.listId){
-        console.log("id",id)
         if(this.listId[id] === idProd){
-          console.log("id",id)
           return false
         }
       }
@@ -166,35 +163,19 @@ export default {
       elem.parentNode.removeChild(elem);
 
       let j = this.$store.state.cart.productCart
-      console.log(j.length)
       if (j.length === 0) {
         this.$store.commit('cart/addProdToCart', prod)
-        console.log(j)
 
       } else {
         for (let i in j) {
           if (j[i].idProd === prodIdAdd) {
             this.$store.commit('cart/plusNumProd', i)
-            console.log(j)
             return
           }
         }
         this.$store.commit('cart/addProdToCart', prod)
-        console.log(j)
 
       }
-
-
-      // if(prod in  this.$store.state.cart.productCart){
-      //   console.log(this.$store.state.cart.quantity)
-      //   // this.$store.commit('cart/updateNumProd',  )
-      //   console.log("+")
-      //
-      // }else {
-      //   this.$store.commit('cart/addProdToCart', prod)
-      //   console.log("-")
-      // }
-      // console.log(this.$store.state.cart)
     },
     plusToCart(prodIdAdd) {
       let  j = this.$store.state.cart.productCart;
@@ -203,7 +184,6 @@ export default {
           this.$store.commit('cart/plusNumProd', i);
           let newQuantity = this.$store.state.cart.productCart[i].quantity
           this.totalPosition = (newQuantity * this.price).toFixed(2)
-          console.log(j);
           return
         }
       }
@@ -215,8 +195,6 @@ export default {
           this.$store.commit('cart/minusNumProd', i);
           let newQuantity = this.$store.state.cart.productCart[i].quantity
           this.totalPosition = (newQuantity * this.price).toFixed(2)
-          console.log(this.$store.state.cart.productCart[i].quantity)
-          console.log(j)
           return
         }
       }

@@ -68,7 +68,6 @@ export default {
   },
   methods:{
     async registration(){
-      console.log(this.passwordReg)
       if ((this.loginReg || this.passwordReg || this.confirmPasswordReg|| this.emailReg) === ""){
         await alert("All fields must be completed")
         return

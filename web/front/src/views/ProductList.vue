@@ -80,14 +80,10 @@ export default {
     },
     async checkLogin(){
       await this.$store.dispatch('auth/isLogin')
-      console.log(this.$store.state.auth.logged)
       this.isLogin = this.$store.state.auth.logged
-      console.log("tytyty", this.isLogin)
 
       if(this.isLogin){
-        console.log("tytyty", this.isLogin)
         await this.$store.dispatch('auth/refresh')
-        // this.$router.push("/sign-in")
       }
     },
 
@@ -113,42 +109,14 @@ export default {
 
   },
   mounted() {
-    console.log(123)
     this.checkLogin()
-
     if (this.$store.state.productStore.posts.length === 0){
       this.getProdList()
     }
-    console.log(this.$store.state.productStore.posts)
     if(this.$store.state.cart.productCart.length !==0){
       this.idList = this.listOfId()
     }
-    // if (this.$store.state.cart.productCart.length !==0){
-    //   for(let p in this.$store.state.cart.productCart.length){
-    //
-    //   }
-    // }
-
   }
-
-  // mounted() {
-  //   const  main = async () => {
-  //     const response = await fetch("http://localhost:8080/all-products", {
-  //       method: 'GET',
-  //     });
-  //     console.log(response)
-  //
-  //     const json  = await response.json();
-  //     for (let prod in json){
-  //       console.log(json[prod].name);
-  //
-  //     }
-  //     this.info=json
-  //
-  //   }
-  //   main()
-  // }
-
 }
 </script>
 

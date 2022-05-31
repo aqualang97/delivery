@@ -72,14 +72,6 @@ export default {
   methods:{
     async confirm() {
 
-      // console.log(typeof this.phone )
-      // console.log(typeof (this.firstName) !== "string" )
-      // console.log( typeof(this.lastName) !== "string")
-      // console.log( typeof(this.address) !== "string")
-      // console.log(this.firstName.length <= 2 )
-      // console.log( this.lastName.length <= 2 )
-      // console.log(this.address.length < 10)
-      // console.log(this.phone.toString().length<10 )
       if (typeof (this.firstName) !== "string" || typeof (this.lastName) !== "string" ||
           typeof (this.address) !== "string"){
         await alert("Please, enter correct data")
@@ -95,12 +87,8 @@ export default {
         else {
         let user = JSON.parse(localStorage.getItem('user'))
         let user_id = user.user_id
-        console.log(user_id)
-        console.log("user_id", user_id, "firstName", this.firstName, "lastName", this.lastName,
-            "address", this.address, "phone", this.phone, "paymentMethod", this.paymentMethod)
         let cartParse = JSON.parse(localStorage.getItem('user_order'))
         let cart = []
-        console.log("cartParse", cartParse)
         for (let p in cartParse) {
 
           let product = {
@@ -122,12 +110,10 @@ export default {
           payment_method: this.paymentMethod,
           cart: cart,
         }
-        console.log(orderInfo)
         let resp = await fetch("http://localhost:8080/confirm", {
           method: "POST",
           body: JSON.stringify(orderInfo)
         })
-        console.log(resp.status)
         if (resp.status === 200) {
           let orderId = await resp.json()
           if (this.paymentMethod === "Cash") {

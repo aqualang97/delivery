@@ -24,10 +24,8 @@ const mutations = {
         let newState = []
         for (let product in local){
             newState.push(local[product])
-            console.log("+")
         }
         state.productCart = newState
-        console.log("+++")
 
     },
     plusNumProd(state, product){

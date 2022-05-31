@@ -1,26 +1,19 @@
 <template>
-
-  <div >
-
+  <div  v-if="$route.path===`/categories`"  class="main-cat-cont">
     <div>
-      <div @click="$router.push(`/products&category=${catId}`)" class="main-cat-cont">
-        <div v-if="$route.path===`/categories`" class="categories-container fredoka-38">
+      <div>
+        <div @click="$router.push(`/products&category=${catId}`)" class="categories-container fredoka-38">
           {{replaceAndTitle(categoryName)}}
         </div>
-
-
-
-
-        <div class="categories-sort" v-else>
-          <ul>
-            <li>
-              {{replaceAndTitle(categoryName)}}
-            </li>
-          </ul>
-        </div>
       </div>
-
     </div>
+  </div>
+  <div v-else class="categories-sort" @click="$router.push(`/products&category=${catId}`)">
+    <ul>
+      <li>
+        {{replaceAndTitle(categoryName)}}
+      </li>
+    </ul>
   </div>
 </template>
 

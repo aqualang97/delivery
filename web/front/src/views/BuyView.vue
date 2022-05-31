@@ -19,9 +19,7 @@ export default {
   methods:{
     async checkLogin(){
       await this.$store.dispatch('auth/isLogin')
-      console.log(this.$store.state.auth.logged)
       this.isLogin = this.$store.state.auth.logged
-      console.log("BYY", this.isLogin)
     },
   },
   mounted() {

@@ -68,7 +68,6 @@ export default {
           this.$store.commit('cart/plusNumProd', i);
           let newQuantity = this.$store.state.cart.productCart[i].quantity
           this.totalPosition = (newQuantity * this.price).toFixed(2)
-          console.log(j);
           localStorage.setItem('user_order', "")
           localStorage.setItem('user_order', JSON.stringify(this.$store.state.cart.productCart))
           await new Promise(r => setTimeout(r, 100));
@@ -88,15 +87,13 @@ export default {
           this.$store.commit('cart/minusNumProd', i);
           let newQuantity = this.$store.state.cart.productCart[i].quantity
           this.totalPosition = (newQuantity * this.price).toFixed(2)
-          console.log(this.$store.state.cart.productCart[i].quantity)
-          console.log(j)
           localStorage.setItem('user_order', "")
           localStorage.setItem('user_order', JSON.stringify(this.$store.state.cart.productCart))
           await new Promise(r => setTimeout(r, 100));
           document.location.reload();
         }
       }
-    }
+    },
   }
 }
 </script>
@@ -195,7 +192,7 @@ export default {
 }
 .cart-container .product .img-name-prod img{
   cursor: pointer;
-  max-width: 350px;
+  max-width: 300px;
   display: block;
   margin-left: auto;
   margin-right: auto;

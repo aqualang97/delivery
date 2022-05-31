@@ -41,9 +41,7 @@ export default {
   methods:{
     async checkLogin(){
       await this.$store.dispatch('auth/isLogin')
-      console.log(this.$store.state.auth.logged)
       this.isLogin = this.$store.state.auth.logged
-      console.log("OOUL", this.isLogin)
     },
 
     async getOrders(){
@@ -52,19 +50,15 @@ export default {
       let resp = await fetch("http://localhost:8080/old-orders/"+user_id_route.toString(),{
         method:"GET"
       })
-      console.log(resp.status)
       this.orders = await resp.json()
       this.image = this.orders.image
-      // for (let order in ordersData){
-      //   console.log(order)
-      // }
+
     }
   },
 
   mounted() {
     this.checkLogin()
     this.isLogin = this.$store.state.auth.logged
-    console.log(this.isLogin, "UList")
     if(!this.isLogin){
       alert("oops")
       this.$router.push("/all-products")
