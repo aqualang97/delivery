@@ -1,0 +1,53 @@
+/*
+Copyright © 2022 NAME HERE <EMAIL ADDRESS>
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
+package cmd
+
+import (
+	"database/sql"
+	config "delivery/configs"
+	"delivery/internal/server"
+	"github.com/aqualang97/logger/v4"
+	"github.com/spf13/cobra"
+	"log"
+)
+
+// createCmd represents the create command
+
+//Run: func(cmd *cobra.Command) {
+//
+//},
+
+func CreateCreateCmd(cfg *config.Config, conn *sql.DB, myLogger *logger.Logger) *cobra.Command {
+	var createCmd = &cobra.Command{
+		Use:   "create",
+		Short: "Create db tables",
+		Long: `A longer description that spans multiple lines and likely contains examples
+		and usage of using your command. For example:
+		
+		Cobra is a CLI library for Go that empowers applications.
+		This application is a tool to generate the needed files
+		to quickly create a Cobra application.`,
+		Run: func(cmd *cobra.Command, args []string) {
+			s := server.NewServer(cfg, conn)
+			err := s.MakeTables(conn, myLogger)
+			log.Println("START CREATE")
+			if err != nil {
+				log.Println(err)
+			}
+		},
+	}
+	return createCmd
+}

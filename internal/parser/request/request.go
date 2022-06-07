@@ -41,6 +41,7 @@ func GetSuppliers() (*models.AllSuppliersForParse, error) {
 
 	//resp, err := http.Get(url)
 	//инициализайия контекста с таймаутом
+	//log.Println(url + endpointSupp)
 	resp := ReqWithCont(url + endpointSupp)
 	if resp.StatusCode != http.StatusOK {
 		return supp, errors.New(fmt.Sprintf("server not response\n status: %d", resp.StatusCode))
@@ -52,6 +53,7 @@ func GetSuppliers() (*models.AllSuppliersForParse, error) {
 		log.Println(err)
 	}
 	println("supp yes")
+	//println(supp)
 	return supp, nil
 	//for _, s := range supp.Suppliers {
 	//	fmt.Println(s)
@@ -81,7 +83,6 @@ func GetProductFromAPI(suppID, productID int) (*models.Position, error) {
 	//it's externalID
 	resp := ReqWithCont(fmt.Sprintf("%s%s/%d%s/%d", url, endpointSupp, suppID, endpointMenu, productID))
 	var product *models.Position
-	fmt.Println(resp)
 	if resp == nil {
 		return product, errors.New(fmt.Sprintf("Response is nul. Unknown err. Server not response"))
 

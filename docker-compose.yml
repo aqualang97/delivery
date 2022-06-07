@@ -51,5 +51,6 @@ services:
 
       DRIVER: "mysql"
       DATA_SOURCE_NAME: "delivery:delivery@tcp(mysql:3306)/delivery"
+      DB_LISTEN: "mysql:3306"
     depends_on:
       - system-mysql

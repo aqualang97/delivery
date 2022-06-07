@@ -1,8 +1,10 @@
 package router
 
 import (
+	"database/sql"
 	"delivery/internal/auth/middlware"
 	"delivery/internal/controllers"
+	"github.com/aqualang97/logger/v4"
 	"net/http"
 )
 
@@ -14,6 +16,9 @@ import (
 func Router(
 	c *controllers.Controllers,
 	mux *http.ServeMux,
+	conn *sql.DB,
+	TX *sql.Tx,
+	myLogger *logger.Logger,
 ) {
 
 	m := middlware.NewMiddleware(c)
@@ -40,6 +45,9 @@ func Router(
 	mux.HandleFunc("/card_pay", m.CORS(http.HandlerFunc(c.User.SimulationCardPay)))
 	mux.HandleFunc("/confirm", m.CORS(http.HandlerFunc(c.User.AddProductsFromCart)))
 	mux.HandleFunc("/old-orders/", m.CORS(http.HandlerFunc(c.User.GetOldOrders)))
+
+	//var supp models.Supplier
+
 }
 func settingsHeader(w http.ResponseWriter) {
 	w.Header().Add("Access-Control-Allow-Origin", "*")

@@ -1,6 +1,6 @@
 SHELL := /bin/bash
 
-export GIT_HASH ?= $(shell git log -n 1 | head -n 1 | sed -e 's/^commit //' | head -c 8)
+export GIT_HASH ?= $(shell git log -n 1 2> /dev/null | head -n 1 | sed -e 's/^commit //' | head -c 8)
 export VERSION ?= v1-$(GIT_HASH)
 
 IMAGE_LOCAL_NAME ?= delivery
@@ -32,20 +32,33 @@ start:
 .PHONY: docker-build
 docker-build:
   # For future ci caching
+#	docker build \
+#	  -f "./Dockerfile" \
+#	  -t "${IMAGE_LOCAL_NAME}:${TAG_NAME}-build-ui" \
+#	  --target build-ui \
+#	  --build-arg VERSION="$(VERSION)" \
+#	  --cache-from "${IMAGE_LOCAL_NAME}:${TAG_NAME}-build-ui" \
+#	  .
 	docker build \
-    -f "./Dockerfile" \
-    -t "${IMAGE_LOCAL_NAME}:${TAG_NAME}-build-ui" \
-    --target build-ui \
-    --build-arg VERSION="$(VERSION)" \
-    --cache-from "${IMAGE_LOCAL_NAME}:${TAG_NAME}-build-ui" \
-    .
+	  -f "./svc.dockerfile" \
+	  -t "${IMAGE_LOCAL_NAME}:${TAG_NAME}-build-svc" \
+	  --build-arg VERSION="$(VERSION)" \
+	  --cache-from "${IMAGE_LOCAL_NAME}:${TAG_NAME}-build-svc" \
+	  .
 	docker build \
-    -f "./Dockerfile" \
-    -t "${IMAGE_LOCAL_NAME}:${TAG_NAME}" \
-    --build-arg VERSION="$(VERSION)" \
-    --cache-from "${IMAGE_LOCAL_NAME}:${TAG_NAME}-build-ui" \
-    --cache-from "${IMAGE_LOCAL_NAME}:${TAG_NAME}" \
-    .
+	  -f "./ui.dockerfile" \
+	  -t "${IMAGE_LOCAL_NAME}:${TAG_NAME}-build-ui" \
+	  --build-arg VERSION="$(VERSION)" \
+	  --cache-from "${IMAGE_LOCAL_NAME}:${TAG_NAME}-build-ui" \
+	  .
+	docker build \
+	  -f "./Dockerfile" \
+	  -t "${IMAGE_LOCAL_NAME}:${TAG_NAME}" \
+	  --build-arg VERSION="$(VERSION)" \
+	  --build-arg IMAGE_UI="${IMAGE_LOCAL_NAME}:${TAG_NAME}-build-ui" \
+	  --build-arg IMAGE_SVC="${IMAGE_LOCAL_NAME}:${TAG_NAME}-build-svc" \
+	  --cache-from "${IMAGE_LOCAL_NAME}:${TAG_NAME}" \
+	  .
 
 .PHONY: docker-run
 docker-run: docker-build

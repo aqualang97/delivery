@@ -71,29 +71,43 @@ func (o OrderDBRepository) GetOldOrdersByUserID(UserID int) ([]models.OldOrders,
 	var ordersList []models.OldOrders
 	var position models.OldPosition
 	var positionList []models.OldPosition
-	rowsO, err := o.conn.Query("SELECT o.id, o.status, o.price, o.user_id, op.numbers_of_product, op.purchase_price, p.name, pc.name, ps.image FROM orders AS o LEFT JOIN orders_products op ON o.id = op.order_id LEFT JOIN products p on p.id = op.product_id LEFT JOIN products_suppliers ps on p.id = ps.product_id LEFT JOIN products_categories pc on pc.id = p.category WHERE o.user_id=?", UserID)
+	rowsO, err := o.conn.Query("SELECT p.name, o.id, o.status, o.price, o.user_id, op.numbers_of_product, op.purchase_price,pc.name, ps.image FROM orders AS o LEFT JOIN orders_products op ON o.id = op.order_id LEFT JOIN products p on p.id = op.product_id LEFT JOIN products_suppliers ps on p.id = ps.product_id LEFT JOIN products_categories pc on pc.id = p.category WHERE o.user_id=?", UserID)
 	if err != nil {
 		o.logger.Error("GetListOfProdBySupplier \n", err)
 	}
 	defer rowsO.Close()
 	tempOrderId := 0
 	tempIndex := 0
+	row, err := o.conn.Query("SELECT * FROM orders WHERE user_id=?", UserID)
+	defer row.Close()
+	var ooo models.Order
+	for row.Next() {
+		err = row.Scan(&ooo.ID, &ooo.UserID, &ooo.Price, &ooo.PaymentMethod, &ooo.Status, &ooo.CreatedAt, &ooo.UpdatedAt)
+		log.Println(ooo.ID, ooo.UserID, ooo.Price, ooo.PaymentMethod, ooo.Status, ooo.CreatedAt, ooo.UpdatedAt)
+	}
+
+	row1, err := o.conn.Query(
+		"SELECT * FROM orders_products WHERE order_id=?", 74)
+	defer row1.Close()
+	var oooq models.OrderProducts
+	for row.Next() {
+		err = row1.Scan(&oooq.Id, &oooq.ProductId, &oooq.OrderId, &oooq.NumbersOfProduct, &oooq.PurchasePrice, &oooq.CreatedAt, &ooo.UpdatedAt)
+		log.Println(oooq.Id, oooq.ProductId, oooq.OrderId, oooq.NumbersOfProduct, oooq.PurchasePrice, oooq.CreatedAt, oooq.UpdatedAt)
+	}
 	for rowsO.Next() {
-		err = rowsO.Scan(&orders.OrderId,
+		err = rowsO.Scan(&position.Name, &orders.OrderId,
 			&orders.Status, &orders.FullPrice, &orders.UserID, &position.Quantity,
-			&position.PurchasePrice, &position.Name, &position.Category, &position.Image)
+			&position.PurchasePrice, &position.Category, &position.Image)
 		if err != nil {
 			log.Println(err)
 			return ordersList, err
 		}
 		if tempOrderId == orders.OrderId {
-			log.Println("+ if")
 			positionList = append(positionList, position)
 			orders.UserOrder = positionList
 
 			ordersList[tempIndex].UserOrder = orders.UserOrder
 		} else {
-			log.Println("+ else")
 			if len(ordersList) != 0 {
 				tempIndex += 1
 			}

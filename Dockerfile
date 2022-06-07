@@ -1,86 +1,9 @@
-FROM ubuntu:20.04 as build-ui
+ARG IMAGE_UI
+ARG IMAGE_SVC
+FROM ${IMAGE_UI} as build-ui
+FROM ${IMAGE_SVC} as build-svc
 
-RUN apt update \
- && apt install -y --no-install-recommends \
-      ca-certificates \
-      openssl \
-      python \
-      build-essential \
-      curl \
-      wget \
- && curl -fsSL https://deb.nodesource.com/setup_14.x | bash - \
- && apt-get install -y nodejs \
- && apt clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
-
-RUN npm install -g npm
-
-WORKDIR "/build"
-
-RUN mkdir -p "./certificates" \
- && openssl req \
-      -x509 \
-      -newkey rsa:2048 \
-      -keyout "./certificates/key.pem" \
-      -out "./certificates/cert.pem" \
-      -days 3650 \
-      -nodes \
-      -subj "/CN=localhost" \
- && openssl dhparam -out "./dhparam.pem" 2048
-
-ARG VERSION
-RUN echo "${VERSION}" > "./version.txt"
-
-COPY web/package.json ./
-COPY web/package-lock.json ./
-
-RUN npm install
-
-COPY web/fonts ./fonts
-COPY web/pic ./pic
-COPY web/public ./public
-COPY web/src ./src
-
-RUN VERSION="${VERSION}" npm run build
-
-FROM ubuntu:20.04 as build-svc
-
-RUN apt update \
- && apt install -y --no-install-recommends \
-      ca-certificates \
-      openssl \
-      build-essential \
-      curl \
-      git \
-      wget \
- && apt clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
-
-ARG GO_VERSION=1.17
-RUN export FILENAME="go${GO_VERSION}.linux-amd64.tar.gz" \
- && export URL="https://golang.org/dl/${FILENAME}" \
- && wget "${URL}" -O "${FILENAME}" \
- && tar xzvf "${FILENAME}" -C "/usr/local"
-ENV PATH "${PATH}:/usr/local/go/bin"
-
-WORKDIR "/build"
-
-COPY ./go.* ./
-RUN go mod download
-
-COPY ./configs ./configs
-COPY ./development ./development
-COPY ./internal ./internal
-COPY ./logs ./logs
-COPY ./tests ./tests
-COPY ./main.go ./
-COPY ./Makefile ./
-
-ARG VERSION
-RUN VERSION=$VERSION make build
-
-ARG VERSION
-RUN echo "${VERSION}" > "./version.txt"
-
-FROM ubuntu:20.04 as runtime
+FROM ubuntu:20.04
 
 RUN apt update \
  && apt install -y --no-install-recommends \
@@ -89,8 +12,9 @@ RUN apt update \
       supervisor \
       nginx \
       curl \
+      wget \
       vim \
- && apt clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+    && apt clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 ENV HOME "/delivery"
 WORKDIR "${HOME}"
@@ -100,6 +24,8 @@ COPY --from=build-ui "/build/version.txt" "${HOME}/version.txt"
 ENV PATH="${PATH}:${HOME}/bin"
 RUN mkdir -p "${HOME}/bin"
 
+RUN wget https://raw.githubusercontent.com/vishnubob/wait-for-it/master/wait-for-it.sh \
+      && chmod +x "wait-for-it.sh"
 COPY ./infra/*.sh "${HOME}/bin"
 
 COPY --from=build-ui "/build/certificates" "/etc/nginx/certificates/"

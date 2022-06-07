@@ -31,6 +31,8 @@ func NewPool(count int) *WorkerPool {
 		StopSend:      make(chan bool),
 		StartSendProd: make(chan models.ProductsSuppliers),
 		StopSendProd:  make(chan bool),
+		//StartServe: make(chan interface{}),
+		//StopServe: make(chan bool),
 		//New:           new,
 	}
 }
@@ -98,3 +100,18 @@ func (pool *WorkerPool) StartParsePrice(wg *sync.WaitGroup, goNum int, conn *sql
 
 	}
 }
+
+//func (pool *WorkerPool) StartListernAndServe(wg *sync.WaitGroup, goNum int, conn *sql.DB, TX *sql.Tx, logger *logger.Logger) {
+//	var start interface
+//	defer wg.Done()
+//	for {
+//		select {
+//		case prod = <-pool.StartSendProd:
+//			_ = parser.ParsePriceToDB(prod.Price, prod.ExternalProductID, prod.ExternalSupplierID+1, goNum, conn, TX, logger)
+//
+//		case <-pool.StopSend:
+//			return
+//		}
+//
+//	}
+//}

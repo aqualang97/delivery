@@ -128,7 +128,6 @@ func (u UserController) Refresh(w http.ResponseWriter, r *http.Request) {
 			RefreshToken: newRefreshTokenString,
 		}
 
-		log.Println("AAA", newAccessTokenString, "\nRRR", newRefreshTokenString)
 		w.WriteHeader(http.StatusOK)
 		data, _ := json.Marshal(resp)
 		w.Write(data)
@@ -244,20 +243,19 @@ func (u UserController) GetOldOrders(w http.ResponseWriter, r *http.Request) {
 	case "GET":
 		path := r.URL.Path
 		parts := strings.Split(path, "/")
-		userId, _ := strconv.Atoi(parts[2])
-		//log.Println(userId)
-		orders, _ := u.OrderRepository.GetOldOrdersByUserID(userId)
-		//log.Println(orders)
+		userId, err := strconv.Atoi(parts[2])
+		if err != nil {
+			log.Println(err)
+		}
+		log.Println(userId)
+		orders, err := u.OrderRepository.GetOldOrdersByUserID(userId)
+		if err != nil {
+			log.Println(err)
+		}
+		log.Println(orders)
 		json.NewEncoder(w).Encode(orders)
 		log.Println(orders)
 
-	default:
-		http.Error(w, "Only POST method is allowed", http.StatusMethodNotAllowed)
-	}
-}
-func (u UserController) A(w http.ResponseWriter, r *http.Request) {
-	switch r.Method {
-	case "POST":
 	default:
 		http.Error(w, "Only POST method is allowed", http.StatusMethodNotAllowed)
 	}

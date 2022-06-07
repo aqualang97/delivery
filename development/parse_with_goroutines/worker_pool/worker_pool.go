@@ -3,7 +3,7 @@ package worker_pool
 import (
 	"database/sql"
 	"delivery/development/parse_with_goroutines/models"
-	"delivery/development/parse_with_goroutines/models/parser"
+	"delivery/internal/parser"
 	"sync"
 )
 

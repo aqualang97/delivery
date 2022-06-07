@@ -2,10 +2,10 @@ package main
 
 import (
 	"database/sql"
-	"delivery/development/parse_with_goroutines/models/parser"
 	"delivery/development/parse_with_goroutines/parse-from-foodapi/request"
 	"delivery/development/parse_with_goroutines/parse-from-foodapi/worker_pool"
 	"delivery/internal/models"
+	"delivery/internal/parser"
 	open "delivery/internal/repositories/database/connection"
 	myLog "delivery/logs"
 	"log"
