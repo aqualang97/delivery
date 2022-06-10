@@ -205,6 +205,7 @@ func (rp MenuController) ListOfProductsInSpecificCategory(w http.ResponseWriter,
 
 		path := r.URL.Path
 		parts := strings.Split(path, "/")[1:]
+		//log.Println(parts)
 		if len(parts) == 3 {
 			strCatID := parts[2]
 			if categoryID, err := strconv.Atoi(strCatID); err == nil {

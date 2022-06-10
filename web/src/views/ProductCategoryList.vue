@@ -67,7 +67,7 @@ export default {
     if (this.$store.state.productStore.posts.length === 0){
       const  main = async () => {
 
-        const response = await fetch(  `${this.$apiPrefix}categories/${cat}`
+        const response = await fetch(  `${this.$apiPrefix}/categories/${cat}`
             , {
               method: 'GET',
             });

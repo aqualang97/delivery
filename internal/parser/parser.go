@@ -113,7 +113,7 @@ func ParsePriceToDB(price float64, extProdID, extSuppID, goNum int, conn *sql.DB
 		ProductsSuppliersRepo: db.NewProductsSuppliersRepo(conn, TX, logger),
 	}
 	err := connection.ProductsSuppliersRepo.UpdatePriceByExternalData(price, extProdID, extSuppID)
-	println("goNum", goNum, "Prod", extProdID)
+	//println("goNum", goNum, "Prod", extProdID)
 
 	return err
 }
