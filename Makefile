@@ -31,14 +31,7 @@ start:
 
 .PHONY: docker-build
 docker-build:
-  # For future ci caching
-#	docker build \
-#	  -f "./Dockerfile" \
-#	  -t "${IMAGE_LOCAL_NAME}:${TAG_NAME}-build-ui" \
-#	  --target build-ui \
-#	  --build-arg VERSION="$(VERSION)" \
-#	  --cache-from "${IMAGE_LOCAL_NAME}:${TAG_NAME}-build-ui" \
-#	  .
+	# For future ci caching
 	docker build \
 	  -f "./svc.dockerfile" \
 	  -t "${IMAGE_LOCAL_NAME}:${TAG_NAME}-build-svc" \
@@ -82,5 +75,5 @@ docker-rebuild:
 
 .PHONY: docker-deploy
 docker-deploy:
-  docker tag ${IMAGE_LOCAL_NAME} ${IMAGE_NAME}:latest
-  docker push ${IMAGE_NAME}:latest
+	docker tag ${IMAGE_LOCAL_NAME} ${IMAGE_NAME}:latest
+	docker push ${IMAGE_NAME}:latest

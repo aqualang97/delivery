@@ -72,7 +72,7 @@ func (rp MenuController) SupplierAndProdWithID(w http.ResponseWriter, r *http.Re
 
 		//supp := rp.SupplierRepository.GetSupplierByID()
 		path := r.URL.Path
-		parts := strings.Split(path, "/")
+		parts := strings.Split(path, "/")[1:]
 		log.Println(len(parts))
 		log.Println(parts)
 		log.Println(parts)
@@ -104,7 +104,7 @@ func (rp MenuController) SupplierAndProdWithID(w http.ResponseWriter, r *http.Re
 					//for _, p := range listOfProd {
 					//	fmt.Fprint(w, p.ID, "	", p.Name, p.Category, "\n")
 					//}
-					fmt.Println(listOfProd)
+					//fmt.Println(listOfProd)
 					data, _ := json.Marshal(listOfProd)
 					w.Write(data)
 
@@ -204,12 +204,12 @@ func (rp MenuController) ListOfProductsInSpecificCategory(w http.ResponseWriter,
 	case "GET":
 
 		path := r.URL.Path
-		parts := strings.Split(path, "/")
+		parts := strings.Split(path, "/")[1:]
 		if len(parts) == 3 {
 			strCatID := parts[2]
 			if categoryID, err := strconv.Atoi(strCatID); err == nil {
 				listOfProd := rp.ProductRepository.GetListOfProdInCategory(categoryID)
-				fmt.Println(listOfProd)
+				//fmt.Println(listOfProd)
 				data, _ := json.Marshal(listOfProd)
 				w.Write(data)
 			}
@@ -224,7 +224,7 @@ func (rp MenuController) ListOfAllProducts(w http.ResponseWriter, r *http.Reques
 	switch r.Method {
 	case "GET":
 		listAllProducts := rp.ProductRepository.GetAllProducts()
-		fmt.Println(listAllProducts)
+		//fmt.Println(listAllProducts)
 		data, _ := json.Marshal(listAllProducts)
 		w.Write(data)
 

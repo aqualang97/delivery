@@ -23,7 +23,7 @@ func (a AuthController) Login(w http.ResponseWriter, r *http.Request) {
 		}
 
 		user, err := a.UserRepository.GetUserByEmail(req.Email)
-		fmt.Println(user)
+		//fmt.Println(user)
 		if err != nil {
 			http.Error(w, "invalid credentials", http.StatusBadRequest)
 			return

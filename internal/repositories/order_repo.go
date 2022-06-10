@@ -78,22 +78,7 @@ func (o OrderDBRepository) GetOldOrdersByUserID(UserID int) ([]models.OldOrders,
 	defer rowsO.Close()
 	tempOrderId := 0
 	tempIndex := 0
-	row, err := o.conn.Query("SELECT * FROM orders WHERE user_id=?", UserID)
-	defer row.Close()
-	var ooo models.Order
-	for row.Next() {
-		err = row.Scan(&ooo.ID, &ooo.UserID, &ooo.Price, &ooo.PaymentMethod, &ooo.Status, &ooo.CreatedAt, &ooo.UpdatedAt)
-		log.Println(ooo.ID, ooo.UserID, ooo.Price, ooo.PaymentMethod, ooo.Status, ooo.CreatedAt, ooo.UpdatedAt)
-	}
 
-	row1, err := o.conn.Query(
-		"SELECT * FROM orders_products WHERE order_id=?", 74)
-	defer row1.Close()
-	var oooq models.OrderProducts
-	for row.Next() {
-		err = row1.Scan(&oooq.Id, &oooq.ProductId, &oooq.OrderId, &oooq.NumbersOfProduct, &oooq.PurchasePrice, &oooq.CreatedAt, &ooo.UpdatedAt)
-		log.Println(oooq.Id, oooq.ProductId, oooq.OrderId, oooq.NumbersOfProduct, oooq.PurchasePrice, oooq.CreatedAt, oooq.UpdatedAt)
-	}
 	for rowsO.Next() {
 		err = rowsO.Scan(&position.Name, &orders.OrderId,
 			&orders.Status, &orders.FullPrice, &orders.UserID, &position.Quantity,

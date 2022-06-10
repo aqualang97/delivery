@@ -51,6 +51,7 @@ export default {
   padding-bottom: 20px;
 }
 .main-cat-cont .categories-container{
+  cursor: pointer;
   background-color: #ffbda4;
   display: flex;
   flex-direction: row;

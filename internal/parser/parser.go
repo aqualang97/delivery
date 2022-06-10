@@ -97,7 +97,7 @@ func ParseFromAPI(supp models.SupplierForParse, goNum int, conn *sql.DB, TX *sql
 
 	}
 
-	println("goNum", goNum)
+	//println("goNum", goNum)
 
 }
 

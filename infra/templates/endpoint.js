@@ -1,0 +1,1 @@
+window.apiPrefix = '$DELIVERY_API_ENDPOINT';

@@ -156,7 +156,7 @@ func (s Server) MakeTables(conn *sql.DB, myLogger *logger.Logger) error {
 			return err
 		}
 		numTables++
-		fmt.Println(table)
+		//fmt.Println(table)
 	}
 	fmt.Println("NUM", numTables)
 

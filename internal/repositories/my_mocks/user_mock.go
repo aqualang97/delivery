@@ -10,6 +10,16 @@ type UserRepositoryMock struct {
 	users []*models.User
 }
 
+func (r *UserRepositoryMock) IsExistUserByLogin(login string) (bool, error) {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (r *UserRepositoryMock) IsExistUserByEmail(email string) (bool, error) {
+	//TODO implement me
+	panic("implement me")
+}
+
 func (r *UserRepositoryMock) GetUserById(id int) (models.User, error) {
 	//TODO implement me
 	panic("implement me")

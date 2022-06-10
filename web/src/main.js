@@ -27,6 +27,8 @@ import Logout from "./components/Logout";
 
 Vue.config.productionTip = false;
 
+Vue.prototype.$apiPrefix = window.apiPrefix
+
 Vue.component("card", Card)
 Vue.component('product', Product)
 Vue.component('productSpecSupp', ProductSpecificSupplier)

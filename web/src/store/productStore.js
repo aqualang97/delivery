@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const state = {
-    url : "http://localhost:8080/all-products",
+    url : `${window.apiPrefix}/all-products`,
     posts : [],
     errors : [],
     loaded : false

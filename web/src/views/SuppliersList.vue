@@ -54,7 +54,7 @@ export default {
   mounted() {
     this.checkLogin()
     const  main = async () => {
-      const response = await fetch("http://localhost:8080/suppliers", {
+      const response = await fetch(`${this.$apiPrefix}/suppliers`, {
         method: 'GET',
       });
       const json  = await response.json();

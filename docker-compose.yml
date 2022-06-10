@@ -39,7 +39,6 @@ services:
       - mysql
     ports:
       - "8443:443"
-      - "8080:8080"
     environment:
       PORT: ":8080"
 
@@ -52,5 +51,7 @@ services:
       DRIVER: "mysql"
       DATA_SOURCE_NAME: "delivery:delivery@tcp(mysql:3306)/delivery"
       DB_LISTEN: "mysql:3306"
+
+      DELIVERY_API_ENDPOINT: "https://localhost:8443/api"
     depends_on:
       - system-mysql

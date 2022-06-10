@@ -1,7 +1,7 @@
 // import axios from "axios";
 
 const state = {
-    url : "http://localhost:8080",
+    url : `${window.apiPrefix}`,
     user : {
         user_id:Number,
         access:"",
@@ -39,7 +39,7 @@ const actions = {
             const obj = JSON.parse(usr)
             console.log(
                 ` ${obj.access_token}`, "profile")
-            let resp = await fetch("http://localhost:8080/profile",{
+            let resp = await fetch(`${state.url}/profile`,{
                 method: "GET",
                 headers:{
                     // Authorization:`Bearer ${JSON.stringify({access_token:obj.access_token})}`
@@ -72,7 +72,7 @@ const actions = {
         }
         else{
             const obj = JSON.parse(usr)
-            let resp = await fetch("http://localhost:8080/refresh",{
+            let resp = await fetch(`${state.url}/refresh`,{
                 method: "POST",
                 body: JSON.stringify({refresh_token:`Bearer ` +obj.refresh_token,
                     access_token:""})
@@ -101,7 +101,7 @@ const actions = {
         let usr = localStorage.getItem('user')
         const obj = JSON.parse(usr)
 
-        let resp = await fetch("http://localhost:8080/logout",{
+        let resp = await fetch(`${state.url}/logout`,{
             method: "POST",
             body: JSON.stringify({access_token:`Bearer ` +obj.access_token,
                 refresh_token:""})

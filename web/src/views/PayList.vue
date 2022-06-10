@@ -30,7 +30,7 @@ export default {
         status:"completed",
         last_order_id: JSON.parse(localStorage.getItem('user_last_order_id'))
       }
-      let resp = await fetch("http://localhost:8080/card_pay", {
+      let resp = await fetch(`${this.$apiPrefix}/card_pay`, {
         method: "POST",
         body: JSON.stringify(simulation)
       })

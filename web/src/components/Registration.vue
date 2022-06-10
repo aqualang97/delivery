@@ -89,7 +89,7 @@ export default {
       // this.$store.commit('cart/clearCart');
 
       localStorage.setItem('user', "")
-      let resp = await fetch("http://localhost:8080/registration",{
+      let resp = await fetch(`${this.$apiPrefix}/registration`,{
         method: "POST",
         body: JSON.stringify({email:this.emailReg, login: this.loginReg, password:this.passwordReg})
       })

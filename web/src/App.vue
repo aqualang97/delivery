@@ -30,7 +30,9 @@
 </template>
 <script>
 // import CartView from "./views/CartView";
+
 export default {
+
   data(){
     return{
       isLogin:false,

@@ -68,7 +68,7 @@ export default {
     if (this.$store.state.productStore.posts.length === 0){
       const  main = async () => {
 
-        const response = await fetch(  `http://localhost:8080/suppliers/${supp}/products`
+        const response = await fetch(  `${this.$apiPrefix}/suppliers/${supp}/products`
             , {
               method: 'GET',
             });

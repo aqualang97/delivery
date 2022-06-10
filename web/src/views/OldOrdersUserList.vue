@@ -47,7 +47,7 @@ export default {
     async getOrders(){
       let user_id_route = this.$route.params.user_id
       this.user_id = parseInt(user_id_route)
-      let resp = await fetch("http://localhost:8080/old-orders/"+user_id_route.toString(),{
+      let resp = await fetch(`${this.$apiPrefix}/old-orders/`+user_id_route.toString(),{
         method:"GET"
       })
       this.orders = await resp.json()

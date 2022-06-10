@@ -3,7 +3,6 @@ package repositories
 import (
 	"database/sql"
 	"delivery/internal/models"
-	"fmt"
 	"github.com/aqualang97/logger/v4"
 	"log"
 )
@@ -83,7 +82,7 @@ func (p ProductDBRepository) GetListOfProdInCategory(catID int) []models.Positio
 	for i, _ := range ingredientNameList {
 		for j, _ := range listProd {
 			if ingredientNameList[i].ProductId == listProd[j].ID {
-				log.Println(ingredientNameList[i].ProductId, listProd[j].ID)
+				//log.Println(ingredientNameList[i].ProductId, listProd[j].ID)
 
 				listProd[j].Ingredients = append(listProd[j].Ingredients, ingredientNameList[i].Ingredient)
 			} else {
@@ -119,7 +118,7 @@ func (p ProductDBRepository) GetListOfProdBySupplier(suppID int) []models.Positi
 			log.Println(err)
 			return listProd
 		}
-		fmt.Println(product)
+		//fmt.Println(product)
 		listProd = append(listProd, product)
 	}
 	for rowsI.Next() {
@@ -133,7 +132,7 @@ func (p ProductDBRepository) GetListOfProdBySupplier(suppID int) []models.Positi
 	for i, _ := range ingredientNameList {
 		for j, _ := range listProd {
 			if ingredientNameList[i].ProductId == listProd[j].ID {
-				log.Println(ingredientNameList[i].ProductId, listProd[j].ID)
+				//log.Println(ingredientNameList[i].ProductId, listProd[j].ID)
 
 				listProd[j].Ingredients = append(listProd[j].Ingredients, ingredientNameList[i].Ingredient)
 			} else {
@@ -171,7 +170,7 @@ func (p ProductDBRepository) GetAllProducts() []models.Position {
 			log.Println(err)
 			return listProd
 		}
-		fmt.Println(product)
+		//fmt.Println(product)
 		for rowsI.Next() {
 			err := rowsI.Scan(&piProductID, &ingredient)
 			if err != nil {

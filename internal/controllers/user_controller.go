@@ -4,7 +4,6 @@ import (
 	"delivery/internal/auth/services"
 	"delivery/internal/models"
 	"encoding/json"
-	"fmt"
 	"log"
 	"net/http"
 	"strconv"
@@ -155,7 +154,7 @@ func (u UserController) GetProductsInCart(w http.ResponseWriter, r *http.Request
 		if err != nil {
 			log.Println(err)
 		}
-		fmt.Println(productsInOrderProd)
+		//fmt.Println(productsInOrderProd)
 		data, _ := json.Marshal(productsInOrderProd)
 		w.Write(data)
 	default:
@@ -242,7 +241,7 @@ func (u UserController) GetOldOrders(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case "GET":
 		path := r.URL.Path
-		parts := strings.Split(path, "/")
+		parts := strings.Split(path, "/")[1:]
 		userId, err := strconv.Atoi(parts[2])
 		if err != nil {
 			log.Println(err)

@@ -110,7 +110,7 @@ export default {
           payment_method: this.paymentMethod,
           cart: cart,
         }
-        let resp = await fetch("http://localhost:8080/confirm", {
+        let resp = await fetch(`${this.$apiPrefix}/confirm`, {
           method: "POST",
           body: JSON.stringify(orderInfo)
         })

@@ -58,7 +58,7 @@ export default {
       // localStorage.clear()
       // this.$store.commit('cart/clearCart');
 
-      let resp = await fetch("http://localhost:8080/login",{
+      let resp = await fetch(`${this.$apiPrefix}/login`,{
         method: "POST",
 
 

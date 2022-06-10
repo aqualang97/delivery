@@ -81,7 +81,7 @@ func GetProductFromAPI(suppID, productID int) (*models.Position, error) {
 	//it's externalID
 	resp := ReqWithCont(fmt.Sprintf("%s%s/%d%s/%d", url, endpointSupp, suppID, endpointMenu, productID))
 	var product *models.Position
-	fmt.Println(resp)
+	//fmt.Println(resp)
 	if resp == nil {
 		return product, errors.New(fmt.Sprintf("Response is nul. Unknown err. Server not response"))
 
